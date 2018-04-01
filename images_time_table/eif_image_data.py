@@ -2,7 +2,7 @@ import csv
 import glob
 import os
 
-from constants import CO_IMAGE_PATH
+from images_time_table.constants import CO_IMAGE_PATH
 
 EIF_SOURCE_FILES = os.path.join(CO_IMAGE_PATH, '01_EIF/*.eif')
 

@@ -4,7 +4,7 @@ import numpy
 import pandas
 import os
 
-from constants import CO_SBET_PATH
+from images_time_table.constants import CO_SBET_PATH
 
 DAY_IN_SECONDS = 86400
 
