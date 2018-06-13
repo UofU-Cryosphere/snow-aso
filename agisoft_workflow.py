@@ -2,6 +2,7 @@ import argparse
 import datetime
 import glob
 import os
+import sys
 
 import PhotoScan
 
@@ -57,7 +58,13 @@ class Agisoft:
 
     def list_images(self, source_folder, image_type):
         source_folder = os.path.join(self.project_base_path, source_folder, '')
-        return glob.glob(source_folder + '*' + image_type)
+        images = glob.glob(source_folder + '*' + image_type)
+        if len(images) == 0:
+            print('**** EXIT - ' + image_type + ' no files found in directory:')
+            print('    ' + source_folder)
+            sys.exit(-1)
+        else:
+            return images
 
     def align_images(self):
         self.chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
@@ -90,8 +97,6 @@ class Agisoft:
 
     def process(self):
         PhotoScan.app.gpu_mask = 3
-
-        # TODO: Check for empty file list
 
         self.align_images()
         self.build_dense_cloud()
