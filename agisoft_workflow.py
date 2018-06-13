@@ -62,11 +62,14 @@ class Agisoft:
     def align_images(self):
         self.chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
         self.chunk.addPhotos(self.images)
-        self.chunk.loadReference(
-            path=self.project_base_path + self.REFERENCE_FILE,
-            delimiter=',',
-            format=PhotoScan.ReferenceFormatCSV,
-        )
+        if os.path.exists(self.project_base_path + self.REFERENCE_FILE):
+            self.chunk.loadReference(
+                path=self.project_base_path + self.REFERENCE_FILE,
+                delimiter=',',
+                format=PhotoScan.ReferenceFormatCSV,
+            )
+        else:
+            print('**** WARNING - No reference file found ****')
         self.chunk.matchPhotos(
             accuracy=PhotoScan.HighAccuracy,
             generic_preselection=True,
