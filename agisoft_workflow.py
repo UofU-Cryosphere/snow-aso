@@ -33,6 +33,8 @@ class Agisoft:
     def __init__(self, base_path, project_name, image_folder, image_type):
         # Ensure trailing slash
         self.project_base_path = os.path.join(base_path, '')
+        self.setup_application()
+
         project = PhotoScan.Document()
         chunk = project.addChunk()
 
@@ -47,9 +49,26 @@ class Agisoft:
         self.chunk = self.project.chunk
         self.images = self.list_images(image_folder, image_type)
 
+    def setup_application(self):
+        app = PhotoScan.Application()
+        # Use all available GPUs
+        app.gpu_mask = len(PhotoScan.app.enumGPUDevices())
+        # Allow usage of CPU and GPU
+        app.cpu_enable = True
+
+        settings = PhotoScan.Application.Settings()
+        # Logging
+        settings.log_enable = True
+        settings.log_path = self.project_base_path + \
+            'agisoft_' + self.today_as_filename() + '.log'
+        settings.save()
+
     @staticmethod
-    def project_name(base_name):
-        return base_name + '_' + datetime.date.today().strftime('%Y_%m_%d')
+    def today_as_filename():
+        return datetime.date.today().strftime('%Y_%m_%d')
+
+    def project_name(self, base_name):
+        return base_name + '_' + self.today_as_filename()
 
     def project_path(self, project_name):
         return os.path.join(
@@ -96,8 +115,6 @@ class Agisoft:
         self.project.save()
 
     def process(self):
-        PhotoScan.app.gpu_mask = 3
-
         self.align_images()
         self.build_dense_cloud()
 
