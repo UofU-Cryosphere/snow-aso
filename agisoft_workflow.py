@@ -143,7 +143,11 @@ parser.add_argument(
 )
 
 # Example command line execution:
+# Mac OS:
 # ./PhotoScanPro -r agisoft_workflow.py --base-path /path/to/root/project/directory --project-name test
+#
+# Windows:
+# .\photoscan.exe -r agisoft_workflow.py --base-path D:\path/to/root/project/direcotry --project-name test
 #
 # Optional arguments are:
 # _image_folder_: Name and relative location where images are
