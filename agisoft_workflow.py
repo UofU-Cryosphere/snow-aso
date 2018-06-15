@@ -76,8 +76,10 @@ class Agisoft:
         )
 
     def list_images(self, source_folder, image_type):
-        source_folder = os.path.join(self.project_base_path, source_folder, '')
-        images = glob.glob(source_folder + '*' + image_type)
+        source_folder = os.path.join(
+            self.project_base_path, source_folder, '**', ''
+        )
+        images = glob.glob(source_folder + '*' + image_type, recursive=True)
         if len(images) == 0:
             print('**** EXIT - ' + image_type + ' no files found in directory:')
             print('    ' + source_folder)
