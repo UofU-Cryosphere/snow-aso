@@ -1,12 +1,25 @@
 import datetime
 import math
-import pandas
 import os
 
-from constants import GPS_COLUMN, SBET_CSV, SBET_DTYPES
+import numpy
+import pandas
 
 DAY_IN_SECONDS = 86400
 GPS_EPOCH_SECONDS = 19
+
+GPS_COLUMN = 'GpsTime'
+
+SBET_CSV = 'sbet.csv'
+SBET_DTYPES = {
+    GPS_COLUMN: numpy.float32,
+    'X': numpy.float32,
+    'Y': numpy.float32,
+    'Z': numpy.float32,
+    'Pitch': numpy.float32,
+    'Roll': numpy.float32,
+    'Heading': numpy.float32,
+}
 
 
 def get_gps_day_of_week(gps_week_time):

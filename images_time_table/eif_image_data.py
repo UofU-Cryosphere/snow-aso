@@ -2,8 +2,8 @@ import csv
 import glob
 import os
 
-from constants import CSV_HEADER_ROW
-from sbet_query import seconds_to_time_of_day
+import images_meta_csv
+import sbet_query
 
 
 def eif_files(base_path):
@@ -15,11 +15,13 @@ def file_name_from_path(path):
 
 
 def convert_timestamp(row, timestamp_index):
-    row[timestamp_index] = seconds_to_time_of_day(row[timestamp_index])
+    row[timestamp_index] = sbet_query.seconds_to_time_of_day(
+        row[timestamp_index]
+    )
 
 
 def add_entry_to_table(images_time_table, row, timestamp_index):
-    file_row = [None] * len(CSV_HEADER_ROW)
+    file_row = [None] * len(images_meta_csv.CSV_HEADER_ROW)
     file_row[0] = file_name_from_path(row[1])
     file_row[timestamp_index] = row[0]
     images_time_table.append(file_row)
@@ -31,7 +33,7 @@ def sort_by_time(image_list, timestamp_index):
 
 def get_image_list(base_path, old_eif_style):
     images_time_table = []
-    timestamp_index = CSV_HEADER_ROW.index('Timestamp')
+    timestamp_index = images_meta_csv.CSV_HEADER_ROW.index('Timestamp')
 
     for source_file in glob.glob(eif_files(base_path)):
         if old_eif_style:
