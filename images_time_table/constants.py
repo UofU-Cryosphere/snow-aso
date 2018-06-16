@@ -1,14 +1,21 @@
-import os
+import numpy
 
-ROOT_DIR = '/Volumes/warehouse/projects/UofU/ASO'
+CSV_HEADER_ROW = [
+    'File_name', 'X', 'Y', 'Z', 'Yaw', 'Pitch', 'Roll', 'Timestamp'
+]
+
 IMAGE_DIR = 'camera'
-LIDAR_DIR = 'lidar'
-# SBET (Smooth Best Estimated Trajectory)
+
+GPS_COLUMN = 'GpsTime'
+
 SBET_DIR = 'SBET'
-
-CO_DIR = 'CO_20170221'
-
-CO_IMAGE_PATH = os.path.join(ROOT_DIR, CO_DIR, IMAGE_DIR)
-CO_LIDAR_PATH = os.path.join(ROOT_DIR, CO_DIR, LIDAR_DIR)
-CO_SBET_PATH = os.path.join(ROOT_DIR, CO_DIR, SBET_DIR)
-
+SBET_CSV = 'sbet.csv'
+SBET_DTYPES = {
+    GPS_COLUMN: numpy.float32,
+    'X': numpy.float32,
+    'Y': numpy.float32,
+    'Z': numpy.float32,
+    'Pitch': numpy.float32,
+    'Roll': numpy.float32,
+    'Heading': numpy.float32,
+}
