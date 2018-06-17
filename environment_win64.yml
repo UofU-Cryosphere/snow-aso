@@ -1,0 +1,26 @@
+name: snow_aso
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - blas=1.0
+  - certifi=2018.4.16
+  - icc_rt=2017.0.4
+  - intel-openmp=2018.0.3
+  - mkl=2018.0.3
+  - mkl_fft=1.0.1
+  - mkl_random=1.0.1
+  - numpy=1.14.5
+  - numpy-base=1.14.5
+  - pandas=0.23.1
+  - pip=10.0.1
+  - python=3.6.5
+  - python-dateutil=2.7.3
+  - pytz=2018.4
+  - setuptools=39.2.0
+  - six=1.11.0
+  - vc=14
+  - vs2015_runtime=14.0.25123
+  - wheel=0.31.1
+  - wincertstore=0.2
+
