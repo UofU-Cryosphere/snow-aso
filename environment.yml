@@ -1,0 +1,38 @@
+name: snow_aso
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - blas=1.0
+  - ca-certificates=2018.03.07
+  - certifi=2018.4.16
+  - intel-openmp=2018.0.3
+  - libcxx=4.0.1
+  - libcxxabi=4.0.1
+  - libedit=3.1.20170329
+  - libffi=3.2.1
+  - libgfortran=3.0.1
+  - libopenblas=0.2.20
+  - mkl=2018.0.3
+  - mkl_fft=1.0.1
+  - mkl_random=1.0.1
+  - ncurses=6.1
+  - numpy=1.14.5
+  - numpy-base=1.14.5
+  - openblas=0.2.20
+  - openblas-devel=0.2.20
+  - openssl=1.0.2o
+  - pandas=0.23.1
+  - pip=10.0.1
+  - python=3.6.5
+  - python-dateutil=2.7.3
+  - pytz=2018.4
+  - readline=7.0
+  - setuptools=39.2.0
+  - six=1.11.0
+  - sqlite=3.23.1
+  - tk=8.6.7
+  - wheel=0.31.1
+  - xz=5.2.4
+  - zlib=1.2.11
+
