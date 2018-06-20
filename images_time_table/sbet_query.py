@@ -11,6 +11,7 @@ GPS_EPOCH_SECONDS = 19
 GPS_COLUMN = 'GpsTime'
 
 SBET_CSV = 'sbet.csv'
+SBET_DIR = 'SBET'
 SBET_DTYPES = {
     GPS_COLUMN: numpy.float32,
     'X': numpy.float32,
@@ -20,6 +21,10 @@ SBET_DTYPES = {
     'Roll': numpy.float32,
     'Heading': numpy.float32,
 }
+
+
+def sbet_csv_file(base_path):
+    return os.path.join(base_path, SBET_DIR, SBET_CSV)
 
 
 def get_gps_day_of_week(gps_week_time):
@@ -35,11 +40,16 @@ def find_coordinates_for_row(sbet_table, gps_day_of_week, row):
     row_time = gps_day_of_week + float(row[7]) + GPS_EPOCH_SECONDS
 
     time = sbet_table[
-        (sbet_table[GPS_COLUMN] > row_time - 0.01) &
-        (sbet_table[GPS_COLUMN] < row_time + 0.01)
+        (sbet_table[GPS_COLUMN] > row_time - 0.1) &
+        (sbet_table[GPS_COLUMN] < row_time + 0.1)
     ]
 
-    min_diff = (abs(time[GPS_COLUMN] - row_time)).idxmin()
+    min_diff = (abs(time[GPS_COLUMN] - row_time))
+
+    if len(min_diff) == 0:
+        return
+
+    min_diff = min_diff.idxmin()
     min_diff = sbet_table.iloc[min_diff]
 
     row[1] = math.degrees(min_diff.X) # SBET has radians for X and Y
@@ -51,10 +61,12 @@ def find_coordinates_for_row(sbet_table, gps_day_of_week, row):
     row[7] = seconds_to_time_of_day(row[7])
 
 
-def get_image_imu_data(sbet_path, image_list):
-    sbet_csv_file = os.path.join(sbet_path, SBET_CSV)
-    sbet_table = pandas.read_csv(sbet_csv_file, converters=SBET_DTYPES)
-    gps_day_of_week = get_gps_day_of_week(float(sbet_table[:1][GPS_COLUMN]))
+def get_image_imu_data(basin_path, image_list):
+    sbet_table = pandas.read_csv(
+        sbet_csv_file(basin_path), converters=SBET_DTYPES
+    )
+
+    gps_day_of_week = get_gps_day_of_week(sbet_table[:1][GPS_COLUMN][0])
 
     [
         find_coordinates_for_row(sbet_table, gps_day_of_week, row)

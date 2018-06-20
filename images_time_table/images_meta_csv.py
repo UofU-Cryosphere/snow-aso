@@ -11,15 +11,10 @@ CSV_HEADER_ROW = [
 CSV_OUTPUT_FILE = 'images_metadata.csv'
 
 IMAGE_DIR = 'camera'
-SBET_DIR = 'SBET'
 
 
 def image_dir(base_path):
     return os.path.join(base_path, IMAGE_DIR)
-
-
-def sbet_dir(base_path):
-    return os.path.join(base_path, SBET_DIR)
 
 
 def write_output_file(base_path, images_data):
@@ -50,6 +45,6 @@ if __name__ == '__main__':
     )
     if arguments.old_eif_type:
         print('Adding IMU data')
-        sbet_query.get_image_imu_data(sbet_dir(basin_dir), image_list)
+        sbet_query.get_image_imu_data(basin_dir, image_list)
     print('Writing CSV file')
     write_output_file(basin_dir, image_list)
