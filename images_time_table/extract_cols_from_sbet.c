@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   size_t sz;
   int num_items;
   int outfile_path_length;
-  const char outfile_name[8] = "sbet.csv";
+  const char outfile_name[9] = "sbet.csv";
 
   sz = sizeof(record_type);
 
