@@ -47,7 +47,9 @@ class Agisoft:
         self.project = PhotoScan.app.document
         self.project.open(self.project_file_path + self.PROJECT_TYPE)
         self.chunk = self.project.chunk
-        self.images = self.list_images(image_folder, image_type)
+
+        self.image_type = image_type
+        self.images = self.list_images(image_folder)
 
     def setup_application(self):
         app = PhotoScan.Application()
@@ -77,24 +79,44 @@ class Agisoft:
             self.project_base_path, self.project_name(project_name)
         )
 
-    def list_images(self, source_folder, image_type):
+    def list_images(self, source_folder):
         source_folder = os.path.join(
             self.project_base_path, source_folder, '**', ''
         )
-        images = glob.glob(source_folder + '*' + image_type, recursive=True)
+        images = glob.glob(
+            source_folder + '*' + self.image_type, recursive=True
+        )
         if len(images) == 0:
-            print('**** EXIT - ' + image_type + ' no files found in directory:')
+            print('**** EXIT - ' + self.image_type +
+                  ' no files found in directory:')
             print('    ' + source_folder)
             sys.exit(-1)
         else:
             return images
 
+    def check_reference_file(self, file):
+        """
+        Check that the given reference file also has the image types loaded
+        with this project by comparing file endings.
+        """
+        with open(file, 'r') as file:
+            next(file) # skip header line
+            first_file = next(file).split(',')[0]
+            if not first_file.endswith(self.image_type):
+                print('**** Reference file has different '
+                      'source image types *****\n'
+                      '   given: ' + self.image_type + '\n'
+                      '   first image: ' + first_file)
+                sys.exit(-1)
+
     def align_images(self):
         self.chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
         self.chunk.addPhotos(self.images)
-        if os.path.exists(self.project_base_path + self.REFERENCE_FILE):
+        reference_file = self.project_base_path + self.REFERENCE_FILE
+        if os.path.exists(reference_file):
+            self.check_reference_file(reference_file)
             self.chunk.loadReference(
-                path=self.project_base_path + self.REFERENCE_FILE,
+                path=reference_file,
                 delimiter=',',
                 format=PhotoScan.ReferenceFormatCSV,
             )
