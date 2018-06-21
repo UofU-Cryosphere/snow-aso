@@ -51,8 +51,10 @@ class Agisoft:
 
     def setup_application(self):
         app = PhotoScan.Application()
-        # Use all available GPUs
-        app.gpu_mask = len(PhotoScan.app.enumGPUDevices())
+        # Use all available GPUs, needs a bit mask
+        number_of_gpus = len(PhotoScan.app.enumGPUDevices())
+        mask = int(str('1' * number_of_gpus).rjust(8, '0'), 2)
+        app.gpu_mask = mask
         # Allow usage of CPU and GPU
         app.cpu_enable = True
 
