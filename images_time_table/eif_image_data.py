@@ -7,7 +7,7 @@ import sbet_query
 
 
 def eif_files(base_path):
-    return os.path.join(base_path, '01_EIF/*.eif')
+    return os.path.join(base_path, '01_EIF/**/*.eif')
 
 
 def file_name_from_path(path):
@@ -35,7 +35,7 @@ def get_image_list(base_path, old_eif_style):
     images_time_table = []
     timestamp_index = images_meta_csv.CSV_HEADER_ROW.index('Timestamp')
 
-    for source_file in glob.glob(eif_files(base_path)):
+    for source_file in glob.glob(eif_files(base_path), recursive=True):
         if old_eif_style:
             with open(source_file) as input_file:
                 csv_reader = csv.reader(input_file, delimiter=' ')
