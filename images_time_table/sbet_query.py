@@ -17,8 +17,8 @@ SBET_DTYPES = {
     'X': numpy.float32,
     'Y': numpy.float32,
     'Z': numpy.float32,
-    'Pitch': numpy.float32,
     'Roll': numpy.float32,
+    'Pitch': numpy.float32,
     'Heading': numpy.float32,
 }
 
