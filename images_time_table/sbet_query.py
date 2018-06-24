@@ -55,9 +55,9 @@ def find_coordinates_for_row(sbet_table, gps_day_of_week, row):
     row[1] = math.degrees(min_diff.X) # SBET has radians for X and Y
     row[2] = math.degrees(min_diff.Y) #
     row[3] = min_diff.Z
-    row[4] = abs(math.degrees(min_diff.Heading))
-    row[5] = min_diff.Pitch
-    row[6] = min_diff.Roll
+    row[4] = math.degrees(min_diff.Heading)
+    row[5] = math.degrees(min_diff.Pitch)
+    row[6] = math.degrees(min_diff.Roll)
     row[7] = seconds_to_time_of_day(row[7])
 
 
