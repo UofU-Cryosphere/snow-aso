@@ -22,10 +22,12 @@
 # Enable CPU Hyper-threading
 export OMP_NUM_THREADS=$SLURM_NTASKS
 
+PROJECT_NAME='CO_20170221'
+
 module load photoscan
-photoscan.sh -platform offscreen -r $HOME/snow-aso/agisoft_workflow.py --base-path $HOME/scratch/CO_20170221 --project-name CO_tiff_20170221 > $HOME/scratch/CO_20170221.log
+photoscan.sh -platform offscreen -r $HOME/snow-aso/agisoft_workflow.py --base-path $HOME/scratch/CO_20170221 --project-name $PROJECT_NAME > $HOME/scratch/$PROJECT_NAME.log
 
 # Compress the results
 cd $HOME/scratch/CO_20170221
 
-tar -c --use-compress-program=pigz -f CO_tiff_20170221_2018_06_20.tgz CO_tiff_20170221_2018_06_20.*
+tar -c --use-compress-program=pigz -f $PROJECT_NAME.tgz PROJECT_NAME.*
