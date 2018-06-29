@@ -23,7 +23,7 @@ import PhotoScan
 #
 class Agisoft:
     EXPORT_IMAGE_TYPE = '.tif'
-    IMAGE_TYPE = '.tif'
+    IMPORT_IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
     PROJECT_REPORT = '.pdf'
     REFERENCE_FILE = 'images_metadata.csv'
@@ -174,7 +174,7 @@ parser.add_argument(
 parser.add_argument(
     '--image-type',
     help='Type of images - default to .tif',
-    default=Agisoft.IMAGE_TYPE
+    default=Agisoft.IMPORT_IMAGE_TYPE
 )
 
 # Example command line execution:
