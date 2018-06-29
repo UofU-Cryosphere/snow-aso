@@ -28,6 +28,8 @@ class Agisoft:
     PROJECT_REPORT = '.pdf'
     REFERENCE_FILE = 'images_metadata.csv'
 
+    PROJECTION = PhotoScan.CoordinateSystem("EPSG::4326")
+
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
@@ -111,7 +113,7 @@ class Agisoft:
                 sys.exit(-1)
 
     def align_images(self):
-        self.chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
+        self.chunk.crs = self.PROJECTION
         self.chunk.addPhotos(self.images)
         reference_file = self.project_base_path + self.REFERENCE_FILE
         if os.path.exists(reference_file):
@@ -152,12 +154,12 @@ class Agisoft:
         self.chunk.exportDem(
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=PhotoScan.CoordinateSystem("EPSG::4326"),
+            projection=self.PROJECTION,
         )
         self.chunk.exportOrthomosaic(
             path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=PhotoScan.CoordinateSystem("EPSG::4326"),
+            projection=self.PROJECTION,
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
