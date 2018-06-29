@@ -22,6 +22,7 @@ import PhotoScan
 #  file_name, lon, lat, elevation, yaw, pitch, roll
 #
 class Agisoft:
+    EXPORT_IMAGE_TYPE = '.tif'
     IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
     PROJECT_REPORT = '.pdf'
@@ -148,6 +149,16 @@ class Agisoft:
         self.chunk.buildOrthomosaic()
         self.project.save()
 
+        self.chunk.exportDem(
+            path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
+            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
+            projection=PhotoScan.CoordinateSystem("EPSG::4326"),
+        )
+        self.chunk.exportOrthomosaic(
+            path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
+            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
+            projection=PhotoScan.CoordinateSystem("EPSG::4326"),
+        )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
 
