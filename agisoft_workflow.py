@@ -145,14 +145,7 @@ class Agisoft:
         self.chunk.buildDenseCloud()
         self.project.save()
 
-    def process(self):
-        self.align_images()
-        self.build_dense_cloud()
-
-        self.chunk.buildDem()
-        self.chunk.buildOrthomosaic()
-        self.project.save()
-
+    def export_results(self):
         self.chunk.exportDem(
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
@@ -169,6 +162,16 @@ class Agisoft:
             dy=self.Y_1M_IN_DEG,
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
+
+    def process(self):
+        self.align_images()
+        self.build_dense_cloud()
+
+        self.chunk.buildDem()
+        self.chunk.buildOrthomosaic()
+        self.project.save()
+
+        self.export_results()
 
 
 parser = argparse.ArgumentParser()
