@@ -29,6 +29,8 @@ class Agisoft:
     REFERENCE_FILE = 'images_metadata.csv'
 
     PROJECTION = PhotoScan.CoordinateSystem("EPSG::4326")
+    X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4325
+    Y_1M_IN_DEG = 9.0094e-06   #
 
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
@@ -155,11 +157,16 @@ class Agisoft:
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
             projection=self.PROJECTION,
+            dx=self.X_1M_IN_DEG,
+            dy=self.Y_1M_IN_DEG,
         )
         self.chunk.exportOrthomosaic(
             path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
             projection=self.PROJECTION,
+            tiff_big=True,
+            dx=self.X_1M_IN_DEG,
+            dy=self.Y_1M_IN_DEG,
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
