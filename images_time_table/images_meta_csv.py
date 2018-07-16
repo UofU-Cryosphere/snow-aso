@@ -33,10 +33,14 @@ def write_output_file(base_path, images_data):
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--base-path', help='Root directory of the basin', required=True
+    '--base-path',
+    type=str,
+    help='Root directory of the basin',
+    required=True
 )
 parser.add_argument(
     '--old-eif-type',
+    type=bool,
     help='Flag to indicate old eif files with no IMU data',
     default=False,
 )
