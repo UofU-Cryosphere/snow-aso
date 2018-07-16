@@ -5,12 +5,18 @@ import os
 import eif_image_data
 import sbet_query
 
+TIMESTAMP_COLUMN = 'Timestamp'
 CSV_HEADER_ROW = [
-    'File_name', 'X', 'Y', 'Z', 'Yaw', 'Pitch', 'Roll', 'Timestamp'
+    'File_name', 'X', 'Y', 'Z', 'Yaw', 'Pitch', 'Roll', 'Time Diff',
+    TIMESTAMP_COLUMN
 ]
 CSV_OUTPUT_FILE = 'images_metadata.csv'
 
 IMAGE_DIR = 'camera'
+
+
+def timestamp_col_index():
+    return CSV_HEADER_ROW.index(TIMESTAMP_COLUMN)
 
 
 def image_dir(base_path):
