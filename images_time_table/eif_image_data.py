@@ -33,7 +33,7 @@ def sort_by_time(image_list, timestamp_index):
 
 def get_image_list(base_path, old_eif_style):
     images_time_table = []
-    timestamp_index = images_meta_csv.CSV_HEADER_ROW.index('Timestamp')
+    timestamp_index = images_meta_csv.timestamp_col_index()
 
     for source_file in glob.glob(eif_files(base_path), recursive=True):
         if old_eif_style:
@@ -56,6 +56,7 @@ def get_image_list(base_path, old_eif_style):
                     row['yaw[deg]'],
                     row['pitch[deg]'],
                     row['roll[deg]'],
+                    0, # 'Time Diff' values for new eif type are always 0
                     row['#time[s]'],
                 ])
 

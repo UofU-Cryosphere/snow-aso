@@ -5,6 +5,8 @@ import os
 import numpy
 import pandas
 
+import images_meta_csv
+
 DAY_IN_SECONDS = 86400
 GPS_EPOCH_SECONDS = 19
 
@@ -37,7 +39,9 @@ def seconds_to_time_of_day(seconds):
 
 
 def find_coordinates_for_row(sbet_table, gps_day_of_week, row):
-    row_time = gps_day_of_week + float(row[7]) + GPS_EPOCH_SECONDS
+    row_time = gps_day_of_week + \
+               float(row[images_meta_csv.timestamp_col_index()]) + \
+               GPS_EPOCH_SECONDS
 
     time = sbet_table[
         (sbet_table[GPS_COLUMN] > row_time - 0.1) &
@@ -58,7 +62,8 @@ def find_coordinates_for_row(sbet_table, gps_day_of_week, row):
     row[4] = math.degrees(min_diff.Heading)
     row[5] = math.degrees(min_diff.Pitch)
     row[6] = math.degrees(min_diff.Roll)
-    row[7] = seconds_to_time_of_day(row[7])
+    row[7] = row_time - min_diff[GPS_COLUMN]
+    row[8] = seconds_to_time_of_day(row[images_meta_csv.timestamp_col_index()])
 
 
 def get_image_imu_data(basin_path, image_list):
