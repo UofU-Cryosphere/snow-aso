@@ -44,16 +44,25 @@ parser.add_argument(
     help='Flag to indicate old eif files with no IMU data',
     default=False,
 )
+parser.add_argument(
+    '--query-sbet',
+    type=bool,
+    help='Flag to force querying the SBET file for new EIF file type',
+    default=False,
+)
 
 if __name__ == '__main__':
     arguments = parser.parse_args()
+    query_sbet = arguments.old_eif_type or arguments.query_sbet
 
     basin_dir = os.path.join(arguments.base_path, '')
     print('Getting image list')
     image_list = eif_image_data.get_image_list(
-        image_dir(arguments.base_path), arguments.old_eif_type
+        image_dir(arguments.base_path),
+        arguments.old_eif_type,
+        arguments.query_sbet
     )
-    if arguments.old_eif_type:
+    if query_sbet:
         print('Adding IMU data')
         sbet_query.get_image_imu_data(basin_dir, image_list)
     print('Writing CSV file')

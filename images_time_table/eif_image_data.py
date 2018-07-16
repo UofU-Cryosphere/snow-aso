@@ -20,34 +20,43 @@ def convert_timestamp(row, timestamp_index):
     )
 
 
-def add_entry_to_table(images_time_table, row, timestamp_index):
-    file_row = [None] * len(images_meta_csv.CSV_HEADER_ROW)
-    file_row[0] = file_name_from_path(row[1])
-    file_row[timestamp_index] = row[0]
-    images_time_table.append(file_row)
+def build_table_entry(row, old_eif_style):
+    table_entry = [None] * len(images_meta_csv.CSV_HEADER_ROW)
+
+    if old_eif_style:
+        table_entry[0] = file_name_from_path(row[1])
+        table_entry[images_meta_csv.timestamp_col_index()] = row[0]
+    else:
+        table_entry[0] = file_name_from_path(row['file'])
+        table_entry[images_meta_csv.timestamp_col_index()] = row['#time[s]']
+
+    return table_entry
 
 
-def sort_by_time(image_list, timestamp_index):
-    return sorted(image_list, key=lambda row: row[timestamp_index])
+def read_eif_file(file):
+    file_data = open(file).readlines()
+    file_data = file_data[3:] # First three lines have comments
+    return csv.DictReader(file_data, delimiter=';')
 
 
-def get_image_list(base_path, old_eif_style):
+def get_image_list(base_path, old_eif_type, query_sbet):
     images_time_table = []
-    timestamp_index = images_meta_csv.timestamp_col_index()
 
     for source_file in glob.glob(eif_files(base_path), recursive=True):
-        if old_eif_style:
+        if old_eif_type:
             with open(source_file) as input_file:
                 csv_reader = csv.reader(input_file, delimiter=' ')
-                [
-                    add_entry_to_table(images_time_table, row, timestamp_index)
+                images_time_table.extend([
+                    build_table_entry(row, old_eif_type)
                     for row in csv_reader
-                ]
-        else:
-            file_data = open(source_file).readlines()
-            file_data = file_data[3:] # First three lines have comments
-            csv_reader = csv.DictReader(file_data, delimiter=';')
-            for row in csv_reader:
+                ])
+        elif not old_eif_type and query_sbet:
+            images_time_table.extend([
+                build_table_entry(row, old_eif_type)
+                for row in read_eif_file(source_file)
+            ])
+        elif not old_eif_type:
+            for row in read_eif_file(source_file):
                 images_time_table.append([
                     file_name_from_path(row['file']),
                     row['longitude[deg]'],
@@ -60,9 +69,17 @@ def get_image_list(base_path, old_eif_style):
                     row['#time[s]'],
                 ])
 
-    images_time_table = sort_by_time(images_time_table, timestamp_index)
+    if images_time_table is None:
+        print('*** No images found in EIF source files ***')
+        return []
+    else:
+        images_time_table = sorted(
+            images_time_table,
+            key=lambda row: row[images_meta_csv.timestamp_col_index()]
+        )
 
-    if not old_eif_style:
-        [convert_timestamp(row, timestamp_index) for row in images_time_table]
+        if not old_eif_type and not query_sbet:
+            [convert_timestamp(row, images_meta_csv.timestamp_col_index())
+             for row in images_time_table]
 
-    return images_time_table
+        return images_time_table
