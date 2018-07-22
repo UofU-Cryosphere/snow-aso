@@ -29,6 +29,7 @@ def image_dir(base_path):
 
 def write_output_file(base_path, images_data):
     csv_file = os.path.join(base_path, IMAGE_DIR, CSV_OUTPUT_FILE)
+    print('Writing output to:\n    ' + str(csv_file))
     with open(csv_file, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow(CSV_HEADER_ROW)
