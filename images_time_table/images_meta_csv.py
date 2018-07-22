@@ -16,7 +16,11 @@ IMAGE_DIR = 'camera'
 
 
 def timestamp_col_index():
-    return CSV_HEADER_ROW.index(TIMESTAMP_COLUMN)
+    try:
+        return timestamp_col_index.value
+    except AttributeError:
+        timestamp_col_index.value = CSV_HEADER_ROW.index(TIMESTAMP_COLUMN)
+        return timestamp_col_index.value
 
 
 def image_dir(base_path):
