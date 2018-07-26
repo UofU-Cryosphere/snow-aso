@@ -29,8 +29,10 @@ class Agisoft:
     REFERENCE_FILE = 'images_metadata.csv'
 
     PROJECTION = PhotoScan.CoordinateSystem("EPSG::4326")
-    X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4325
+    X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
     Y_1M_IN_DEG = 9.0094e-06   #
+    X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
+    Y_5M_IN_DEG = 4.50396e-05  #
 
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
