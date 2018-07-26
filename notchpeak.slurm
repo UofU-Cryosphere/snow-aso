@@ -31,6 +31,6 @@ module load photoscan
 photoscan.sh -platform offscreen -r $HOME/snow-aso/agisoft_workflow.py --base-path $HOME/scratch/CO_20170221 --project-name $PROJECT_NAME > $HOME/scratch/$PROJECT_NAME.log
 
 # Compress the results
-cd $HOME/scratch/CO_20170221
+# cd $HOME/scratch/CO_20170221
 
-tar -c --use-compress-program=pigz -f $PROJECT_NAME.tgz PROJECT_NAME.*
+# tar -c --use-compress-program=pigz -f $PROJECT_NAME.tgz PROJECT_NAME.*
