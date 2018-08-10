@@ -9,6 +9,8 @@ ROOT_PATH = '/Volumes/warehouse/projects/UofU/ASO/SB_20170221/'
 LIDAR = ROOT_PATH + 'sfm-vs-lidar/CO_lidar_1m_32613_cut.tif'
 SFM = ROOT_PATH + 'Agisoft/CO_20170221_dem_1m_32613_cut.tif'
 
+NUM_BINS = 50
+
 
 def get_hill_shade(filename):
     hill_shade = gdal.DEMProcessing('', filename, 'hillshade', format='MEM')
@@ -34,6 +36,19 @@ def get_extent(file):
     y_max = gt[3]
 
     return x_min, x_max, y_min, y_max
+
+
+def text_box_args(x, y, text, **kwargs):
+    return dict(
+        x=x, y=y, s=text, ha='left', va='top',
+        bbox=dict(
+            boxstyle='square',
+            edgecolor='black',
+            facecolor='grey',
+            alpha=0.2,
+            pad=0.6
+        ),
+        **kwargs)
 
 
 def render_diff():
@@ -71,18 +86,7 @@ def render_diff():
     ax2.set_title('Differences in Meter', fontsize=20)
     ax2.set_xlabel('Meter', fontsize=16)
     ax2.set_aspect(0.000935)
-    ax2.text(
-        11, 24000,
-        box_text,
-        ha='left',
-        va='top',
-        fontsize=16,
-        bbox=dict(
-            boxstyle='square',
-            edgecolor='black',
-            facecolor='grey',
-            alpha=0.2, pad=0.6)
-    )
+    ax2.text(**text_box_args(11, 24000, box_text, fontsize=16))
 
     # Differences scale bar
     ip_2 = InsetPosition(ax1, [1.03, 0, 0.05, 1])
@@ -93,7 +97,6 @@ def render_diff():
 
     figure.set_size_inches(14, 8)
     plt.savefig(ROOT_PATH + '/dem_diff.png', bbox_inches='tight', dpi=200)
-    plt.show()
 
 
 def render_dems():
@@ -156,6 +159,36 @@ def render_dems():
     plt.savefig(ROOT_PATH + '/dem_compare.png', bbox_inches='tight', dpi=300)
 
 
+def render_hist():
+    sfm = get_raster_values(SFM)
+    lidar = get_raster_values(LIDAR)
+
+    ax1 = plt.subplot(2, 1, 1)
+    plt.hist(
+        lidar.compressed(), bins=NUM_BINS, alpha=0.5, label='lidar', color='b'
+    )
+    plt.xlim(lidar.min(), lidar.max())
+    plt.legend()
+    plt.title('Elevation distribution')
+    plt.ylabel('Count')
+    ax1.text(
+        **text_box_args(3380, 125000, 'Mean: ' + str(lidar.mean().round(2)))
+    )
+
+    ax2 = plt.subplot(2, 1, 2)
+    plt.hist(sfm.compressed(), bins=NUM_BINS, alpha=0.5, label='sfm', color='g')
+    plt.xlim(sfm.min(), sfm.max())
+    plt.legend()
+    plt.ylabel('Count')
+    plt.xlabel('Elevation')
+    ax2.text(**text_box_args(3380, 125000, 'Mean: ' + str(sfm.mean().round(2))))
+
+    plt.savefig(
+        ROOT_PATH + '/histogram_elevations.png', bbox_inches='tight', dpi=300
+    )
+
+
 if __name__ == '__main__':
-    render_dems()
-    # render_diff()
+    # render_dems()
+    render_diff()
+    # render_hist()
