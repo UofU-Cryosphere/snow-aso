@@ -57,7 +57,7 @@ def render_diff():
     figure, (ax1, cax, ax2) = plt.subplots(
         nrows=1,
         ncols=3,
-        gridspec_kw={"width_ratios":[1, 0.1, 1], 'height_ratios':[1]}
+        gridspec_kw={"width_ratios": [1, 0.1, 1], 'height_ratios': [1]}
     )
 
     sfm = get_raster_values(SFM)
@@ -76,7 +76,7 @@ def render_diff():
         vmax=diff.max(),
         extent=extent_sfm
     )
-    ax1.set_title('Difference', fontdict={ 'fontsize': 20 })
+    ax1.set_title('Difference', fontdict={'fontsize': 20})
 
     mean = diff.mean()
     sd = diff.std()
@@ -91,7 +91,7 @@ def render_diff():
     # Differences scale bar
     ip_2 = InsetPosition(ax1, [1.03, 0, 0.05, 1])
     cax.set_axes_locator(ip_2)
-    plt.colorbar(diff_plot, cax=cax).set_label(label='Meter',size=16)
+    plt.colorbar(diff_plot, cax=cax).set_label(label='Meter', size=16)
 
     plt.subplots_adjust(hspace=0.1)
 
@@ -105,7 +105,7 @@ def render_dems():
 
     figure, (ax1, ax2, cax) = plt.subplots(
         ncols=3,
-        gridspec_kw={"width_ratios":[1, 1, 0.1]}
+        gridspec_kw={"width_ratios": [1, 1, 0.1]}
     )
 
     axes = (ax1, ax2)
@@ -116,10 +116,10 @@ def render_dems():
         ax.set_facecolor('0.9')
 
     ax1.imshow(
-        get_hill_shade(LIDAR), cmap='gray', clim=(1,255), extent=extent_lidar
+        get_hill_shade(LIDAR), cmap='gray', clim=(1, 255), extent=extent_lidar
     )
     ax2.imshow(
-        get_hill_shade(SFM), cmap='gray', clim=(1,255), extent=extent_sfm
+        get_hill_shade(SFM), cmap='gray', clim=(1, 255), extent=extent_sfm
     )
 
     sfm = get_raster_values(SFM)
@@ -135,7 +135,7 @@ def render_dems():
         vmax=vmax,
         extent=extent_lidar
     )
-    ax1.set_title('Lidar', fontdict={ 'fontsize': 24 })
+    ax1.set_title('Lidar', fontdict={'fontsize': 24})
 
     image = ax2.imshow(
         sfm,
@@ -146,12 +146,12 @@ def render_dems():
         extent=extent_sfm
     )
     ax2.set_yticklabels([])
-    ax2.set_title('SfM', fontdict={ 'fontsize': 24 })
+    ax2.set_title('SfM', fontdict={'fontsize': 24})
 
     # Lidar and SfM scale bar
     ip_1 = InsetPosition(ax2, [1.03, 0, 0.05, 1])
     cax.set_axes_locator(ip_1)
-    plt.colorbar(image, cax=cax).set_label(label='Meter',size=16)
+    plt.colorbar(image, cax=cax).set_label(label='Meter', size=16)
 
     plt.subplots_adjust(hspace=0.1)
 

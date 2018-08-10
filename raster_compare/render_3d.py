@@ -11,11 +11,11 @@ SFM = ROOT_PATH + 'Agisoft/CO_20170221_dem_1m_32613_cut.tif'
 
 
 def get_mesh_grid(gt, data):
-    x_res = 1 # gt[1]
-    y_res = 1 # gt[5]
+    x_res = 1  # gt[1]
+    y_res = 1  # gt[5]
 
     return np.meshgrid(
-        np.arange(gt[0], gt[0] + data.shape[1] * x_res, x_res), # X
+        np.arange(gt[0], gt[0] + data.shape[1] * x_res, x_res),  # X
         np.arange(gt[3], gt[3] + data.shape[0] * y_res, y_res)  # Y
     )
 
