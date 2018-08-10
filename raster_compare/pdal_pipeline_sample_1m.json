@@ -1,0 +1,15 @@
+// Produce DEM from lidar sampled down to 1m resolution
+{
+    "pipeline": [
+        "/Volumes/warehouse/projects/UofU/ASO/SB_20170221/lidar/CO_merge.laz",
+        {
+            "type": filters.sample,
+            "radius": 1m
+        },
+        {
+            "filename":"/Volumes/warehouse/projects/UofU/ASO/SB_20170221/sfm-vs-lidar/CO_merge_1m.tif",
+            "resolution": 1,
+            "type": "writers.gdal"
+        }
+    ]
+}
