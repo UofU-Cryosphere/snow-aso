@@ -1,5 +1,6 @@
 import gdal
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 
 from matplotlib import cm
@@ -53,6 +54,7 @@ def text_box_args(x, y, text, **kwargs):
         **kwargs)
 
 
+# Plot differences between rasters and show histogram of the differences
 def render_diff():
     extent_sfm = get_extent(gdal.Open(SFM))
 
@@ -70,12 +72,14 @@ def render_diff():
     diff.mask[diff.data > 20] = 20
     diff.mask[diff.data < -10] = -10
 
+    bounds = np.array([-20, -10, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 10, 20])
+    norm = colors.BoundaryNorm(boundaries=bounds, ncolors=256)
+
     diff_plot = ax1.imshow(
         diff,
-        cmap=cm.get_cmap('tab20c'),
-        alpha=0.3,
-        vmin=-diff.min(),
-        vmax=diff.max(),
+        cmap=cm.get_cmap('seismic'),
+        norm=norm,
+        alpha=0.6,
         extent=extent_sfm
     )
     ax1.set_title('Difference', fontdict={'fontsize': 20})
@@ -233,6 +237,7 @@ def render_compare_hist():
 
 
 if __name__ == '__main__':
-    # render_dems()
+    render_dems()
     render_diff()
-    # render_hist()
+    render_hist()
+    render_compare_hist()
