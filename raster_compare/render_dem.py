@@ -188,6 +188,26 @@ def render_hist():
     )
 
 
+# Plot elevation histograms per bin width side by side
+def render_compare_hist():
+    sfm = get_raster_values(SFM)
+    lidar = get_raster_values(LIDAR)
+
+    plt.subplot(1, 1, 1)
+    plt.hist(
+        [lidar.compressed(), sfm.compressed()],
+        label=['lidar', 'sfm'],
+        color=['g', 'b'],
+        bins=NUM_BINS,
+        alpha=0.4
+    )
+    plt.legend(loc='upper right')
+
+    plt.savefig(
+        ROOT_PATH + '/compare_elevations.png', bbox_inches='tight', dpi=300
+    )
+
+
 if __name__ == '__main__':
     # render_dems()
     render_diff()
