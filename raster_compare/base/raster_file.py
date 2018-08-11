@@ -15,7 +15,7 @@ class RasterFile(object):
     @property
     def extent(self):
         if self._extent is None:
-            gt = self.file.GetGeoTransform()
+            gt = self.geo_transform()
             x_min = gt[0]
             x_max = gt[0] + self.file.RasterXSize / gt[1]
             y_min = gt[3] + self.file.RasterYSize / gt[5]
@@ -58,3 +58,6 @@ class RasterFile(object):
         if self._min_elevation is None:
             self._min_elevation = self.raster_data.min()
         return self._min_elevation
+
+    def geo_transform(self):
+        return self.file.GetGeoTransform()
