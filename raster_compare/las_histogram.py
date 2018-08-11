@@ -1,9 +1,8 @@
 import pdal
 
 from matplotlib import pyplot
-
-NUM_BINS = 50
-ROOT_PATH = '/Volumes/warehouse/projects/UofU/ASO/SB_20170221/'
+from base.common import ROOT_PATH
+from base.plot_defaults import NUM_BINS
 
 
 def read_laz():
@@ -34,7 +33,7 @@ def make_plot():
     pyplot.xlabel('Elevation')
     pyplot.title('Point cloud elevations')
 
-    pyplot.savefig(ROOT_PATH + '/histogram.png')
+    pyplot.savefig(ROOT_PATH + '/las_histogram.png')
 
 
 if __name__ == '__main__':
