@@ -1,9 +1,8 @@
-from base.raster_file import RasterFile
+from base.raster_difference import RasterDifference
 
 
 class PlotBase(object):
     NUM_BINS = 50
-    BIN_WIDTH = 10  # 10m
 
     TITLE_FONT_SIZE = 20
     LABEL_FONT_SIZE = 16
@@ -22,8 +21,18 @@ class PlotBase(object):
     )
 
     def __init__(self, lidar, sfm):
-        self.lidar = lidar if type(lidar) is RasterFile else RasterFile(lidar)
-        self.sfm = sfm if type(sfm) is RasterFile else RasterFile(sfm)
+        self.raster_difference = RasterDifference(lidar, sfm)
+
+    @property
+    def lidar(self):
+        return self.raster_difference.lidar
+
+    @property
+    def sfm(self):
+        return self.raster_difference.sfm
+
+    def __getattr__(self, name):
+        return getattr(self.raster_difference, name)
 
     @staticmethod
     def text_box_args(x, y, text, **kwargs):
