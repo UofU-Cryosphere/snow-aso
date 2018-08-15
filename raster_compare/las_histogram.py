@@ -2,7 +2,7 @@ import pdal
 
 from matplotlib import pyplot
 from base.common import ROOT_PATH
-from base.plot_defaults import NUM_BINS
+from base.plot_base import PlotBase
 
 
 def read_laz():
@@ -26,7 +26,9 @@ def read_laz():
 
 def make_plot():
     lidar = read_laz()[0]
-    pyplot.hist(lidar['Z'], bins=NUM_BINS, alpha=0.5, label='lidar', color='g')
+    pyplot.hist(
+        lidar['Z'], bins=PlotBase.NUM_BINS, alpha=0.5, label='lidar', color='g'
+    )
     pyplot.xlim(lidar['Z'].min(), lidar['Z'].max())
     pyplot.xlim(lidar['Z'].min(), lidar['Z'].max())
     pyplot.ylabel('Count')
