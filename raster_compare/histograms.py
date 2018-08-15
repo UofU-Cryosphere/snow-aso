@@ -31,15 +31,13 @@ class Histogram(PlotBase):
         ax1.set_title('Elevation distribution', **PlotBase.title_opts())
         ax1.set_ylabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax1,
-            self.BOX_TEXT.format(self.lidar.elevation.mean().round(2))
+            ax1, self.BOX_TEXT.format(self.lidar.elevation.mean().round(2))
         )
 
         ax2.set_title('Elevation distribution', **PlotBase.title_opts())
         ax2.set_ylabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax2,
-            self.BOX_TEXT.format(self.sfm.elevation.mean().round(2))
+            ax2, self.BOX_TEXT.format(self.sfm.elevation.mean().round(2))
         )
 
         ax3.set_title(
@@ -49,8 +47,7 @@ class Histogram(PlotBase):
         ax3.set_ylabel('Percent', **PlotBase.label_opts())
         ax3.set_xlabel('Elevation', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax3,
-            self.BOX_TEXT.format(str(percent.mean().round(4)))
+            ax3, self.BOX_TEXT.format(percent.mean().round(4))
         )
 
     def render_slope(self, ax1, ax2, ax3, percent):
@@ -63,8 +60,7 @@ class Histogram(PlotBase):
         ax2.set_title('Slope distribution', **PlotBase.title_opts())
         ax2.set_ylabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax2,
-            self.BOX_TEXT.format(self.sfm.slope.mean().round(2))
+            ax2, self.BOX_TEXT.format(self.sfm.slope.mean().round(2))
         )
 
         ax3.set_title(
@@ -74,23 +70,20 @@ class Histogram(PlotBase):
         ax3.set_ylabel('Percent', **PlotBase.label_opts())
         ax3.set_xlabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax3,
-            self.BOX_TEXT.format(str(percent.mean().round(2)))
+            ax3, self.BOX_TEXT.format(percent.mean().round(2))
         )
 
     def render_aspect(self, ax1, ax2, ax3, percent):
         ax1.set_title('Aspect distribution', **PlotBase.title_opts())
         ax1.set_ylabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax1,
-            self.BOX_TEXT.format(self.lidar.aspect.mean().round(2))
+            ax1, self.BOX_TEXT.format(self.lidar.aspect.mean().round(2))
         )
 
         ax2.set_title('Aspect distribution', **PlotBase.title_opts())
         ax2.set_ylabel('Count', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax2,
-            self.BOX_TEXT.format(self.sfm.aspect.mean().round(2))
+            ax2, self.BOX_TEXT.format(self.sfm.aspect.mean().round(2))
         )
 
         ax3.set_title(
@@ -100,8 +93,7 @@ class Histogram(PlotBase):
         ax3.set_ylabel('Percent', **PlotBase.label_opts())
         ax3.set_xlabel('Degree', **PlotBase.label_opts())
         PlotBase.add_to_legend(
-            ax3,
-            self.BOX_TEXT.format(str(percent.mean().round(2)))
+            ax3, self.BOX_TEXT.format(percent.mean().round(2))
         )
 
     # Plot histogram for given raster attribute and
@@ -136,7 +128,7 @@ class Histogram(PlotBase):
         percent = (h2[0] - h1[0]) / h1[0]
 
         ax3 = plt.subplot(3, 1, 3)
-        plt.bar(bins[:-1],
+        plt.bar(bins[:-1],  # Remove the upper boundary from bins
                 height=percent,
                 edgecolor='black',
                 label=raster_attr.capitalize(),
