@@ -19,16 +19,16 @@ def get_mesh_grid(gt, shape):
 
 
 def render_3d(source):
-    x, y = get_mesh_grid(source.geo_transform(), source.raster_data.shape)
+    x, y = get_mesh_grid(source.geo_transform(), source.elevation.shape)
 
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
 
     surface = ax.plot_surface(
-        x, y, source.raster_data.filled(np.nan),
+        x, y, source.elevation.filled(np.nan),
         cmap=cm.get_cmap('jet'),
         linewidth=0,
-        vmin=source.min_elevation,
-        vmax=source.max_elevation,
+        vmin=source.elevation.min(),
+        vmax=source.elevation.max(),
         alpha=0.7,
     )
 

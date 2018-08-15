@@ -31,18 +31,18 @@ class DemCompare(PlotBase):
             self.sfm.hill_shade, extent=self.sfm.extent, **hillshade_opts
         )
 
-        v_min = min(self.lidar.min_elevation, self.sfm.min_elevation)
-        v_max = min(self.lidar.max_elevation, self.sfm.max_elevation)
-
         im_opts = dict(
-            cmap=cm.get_cmap('jet'), alpha=0.3, vmin=v_min, vmax=v_max
+            cmap=cm.get_cmap('jet'),
+            alpha=0.3,
+            vmin=self.min_for_attr('elevation'),
+            vmax=self.max_for_attr('elevation'),
         )
 
-        ax1.imshow(self.lidar.raster_data, extent=self.lidar.extent, **im_opts)
+        ax1.imshow(self.lidar.elevation, extent=self.lidar.extent, **im_opts)
         ax1.set_title(PlotBase.LIDAR_LABEL, **PlotBase.title_opts())
 
         image = ax2.imshow(
-            self.sfm.raster_data, extent=self.sfm.extent, **im_opts
+            self.sfm.elevation, extent=self.sfm.extent, **im_opts
         )
         ax2.set_yticklabels([])
         ax2.set_title(PlotBase.SFM_LABEL, **PlotBase.title_opts())

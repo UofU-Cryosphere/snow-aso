@@ -1,4 +1,5 @@
 from base.raster_difference import RasterDifference
+import matplotlib.patches as mpatches
 
 
 class PlotBase(object):
@@ -54,3 +55,11 @@ class PlotBase(object):
     @staticmethod
     def output_defaults(**kwargs):
         return dict(bbox_inches='tight', dpi=PlotBase.DEFAULT_DPI, **kwargs)
+
+    @staticmethod
+    def add_to_legend(axes, text):
+        mean = mpatches.Patch(color='none', label=text)
+        handles, labels = axes.get_legend_handles_labels()
+        handles.append(mean)
+        axes.legend(handles=handles)
+

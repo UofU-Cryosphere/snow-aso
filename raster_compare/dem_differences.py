@@ -30,18 +30,13 @@ class DemDifferences(PlotBase):
         )
         figure.set_size_inches(14, 8)
 
-        diff = self.sfm.raster_data - self.lidar.raster_data
-
-        diff.mask[diff.data > 20] = 20
-        diff.mask[diff.data < -10] = -10
-
         bounds = np.array(
             [-20, -10, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 10, 20]
         )
         norm = colors.BoundaryNorm(boundaries=bounds, ncolors=256)
 
         diff_plot = ax1.imshow(
-            diff,
+            self.raster_difference.elevation,
             cmap=cm.get_cmap('PuOr'),
             norm=norm,
             alpha=0.8,
@@ -49,11 +44,11 @@ class DemDifferences(PlotBase):
         )
         ax1.set_title('Difference', **PlotBase.title_opts())
 
-        ax2.hist(diff.compressed(), bins='auto')
+        ax2.hist(self.raster_difference.elevation.compressed(), bins='auto')
         ax2.set_title('Differences in Meter', **PlotBase.title_opts())
         ax2.set_xlabel('Meter', **PlotBase.label_opts())
         ax2.set_aspect(0.000935)
-        DemDifferences.add_stats_box(ax2, diff)
+        DemDifferences.add_stats_box(ax2, self.raster_difference.elevation)
 
         # Differences scale bar
         ip_2 = InsetPosition(ax1, [1.03, 0, 0.05, 1])

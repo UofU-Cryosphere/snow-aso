@@ -7,10 +7,10 @@ class RasterFile(object):
         self.filename = filename
         self.file = gdal.Open(filename)
         self._extent = None
-        self._data = None
-        self._max_elevation = None
-        self._min_elevation = None
+        self._elevation = None
         self._hillshade = None
+        self._slope = None
+        self._aspect = None
 
     @property
     def extent(self):
@@ -38,26 +38,40 @@ class RasterFile(object):
         return self._hillshade
 
     @property
-    def raster_data(self):
-        if self._data is None:
+    def slope(self):
+        if self._slope is None:
+            slope = gdal.DEMProcessing(
+                '', self.filename, 'slope', format='MEM'
+            )
+            band = slope.GetRasterBand(1)
+            self._slope = np.ma.masked_values(
+                band.ReadAsArray(), band.GetNoDataValue(), copy=False
+            )
+            del slope
+        return self._slope
+
+    @property
+    def aspect(self):
+        if self._aspect is None:
+            aspect = gdal.DEMProcessing(
+                '', self.filename, 'aspect', format='MEM'
+            )
+            band = aspect.GetRasterBand(1)
+            self._aspect = np.ma.masked_values(
+                band.ReadAsArray(), band.GetNoDataValue(), copy=False
+            )
+            del aspect
+        return self._aspect
+
+    @property
+    def elevation(self):
+        if self._elevation is None:
             band = self.file.GetRasterBand(1)
-            self._data = np.ma.masked_values(
+            self._elevation = np.ma.masked_values(
                 band.ReadAsArray(), band.GetNoDataValue(), copy=False
             )
             del band
-        return self._data
-
-    @property
-    def max_elevation(self):
-        if self._max_elevation is None:
-            self._max_elevation = self.raster_data.max()
-        return self._max_elevation
-
-    @property
-    def min_elevation(self):
-        if self._min_elevation is None:
-            self._min_elevation = self.raster_data.min()
-        return self._min_elevation
+        return self._elevation
 
     def geo_transform(self):
         return self.file.GetGeoTransform()
