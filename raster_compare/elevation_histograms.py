@@ -62,19 +62,22 @@ def render_stacked(lidar, sfm):
     plt.legend()
     add_stats_box(ax2, sfm.raster_data)
 
-    diff = (h2[0] - h1[0])
+    percent = (h2[0] - h1[0])/h1[0]
 
-    plt.subplot(3, 1, 3)
+    ax3 = plt.subplot(3, 1, 3)
     plt.bar(bins[:-1],
-            height=diff,
+            height=percent,
             edgecolor='black',
             width=BIN_WIDTH,
             color='red',
             align='edge')
     plt.xlim(v_min, v_max)
     plt.title('Differences per elevation in 10 m intervals', **title_opts())
-    plt.ylabel('Count', **label_opts())
+    plt.ylabel('Percent', **label_opts())
     plt.xlabel('Elevation', **label_opts())
+    ax3.text(
+        **text_box_args(4000, -0.3, 'Mean: ' + str(percent.mean().round(4)))
+    )
 
 
 def plot(lidar, sfm, style='stacked'):
