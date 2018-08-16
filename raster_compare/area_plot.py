@@ -5,11 +5,18 @@ from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 from base.common import ROOT_PATH, SFM, LIDAR
 from base.plot_base import PlotBase
 
-OUTPUT_FILE = ROOT_PATH + '/dem_compare.png'
+OUTPUT_FILE = ROOT_PATH + '/{0}_comparison.png'
 
 
-class DemCompare(PlotBase):
-    def plot(self):
+class AreaPlot(PlotBase):
+    TYPES = ['elevation', 'slope', 'aspect']
+    SCALE_BAR_LABEL = {
+        'aspect': 'Degree',
+        'elevation': 'Meter',
+        'slope': 'Angle',
+    }
+
+    def plot(self, raster_attr):
         figure, (ax1, ax2, cax) = plt.subplots(
             ncols=3,
             gridspec_kw={"width_ratios": [1, 1, 0.1]}
@@ -34,15 +41,19 @@ class DemCompare(PlotBase):
         im_opts = dict(
             cmap=cm.get_cmap('jet'),
             alpha=0.3,
-            vmin=self.min_for_attr('elevation'),
-            vmax=self.max_for_attr('elevation'),
+            vmin=self.min_for_attr(raster_attr),
+            vmax=self.max_for_attr(raster_attr),
         )
 
-        ax1.imshow(self.lidar.elevation, extent=self.lidar.extent, **im_opts)
+        ax1.imshow(
+            getattr(self.lidar, raster_attr),
+            extent=self.lidar.extent,
+            **im_opts
+        )
         ax1.set_title(PlotBase.LIDAR_LABEL, **PlotBase.title_opts())
 
         image = ax2.imshow(
-            self.sfm.elevation, extent=self.sfm.extent, **im_opts
+            getattr(self.sfm, raster_attr), extent=self.sfm.extent, **im_opts
         )
         ax2.set_yticklabels([])
         ax2.set_title(PlotBase.SFM_LABEL, **PlotBase.title_opts())
@@ -50,14 +61,19 @@ class DemCompare(PlotBase):
         # Lidar and SfM scale bar
         ip_1 = InsetPosition(ax2, [1.03, 0, 0.05, 1])
         cax.set_axes_locator(ip_1)
-        plt.colorbar(image, cax=cax) \
-            .set_label(label='Meter', size=PlotBase.LABEL_FONT_SIZE)
+        scale_bar = plt.colorbar(image, cax=cax)
+        scale_bar.set_label(
+            label=self.SCALE_BAR_LABEL[raster_attr],
+            size=PlotBase.LABEL_FONT_SIZE
+        )
 
         plt.subplots_adjust(hspace=0.1)
 
-        plt.savefig(OUTPUT_FILE, **PlotBase.output_defaults())
+        plt.savefig(
+            OUTPUT_FILE.format(raster_attr), **PlotBase.output_defaults()
+        )
 
 
 # Plot DEMs side by side
 if __name__ == '__main__':
-    DemCompare(LIDAR, SFM).plot()
+    [AreaPlot(LIDAR, SFM).plot(attr) for attr in AreaPlot.TYPES]
