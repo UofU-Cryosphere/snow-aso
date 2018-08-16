@@ -119,7 +119,7 @@ class Histogram(PlotBase):
         plt.bar(bins[:-1],  # Remove the upper boundary from bins
                 height=percent,
                 edgecolor='black',
-                label=raster_attr.capitalize(),
+                label='Percent',
                 width=RasterDifference.BIN_WIDTH,
                 color='red',
                 align='edge')
