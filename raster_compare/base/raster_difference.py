@@ -45,5 +45,9 @@ class RasterDifference(object):
         )
 
     @staticmethod
+    def percentage_mean(diff, count):
+        return (np.absolute(diff).sum() / count) * 100
+
+    @staticmethod
     def round_to_tenth(elevation):
         return elevation - (elevation % 10)
