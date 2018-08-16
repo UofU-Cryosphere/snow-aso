@@ -39,7 +39,7 @@ class Histogram(PlotBase):
 
         ax2.set_title('Elevation distribution', **PlotBase.title_opts())
         ax2.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax2, self.lidar.elevation.mean())
+        Histogram.show_mean(ax2, self.sfm.elevation.mean())
 
         ax3.set_title(
             'Differences per elevation in 10 m intervals',
@@ -56,7 +56,7 @@ class Histogram(PlotBase):
 
         ax2.set_title('Slope distribution', **PlotBase.title_opts())
         ax2.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax2, self.lidar.slope.mean())
+        Histogram.show_mean(ax2, self.sfm.slope.mean())
 
         ax3.set_title(
             'Differences per slope angle in 10 degree intervals',
