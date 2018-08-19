@@ -40,6 +40,9 @@ class Agisoft:
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
+    REPROJECTION_ERROR_THRESHOLD = 0.3
+    REPROJECTION_ACCURACY_THRESHOLD = 10
+
     def __init__(self, base_path, project_name, image_folder, image_type):
         # Ensure trailing slash
         self.project_base_path = os.path.join(base_path, '')
@@ -156,6 +159,24 @@ class Agisoft:
         self.chunk.alignCameras()
         self.project.save()
 
+    def remove_by_criteria(self, criteria, threshold):
+        point_cloud_filter = PhotoScan.PointCloud.Filter()
+        point_cloud_filter.init(self.chunk, criterion=criteria)
+        point_cloud_filter.removePoints(threshold)
+
+    def filter_sparse_cloud(self):
+        # Points that statistical error in point placement exceed threshold
+        self.remove_by_criteria(
+            PhotoScan.PointCloud.Filter.ReprojectionError,
+            self.REPROJECTION_ERROR_THRESHOLD,
+        )
+        # Points that accuracy of point placement from local neighbor points
+        # exceed threshold
+        self.remove_by_criteria(
+            PhotoScan.PointCloud.Filter.ProjectionAccuracy,
+            self.REPROJECTION_ACCURACY_THRESHOLD,
+        )
+
     def build_dense_cloud(self):
         self.chunk.buildDepthMaps(
             quality=PhotoScan.HighQuality,
@@ -184,6 +205,7 @@ class Agisoft:
 
     def process(self, export_results):
         self.align_images()
+        self.filter_sparse_cloud()
         self.build_dense_cloud()
 
         self.chunk.buildDem()
