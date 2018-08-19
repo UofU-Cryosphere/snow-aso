@@ -36,6 +36,7 @@ class Agisoft:
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
+    IMAGE_ACCURACY_MATCHING = PhotoScan.HighAccuracy
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
@@ -118,8 +119,8 @@ class Agisoft:
         Check that the given reference file also has the image types loaded
         with this project by comparing file endings.
         """
-        with open(file, 'r') as file:
-            next(file) # skip header line
+        with open(file) as file:
+            next(file)  # skip header line
             first_file = next(file).split(',')[0]
             if not first_file.endswith(self.image_type):
                 print('**** Reference file has different '
@@ -128,9 +129,7 @@ class Agisoft:
                       '   first image: ' + first_file)
                 sys.exit(-1)
 
-    def align_images(self):
-        self.chunk.crs = self.WGS_84
-        self.chunk.addPhotos(self.images)
+    def load_image_references(self):
         reference_file = self.project_base_path + self.REFERENCE_FILE
         if os.path.exists(reference_file):
             self.check_reference_file(reference_file)
@@ -139,10 +138,16 @@ class Agisoft:
                 delimiter=',',
                 format=PhotoScan.ReferenceFormatCSV,
             )
+            return True
         else:
-            print('**** WARNING - No reference file found ****')
+            print('**** EXIT - No reference file found ****')
+            sys.exit(-1)
+
+    def align_images(self):
+        self.chunk.addPhotos(self.images)
+        self.load_image_references()
         self.chunk.matchPhotos(
-            accuracy=PhotoScan.HighAccuracy,
+            accuracy=self.IMAGE_ACCURACY_MATCHING,
             generic_preselection=True,
             reference_preselection=False,
             keypoint_limit=self.KEYPOINT_LIMIT,
