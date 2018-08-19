@@ -43,6 +43,8 @@ class Agisoft:
     REPROJECTION_ERROR_THRESHOLD = 0.3
     REPROJECTION_ACCURACY_THRESHOLD = 10
 
+    DENSE_POINT_QUALITY = PhotoScan.HighQuality
+
     def __init__(self, base_path, project_name, image_folder, image_type):
         # Ensure trailing slash
         self.project_base_path = os.path.join(base_path, '')
@@ -179,7 +181,7 @@ class Agisoft:
 
     def build_dense_cloud(self):
         self.chunk.buildDepthMaps(
-            quality=PhotoScan.HighQuality,
+            quality=self.DENSE_POINT_QUALITY,
             filter=PhotoScan.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
