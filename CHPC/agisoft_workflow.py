@@ -55,7 +55,9 @@ class Agisoft:
 
         self.project = PhotoScan.app.document
         self.project.open(self.project_file_path + self.PROJECT_TYPE)
+
         self.chunk = self.project.chunk
+        self.setup_camera()
 
         self.image_type = image_type
         self.images = self.list_images(image_folder)
@@ -102,6 +104,14 @@ class Agisoft:
             sys.exit(-1)
         else:
             return images
+
+    def setup_camera(self):
+        # Imported camera coordinates projection
+        self.chunk.crs = self.WGS_84
+        # Accuracy for camera position in m
+        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
+        # Accuracy for camera orientations in degree
+        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
 
     def check_reference_file(self, file):
         """
