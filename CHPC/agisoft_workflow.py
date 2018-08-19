@@ -36,8 +36,21 @@ class Agisoft:
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
+    IMAGE_ACCURACY_MATCHING = PhotoScan.HighAccuracy
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
+
+    REPROJECTION_ERROR_THRESHOLD = 0.3
+    REPROJECTION_ACCURACY_THRESHOLD = 10
+
+    DENSE_POINT_QUALITY = PhotoScan.HighQuality
+
+    EXPORT_DEFAULTS = dict(
+        image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
+        projection=WGS_84,
+        dx=X_1M_IN_DEG,
+        dy=Y_1M_IN_DEG,
+    )
 
     def __init__(self, base_path, project_name, image_folder, image_type):
         # Ensure trailing slash
@@ -55,7 +68,9 @@ class Agisoft:
 
         self.project = PhotoScan.app.document
         self.project.open(self.project_file_path + self.PROJECT_TYPE)
+
         self.chunk = self.project.chunk
+        self.setup_camera()
 
         self.image_type = image_type
         self.images = self.list_images(image_folder)
@@ -103,13 +118,21 @@ class Agisoft:
         else:
             return images
 
+    def setup_camera(self):
+        # Imported camera coordinates projection
+        self.chunk.crs = self.WGS_84
+        # Accuracy for camera position in m
+        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
+        # Accuracy for camera orientations in degree
+        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
+
     def check_reference_file(self, file):
         """
         Check that the given reference file also has the image types loaded
         with this project by comparing file endings.
         """
-        with open(file, 'r') as file:
-            next(file) # skip header line
+        with open(file) as file:
+            next(file)  # skip header line
             first_file = next(file).split(',')[0]
             if not first_file.endswith(self.image_type):
                 print('**** Reference file has different '
@@ -118,9 +141,7 @@ class Agisoft:
                       '   first image: ' + first_file)
                 sys.exit(-1)
 
-    def align_images(self):
-        self.chunk.crs = self.WGS_84
-        self.chunk.addPhotos(self.images)
+    def load_image_references(self):
         reference_file = self.project_base_path + self.REFERENCE_FILE
         if os.path.exists(reference_file):
             self.check_reference_file(reference_file)
@@ -129,21 +150,45 @@ class Agisoft:
                 delimiter=',',
                 format=PhotoScan.ReferenceFormatCSV,
             )
+            return True
         else:
-            print('**** WARNING - No reference file found ****')
+            print('**** EXIT - No reference file found ****')
+            sys.exit(-1)
+
+    def align_images(self):
+        self.chunk.addPhotos(self.images)
+        self.load_image_references()
         self.chunk.matchPhotos(
-            accuracy=PhotoScan.HighAccuracy,
+            accuracy=self.IMAGE_ACCURACY_MATCHING,
             generic_preselection=True,
-            reference_preselection=False,
+            reference_preselection=True,
             keypoint_limit=self.KEYPOINT_LIMIT,
             tiepoint_limit=self.TIEPOINT_LIMIT,
         )
         self.chunk.alignCameras()
         self.project.save()
 
+    def remove_by_criteria(self, criteria, threshold):
+        point_cloud_filter = PhotoScan.PointCloud.Filter()
+        point_cloud_filter.init(self.chunk, criterion=criteria)
+        point_cloud_filter.removePoints(threshold)
+
+    def filter_sparse_cloud(self):
+        # Points that statistical error in point placement exceed threshold
+        self.remove_by_criteria(
+            PhotoScan.PointCloud.Filter.ReprojectionError,
+            self.REPROJECTION_ERROR_THRESHOLD,
+        )
+        # Points that accuracy of point placement from local neighbor points
+        # exceed threshold
+        self.remove_by_criteria(
+            PhotoScan.PointCloud.Filter.ProjectionAccuracy,
+            self.REPROJECTION_ACCURACY_THRESHOLD,
+        )
+
     def build_dense_cloud(self):
         self.chunk.buildDepthMaps(
-            quality=PhotoScan.HighQuality,
+            quality=self.DENSE_POINT_QUALITY,
             filter=PhotoScan.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
@@ -152,23 +197,18 @@ class Agisoft:
     def export_results(self):
         self.chunk.exportDem(
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
-            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.WGS_84,
-            dx=self.X_1M_IN_DEG,
-            dy=self.Y_1M_IN_DEG,
+            **self.EXPORT_DEFAULTS
         )
         self.chunk.exportOrthomosaic(
             path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
-            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.WGS_84,
             tiff_big=True,
-            dx=self.X_1M_IN_DEG,
-            dy=self.Y_1M_IN_DEG,
+            **self.EXPORT_DEFAULTS
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
     def process(self, export_results):
         self.align_images()
+        self.filter_sparse_cloud()
         self.build_dense_cloud()
 
         self.chunk.buildDem()
