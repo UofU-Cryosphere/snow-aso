@@ -28,7 +28,9 @@ class Agisoft:
     PROJECT_REPORT = '.pdf'
     REFERENCE_FILE = 'images_metadata.csv'
 
-    PROJECTION = PhotoScan.CoordinateSystem("EPSG::4326")
+    WGS_84 = PhotoScan.CoordinateSystem("EPSG::4326")
+    UTM_CA = PhotoScan.CoordinateSystem("EPSG::32611")
+    UTM_CO = PhotoScan.CoordinateSystem("EPSG::32613")
     X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
     Y_1M_IN_DEG = 9.0094e-06   #
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
@@ -117,7 +119,7 @@ class Agisoft:
                 sys.exit(-1)
 
     def align_images(self):
-        self.chunk.crs = self.PROJECTION
+        self.chunk.crs = self.WGS_84
         self.chunk.addPhotos(self.images)
         reference_file = self.project_base_path + self.REFERENCE_FILE
         if os.path.exists(reference_file):
@@ -151,14 +153,14 @@ class Agisoft:
         self.chunk.exportDem(
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.PROJECTION,
+            projection=self.WGS_84,
             dx=self.X_1M_IN_DEG,
             dy=self.Y_1M_IN_DEG,
         )
         self.chunk.exportOrthomosaic(
             path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
             image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.PROJECTION,
+            projection=self.WGS_84,
             tiff_big=True,
             dx=self.X_1M_IN_DEG,
             dy=self.Y_1M_IN_DEG,
