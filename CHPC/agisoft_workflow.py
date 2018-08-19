@@ -149,7 +149,7 @@ class Agisoft:
         self.chunk.matchPhotos(
             accuracy=self.IMAGE_ACCURACY_MATCHING,
             generic_preselection=True,
-            reference_preselection=False,
+            reference_preselection=True,
             keypoint_limit=self.KEYPOINT_LIMIT,
             tiepoint_limit=self.TIEPOINT_LIMIT,
         )
