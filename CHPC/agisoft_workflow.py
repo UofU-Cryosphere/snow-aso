@@ -167,7 +167,7 @@ class Agisoft:
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
-    def process(self):
+    def process(self, export_results):
         self.align_images()
         self.build_dense_cloud()
 
@@ -175,7 +175,8 @@ class Agisoft:
         self.chunk.buildOrthomosaic()
         self.project.save()
 
-        self.export_results()
+        if export_results:
+            self.export_results()
 
 
 parser = argparse.ArgumentParser()
@@ -191,6 +192,10 @@ parser.add_argument(
     '--image-type',
     help='Type of images - default to .tif',
     default=Agisoft.IMPORT_IMAGE_TYPE
+)
+parser.add_argument(
+    '--with-export', type=bool, required=False, default=False,
+    help='Export DEM, Orthomosaic and PDF report after dense cloud'
 )
 
 # Example command line execution:
@@ -214,4 +219,4 @@ if __name__ == '__main__':
         image_folder=arguments.image_folder,
         image_type=arguments.image_type
     )
-    project.process()
+    project.process(arguments.with_export)
