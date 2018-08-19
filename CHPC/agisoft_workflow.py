@@ -45,6 +45,13 @@ class Agisoft:
 
     DENSE_POINT_QUALITY = PhotoScan.HighQuality
 
+    EXPORT_DEFAULTS = dict(
+        image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
+        projection=WGS_84,
+        dx=X_1M_IN_DEG,
+        dy=Y_1M_IN_DEG,
+    )
+
     def __init__(self, base_path, project_name, image_folder, image_type):
         # Ensure trailing slash
         self.project_base_path = os.path.join(base_path, '')
@@ -190,18 +197,12 @@ class Agisoft:
     def export_results(self):
         self.chunk.exportDem(
             path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
-            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.WGS_84,
-            dx=self.X_1M_IN_DEG,
-            dy=self.Y_1M_IN_DEG,
+            **self.EXPORT_DEFAULTS
         )
         self.chunk.exportOrthomosaic(
             path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
-            image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
-            projection=self.WGS_84,
             tiff_big=True,
-            dx=self.X_1M_IN_DEG,
-            dy=self.Y_1M_IN_DEG,
+            **self.EXPORT_DEFAULTS
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
