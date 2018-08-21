@@ -5,7 +5,6 @@ import os
 import pandas
 
 from images_meta_csv import ImagesMetaCsv
-from sbet_file import SbetFile
 
 
 class EifData(object):
@@ -50,14 +49,17 @@ class EifData(object):
 
         return file_name
 
+    @staticmethod
+    def yaw_to_360(yaw):
+        return (360 - yaw) % 360
+
     def add_to_table(self, row):
         data = [
             self.file_name_from_path(row.get(self.FILE_COLUMN)),
             row.get('longitude[deg]'),
             row.get('latitude[deg]'),
             row.get('altitude[m]'),
-            SbetFile.yaw_to_360(
-                row.get('yaw[deg]')) if 'yaw[deg]' in row else '',
+            self.yaw_to_360(row.get('yaw[deg]')) if 'yaw[deg]' in row else '',
             row.get('pitch[deg]'),
             row.get('roll[deg]'),
             0,  # 'Time Diff' values for new eif type are always 0
