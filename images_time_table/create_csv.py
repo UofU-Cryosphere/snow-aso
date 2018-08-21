@@ -26,6 +26,12 @@ parser.add_argument(
     help='Flag to force querying the SBET file for new EIF file type',
     default=False,
 )
+parser.add_argument(
+    '--image-type',
+    type=str,
+    help='Change image file names to given type. Default: iiq',
+    default='iiq',
+)
 
 if __name__ == '__main__':
     arguments = parser.parse_args()
@@ -35,8 +41,9 @@ if __name__ == '__main__':
 
     eif_data = EifData(
         os.path.join(basin_dir, IMAGE_DIR),
-        arguments.old_eif_type,
-        arguments.query_sbet
+        old_eif_type=arguments.old_eif_type,
+        force_query=arguments.query_sbet,
+        image_type=arguments.image_type
     )
     eif_data.get_images()
 

@@ -22,11 +22,12 @@ class EifData(object):
         usecols=NEW_EIF_HEADERS, lineterminator='\n'
     )
 
-    def __init__(self, base_path, old_eif_type, force_query):
+    def __init__(self, base_path, **kwargs):
         print('Getting image list')
         self.file_list = glob.glob(self.eif_files(base_path), recursive=True)
-        self.new_eif_type = not old_eif_type
-        self.force_query = force_query
+        self.new_eif_type = not kwargs['old_eif_type']
+        self.force_query = kwargs['force_query']
+        self.image_type = kwargs['image_type']
         self.images_time_table = []
 
     @staticmethod
@@ -34,13 +35,18 @@ class EifData(object):
         return os.path.join(base_path, '01_EIF/**/*.eif')
 
     @staticmethod
-    def file_name_from_path(path):
-        return path.split('\\')[-1]
-
-    @staticmethod
     def convert_time(entry):
         entry[ImagesMetaCsv.TIME_COLUMN] = SbetFile.seconds_to_time_of_day(
             entry[ImagesMetaCsv.TIME_COLUMN])
+
+    def file_name_from_path(self, path):
+        file_name = path.split('\\')[-1]
+
+        file_type = path.split('.')[-1]
+        if not file_type.endswith(self.image_type):
+            file_name = file_name.replace(file_type, self.image_type)
+
+        return file_name
 
     def add_to_table(self, row):
         data = [
