@@ -17,9 +17,12 @@ class ImagesMetaCsv(object):
         csv_file = os.path.join(base_path, ImagesMetaCsv.CSV_OUTPUT_FILE)
         print('Writing CSV file to:')
         print('    ' + str(csv_file))
-        with open(csv_file, 'w', newline='') as csv_file:
+        with open(csv_file, 'w') as csv_file:
             writer = csv.DictWriter(
-                csv_file, fieldnames=ImagesMetaCsv.RESULT_KEYS, delimiter=','
+                csv_file,
+                fieldnames=ImagesMetaCsv.RESULT_KEYS,
+                delimiter=',',
+                lineterminator='\n',
             )
             writer.writeheader()
             writer.writerows(images_data)
