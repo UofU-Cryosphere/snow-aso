@@ -32,7 +32,7 @@ class EifData(object):
 
     @staticmethod
     def eif_files(base_path):
-        return os.path.join(base_path, '01_EIF/**/*.eif')
+        return os.path.join(base_path, '**/*.eif')
 
     @staticmethod
     def convert_time(entry):
