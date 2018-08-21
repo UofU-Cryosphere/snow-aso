@@ -42,10 +42,6 @@ class SbetFile(object):
         )
 
     @staticmethod
-    def seconds_to_time_of_day(seconds):
-        return str(datetime.timedelta(seconds=float(seconds)))
-
-    @staticmethod
     def yaw_to_360(yaw):
         return yaw + 360 if yaw < 0 else yaw
 
@@ -93,7 +89,8 @@ class SbetFile(object):
             math.degrees(sbet_record.Pitch),
             math.degrees(sbet_record.Roll),
             gps_time - sbet_record[self.GPS_COLUMN],
-            self.seconds_to_time_of_day(row.get(ImagesMetaCsv.TIME_COLUMN))
+            row.get(ImagesMetaCsv.TIME_COLUMN),
+            row.get(ImagesMetaCsv.TIME_OF_DAY)
         ]
 
         return self.update_row(row, result)

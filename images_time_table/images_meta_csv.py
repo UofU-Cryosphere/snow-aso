@@ -3,11 +3,12 @@ import os
 
 
 class ImagesMetaCsv(object):
-    TIME_COLUMN = 'Timestamp'
     FILE_COLUMN = 'Filename'
+    TIME_OF_DAY = 'Time of Day'
+    TIME_COLUMN = 'Timestamp'
     RESULT_KEYS = [
         FILE_COLUMN, 'X', 'Y', 'Z', 'Yaw', 'Pitch', 'Roll', 'Time Diff',
-        TIME_COLUMN
+        TIME_COLUMN, TIME_OF_DAY
     ]
 
     CSV_OUTPUT_FILE = 'images_metadata.csv'

@@ -1,3 +1,4 @@
+import datetime
 import glob
 import os
 
@@ -35,9 +36,10 @@ class EifData(object):
         return os.path.join(base_path, '**/*.eif')
 
     @staticmethod
-    def convert_time(entry):
-        entry[ImagesMetaCsv.TIME_COLUMN] = SbetFile.seconds_to_time_of_day(
-            entry[ImagesMetaCsv.TIME_COLUMN])
+    def add_local_time(row):
+        row[ImagesMetaCsv.TIME_OF_DAY] = str(
+            datetime.timedelta(seconds=float(row[ImagesMetaCsv.TIME_COLUMN]))
+        )
 
     def file_name_from_path(self, path):
         file_name = path.split('\\')[-1]
@@ -60,6 +62,7 @@ class EifData(object):
             row.get('roll[deg]'),
             0,  # 'Time Diff' values for new eif type are always 0
             row.get('#time[s]'),
+            None # Placeholder for time of day
         ]
 
         self.images_time_table.append(
@@ -87,5 +90,4 @@ class EifData(object):
         self.parse_files()
         self.sort_by_time()
 
-        if self.new_eif_type and not self.force_query:
-            [self.convert_time(entry) for entry in self.images_time_table]
+        [self.add_local_time(entry) for entry in self.images_time_table]
