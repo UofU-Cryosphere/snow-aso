@@ -53,6 +53,22 @@ class EifData(object):
     def yaw_to_360(yaw):
         return (360 - yaw) % 360
 
+    @staticmethod
+    def transform_roll(row):
+        """
+        Seems that provided value of roll in .eif file is flipped with the
+        pitch value.
+        """
+        return row.get('pitch[deg]')
+
+    @staticmethod
+    def transform_pitch(row):
+        """
+        Seems that provided value of pitch in the .eif file is flipped with
+        the roll value and has a different reference plane.
+        """
+        return row.get('roll[deg]', 0) + 180
+
     def add_to_table(self, row):
         data = [
             self.file_name_from_path(row.get(self.FILE_COLUMN)),
@@ -60,8 +76,8 @@ class EifData(object):
             row.get('latitude[deg]'),
             row.get('altitude[m]'),
             self.yaw_to_360(row.get('yaw[deg]')) if 'yaw[deg]' in row else '',
-            row.get('pitch[deg]'),
-            row.get('roll[deg]'),
+            self.transform_pitch(row),
+            self.transform_roll(row),
             0,  # 'Time Diff' values for new eif type are always 0
             row.get('#time[s]'),
             None # Placeholder for time of day
