@@ -9,11 +9,11 @@ from images_meta_csv import ImagesMetaCsv
 
 
 class SbetFile(object):
-    DAY_IN_SECONDS = 86400
-    GPS_EPOCH_SECONDS = 18
-
     GPS_COLUMN = 'GpsTime'
-    GPS_TIME_WINDOW = 0.1
+    GPS_TIME_WINDOW = 0.05
+    GPS_LEAP_SECONDS = 18  # since 2017
+                           # 17s from 2015 - 2017
+                           # 16s from 2012 - 2015
 
     SBET_CSV_FILE_NAME = 'sbet.csv'
     SBET_DIR = 'SBET'
@@ -33,7 +33,7 @@ class SbetFile(object):
         self.sbet_table = pandas.read_csv(
             self.file_path, converters=self.SBET_CSV_DTYPES
         )
-        self.day_of_week = self.get_gps_day_of_week()
+        self.gps_seconds_beginning_of_day = self.get_gps_day_of_week()
 
     @staticmethod
     def csv_file_path(base_path):
@@ -49,10 +49,7 @@ class SbetFile(object):
         days = datetime.timedelta(
             seconds=self.sbet_table[:1][self.GPS_COLUMN][0]
         ).days
-        return days * SbetFile.DAY_IN_SECONDS
-
-    def row_time_to_gps_time(self, time):
-        return self.day_of_week + float(time) + self.GPS_EPOCH_SECONDS
+        return datetime.timedelta(days=days).total_seconds()
 
     def find_sbet_record(self, row_time):
         time = self.sbet_table[
@@ -75,10 +72,11 @@ class SbetFile(object):
         return row
 
     def imu_data_for_row(self, row):
-        gps_time = self.row_time_to_gps_time(
-            row.get(ImagesMetaCsv.TIME_COLUMN)
-        )
-        sbet_record = self.find_sbet_record(gps_time)
+        gps_week_time = self.gps_seconds_beginning_of_day + \
+                        row.get(ImagesMetaCsv.TIME_COLUMN) + \
+                        self.GPS_LEAP_SECONDS
+
+        sbet_record = self.find_sbet_record(gps_week_time)
 
         result = [
             row.get(ImagesMetaCsv.FILE_COLUMN),
@@ -88,7 +86,7 @@ class SbetFile(object):
             self.yaw_to_360(math.degrees(sbet_record.Heading)),
             math.degrees(sbet_record.Pitch),
             math.degrees(sbet_record.Roll),
-            gps_time - sbet_record[self.GPS_COLUMN],
+            gps_week_time - sbet_record[self.GPS_COLUMN],
             row.get(ImagesMetaCsv.TIME_COLUMN),
             row.get(ImagesMetaCsv.TIME_OF_DAY)
         ]
