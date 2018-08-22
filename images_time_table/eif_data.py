@@ -50,8 +50,12 @@ class EifData(object):
         return file_name
 
     @staticmethod
-    def yaw_to_360(yaw):
-        return (360 - yaw) % 360
+    def yaw_to_360(row):
+        """
+        Yaw value from .eif file need transformation to a 0 to 360 degree range
+        for Agisoft PhotoScan.
+        """
+        return (360 - row.get('yaw[deg]', 0)) % 360
 
     @staticmethod
     def transform_roll(row):
@@ -75,7 +79,7 @@ class EifData(object):
             row.get('longitude[deg]'),
             row.get('latitude[deg]'),
             row.get('altitude[m]'),
-            self.yaw_to_360(row.get('yaw[deg]')) if 'yaw[deg]' in row else '',
+            self.yaw_to_360(row),
             self.transform_pitch(row),
             self.transform_roll(row),
             0,  # 'Time Diff' values for new eif type are always 0
