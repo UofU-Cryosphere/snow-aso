@@ -36,7 +36,7 @@ class Agisoft:
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
-    IMAGE_ACCURACY_MATCHING = PhotoScan.HighAccuracy
+    IMAGE_ACCURACY_MATCHING = PhotoScan.HighestAccuracy
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
