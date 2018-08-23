@@ -9,6 +9,7 @@
 #SBATCH --ntasks=32                             # number of requested CPU cores
 #SBATCH --mem=0                                 # No limit on memory
 #SBATCH -w notch003                             # Target specific GPU node, possible GPU nodes: notch00[1-3]
+#SBATCH --feature=v100                          # Request specific feature to select any possible node available with it
 #SBATCH --gres=gpu:v100:3                       # Use the GPU on notchpeak, resource_type:resource_name:resource_count
                                                 # Each node has 3 GPUs. Recommended to request them all.
 #SBATCH --exclusive
