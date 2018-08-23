@@ -43,7 +43,10 @@ class Agisoft:
     REPROJECTION_ERROR_THRESHOLD = 0.3
     REPROJECTION_ACCURACY_THRESHOLD = 10
 
-    DENSE_POINT_QUALITY = PhotoScan.HighQuality
+    DENSE_POINT_QUALITY = dict(
+        high=PhotoScan.HighQuality,
+        medium=PhotoScan.MediumQuality,
+    )
 
     EXPORT_DEFAULTS = dict(
         image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
@@ -186,9 +189,9 @@ class Agisoft:
             self.REPROJECTION_ACCURACY_THRESHOLD,
         )
 
-    def build_dense_cloud(self):
+    def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
-            quality=self.DENSE_POINT_QUALITY,
+            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality, 'high'),
             filter=PhotoScan.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
@@ -206,10 +209,10 @@ class Agisoft:
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
-    def process(self, export_results):
+    def process(self, export_results, dense_cloud_quality):
         self.align_images()
         self.filter_sparse_cloud()
-        self.build_dense_cloud()
+        self.build_dense_cloud(dense_cloud_quality)
 
         self.chunk.buildDem()
         self.chunk.buildOrthomosaic()
@@ -221,7 +224,8 @@ class Agisoft:
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--base-path', help='Root directory of the project.', required=True)
+    '--base-path', help='Root directory of the project.', required=True
+)
 parser.add_argument('--project-name', help='Name of project.', required=True)
 parser.add_argument(
     '--image-folder',
@@ -231,7 +235,11 @@ parser.add_argument(
 parser.add_argument(
     '--image-type',
     help='Type of images - default to .tif',
-    default=Agisoft.IMPORT_IMAGE_TYPE
+    default=Agisoft.IMPORT_IMAGE_TYPE,
+)
+parser.add_argument(
+    '--dense-cloud-quality', type=str, required=False, default='high',
+    help='Overwrite default dense point cloud quality (High).'
 )
 parser.add_argument(
     '--with-export', type=bool, required=False, default=False,
@@ -259,4 +267,7 @@ if __name__ == '__main__':
         image_folder=arguments.image_folder,
         image_type=arguments.image_type
     )
-    project.process(arguments.with_export)
+    project.process(
+        export_results=arguments.with_export,
+        dense_cloud_quality=arguments.dense_cloud_quality,
+    )
