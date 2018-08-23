@@ -55,15 +55,15 @@ class Agisoft:
         dy=Y_1M_IN_DEG,
     )
 
-    def __init__(self, base_path, project_name, image_folder, image_type):
+    def __init__(self, arguments):
         # Ensure trailing slash
-        self.project_base_path = os.path.join(base_path, '')
+        self.project_base_path = os.path.join(arguments.base_path, '')
         self.setup_application()
 
         project = PhotoScan.Document()
         chunk = project.addChunk()
 
-        self.project_file_path = self.project_path(project_name)
+        self.project_file_path = self.project_path(arguments.project_name)
         project.save(
             path=self.project_file_path + self.PROJECT_TYPE,
             chunks=[chunk]
@@ -75,8 +75,8 @@ class Agisoft:
         self.chunk = self.project.chunk
         self.setup_camera()
 
-        self.image_type = image_type
-        self.images = self.list_images(image_folder)
+        self.image_type = arguments.image_type
+        self.images = self.list_images(arguments.image_folder)
 
     def setup_application(self):
         app = PhotoScan.Application()
@@ -209,16 +209,16 @@ class Agisoft:
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
-    def process(self, export_results, dense_cloud_quality):
+    def process(self, arguments):
         self.align_images()
         self.filter_sparse_cloud()
-        self.build_dense_cloud(dense_cloud_quality)
+        self.build_dense_cloud(arguments.dense_cloud_quality)
 
         self.chunk.buildDem()
         self.chunk.buildOrthomosaic()
         self.project.save()
 
-        if export_results:
+        if arguments.with_export:
             self.export_results()
 
 
@@ -261,13 +261,5 @@ parser.add_argument(
 #
 if __name__ == '__main__':
     arguments = parser.parse_args()
-    project = Agisoft(
-        base_path=arguments.base_path,
-        project_name=arguments.project_name,
-        image_folder=arguments.image_folder,
-        image_type=arguments.image_type
-    )
-    project.process(
-        export_results=arguments.with_export,
-        dense_cloud_quality=arguments.dense_cloud_quality,
-    )
+    project = Agisoft(arguments)
+    project.process(arguments)
