@@ -28,5 +28,8 @@ export export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 PROJECT_NAME='CB_20180524'
 
 module load photoscan
-photoscan.sh -platform offscreen -r $HOME/snow-aso/CHPC/agisoft_workflow.py --base-path $HOME/scratch/$PROJECT_NAME --project-name $PROJECT_NAME > $HOME/scratch/$PROJECT_NAME.log
-
+photoscan.sh -platform offscreen \
+             -r $HOME/snow-aso/CHPC/agisoft_workflow.py \
+             --base-path $HOME/scratch/$PROJECT_NAME \
+             --project-name $PROJECT_NAME \
+             > $HOME/scratch/$PROJECT_NAME.log
