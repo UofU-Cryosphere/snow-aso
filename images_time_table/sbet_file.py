@@ -1,8 +1,7 @@
 import datetime
-import math
+import decimal
 import os
 
-import numpy
 import pandas
 
 from images_meta_csv import ImagesMetaCsv
@@ -18,20 +17,22 @@ class SbetFile(object):
     SBET_CSV_FILE_NAME = 'sbet.csv'
     SBET_DIR = 'SBET'
     SBET_CSV_DTYPES = {
-        GPS_COLUMN: numpy.float32,  # in seconds
-        'X': numpy.float32,         # in meters
-        'Y': numpy.float32,         # in radians
-        'Z': numpy.float32,         # in radians
-        'Roll': numpy.float32,      # in radians
-        'Pitch': numpy.float32,     # in radians
-        'Heading': numpy.float32,   # in radians
+        'X': decimal.Decimal,
+        'Y': decimal.Decimal,
+        'Z': decimal.Decimal,
+        'Roll': decimal.Decimal,
+        'Pitch': decimal.Decimal,
+        'Heading': decimal.Decimal,
     }
 
     def __init__(self, base_path):
         print('Adding IMU data')
         self.file_path = self.csv_file_path(base_path)
         self.sbet_table = pandas.read_csv(
-            self.file_path, converters=self.SBET_CSV_DTYPES
+            self.file_path,
+            header=0,
+            dtype={ self.GPS_COLUMN: float },
+            converters=self.SBET_CSV_DTYPES
         )
         self.gps_seconds_beginning_of_day = self.get_gps_day_of_week()
 
@@ -47,7 +48,7 @@ class SbetFile(object):
 
     def get_gps_day_of_week(self):
         days = datetime.timedelta(
-            seconds=self.sbet_table[:1][self.GPS_COLUMN][0]
+            seconds=float(self.sbet_table[:1][self.GPS_COLUMN][0])
         ).days
         return datetime.timedelta(days=days).total_seconds()
 
@@ -80,12 +81,12 @@ class SbetFile(object):
 
         result = [
             row.get(ImagesMetaCsv.FILE_COLUMN),
-            math.degrees(sbet_record.X),
-            math.degrees(sbet_record.Y),
+            sbet_record.X,
+            sbet_record.Y,
             sbet_record.Z,
-            self.yaw_to_360(math.degrees(sbet_record.Heading)),
-            math.degrees(sbet_record.Pitch),
-            math.degrees(sbet_record.Roll),
+            self.yaw_to_360(sbet_record.Heading),
+            sbet_record.Pitch,
+            sbet_record.Roll,
             gps_week_time - sbet_record[self.GPS_COLUMN],
             row.get(ImagesMetaCsv.TIME_COLUMN),
             row.get(ImagesMetaCsv.TIME_OF_DAY)

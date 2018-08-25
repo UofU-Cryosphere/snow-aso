@@ -17,20 +17,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define SLASH "/"
+#define to_degrees(radians) (( radians * (180.0 / M_PI) ))
 
 typedef struct {
   double time;
-  double lat;
-  double lon;
+  double lat;       // in radians
+  double lon;       // in radians
   double alt;
   double x_vel;
   double y_vel;
   double z_vel;
-  double roll;
-  double pitch;
-  double heading;
+  double roll;      // in radians
+  double pitch;     // in radians
+  double heading;   // in radians
   double wander;
   double x_force;
   double y_force;
@@ -81,7 +83,7 @@ int main(int argc, char **argv) {
 
   fprintf(stderr, "Writing output file:\n  %s\n", outfile_path);
 
-  fprintf(outfile, "GpsTime,X,Y,Z,Roll,Pitch,Heading\n");
+  fprintf(outfile, "GpsTime,X,Y,Z,Heading,Roll,Pitch\n");
 
   while (1) {
     num_items = fread(&rec, sz, 1, infile);
@@ -89,8 +91,17 @@ int main(int argc, char **argv) {
     if (num_items != 1) {
       break;
     }
-    
-    fprintf(outfile, "%lf,%lf,%lf,%lf,%lf,%lf,%lf\n", rec.time, rec.lon, rec.lat, rec.alt, rec.roll, rec.pitch, rec.heading);
+
+    fprintf(outfile,
+            "%lf,%lf,%lf,%lf,%lf,%lf,%lf\n",
+            rec.time,
+            to_degrees(rec.lon),
+            to_degrees(rec.lat),
+            rec.alt,
+            to_degrees(rec.heading),
+            to_degrees(rec.roll),
+            to_degrees(rec.pitch)
+    );
   }
 
   fclose(infile);
