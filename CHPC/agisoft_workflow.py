@@ -58,25 +58,31 @@ class Agisoft:
     def __init__(self, arguments):
         # Ensure trailing slash
         self.project_base_path = os.path.join(arguments.base_path, '')
+        self.project_file_path = self.project_path(arguments.project_name)
+
         self.setup_application()
 
-        project = PhotoScan.Document()
-        chunk = project.addChunk()
+        self.create_new_project()
+        self.load_project()
 
-        self.project_file_path = self.project_path(arguments.project_name)
-        project.save(
-            path=self.project_file_path + self.PROJECT_TYPE,
-            chunks=[chunk]
-        )
-
-        self.project = PhotoScan.app.document
-        self.project.open(self.project_file_path + self.PROJECT_TYPE)
-
-        self.chunk = self.project.chunk
         self.setup_camera()
 
         self.image_type = arguments.image_type
         self.images = self.list_images(arguments.image_folder)
+
+    def create_new_project(self):
+        if not os.path.exists(path=self.project_file_path + self.PROJECT_TYPE):
+            project = PhotoScan.Document()
+            chunk = project.addChunk()
+            project.save(
+                path=self.project_file_path + self.PROJECT_TYPE,
+                chunks=[chunk]
+            )
+
+    def load_project(self):
+        self.project = PhotoScan.app.document
+        self.project.open(self.project_file_path + self.PROJECT_TYPE)
+        self.chunk = self.project.chunk
 
     def setup_application(self):
         app = PhotoScan.Application()
