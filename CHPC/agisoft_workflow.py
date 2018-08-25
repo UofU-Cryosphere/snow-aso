@@ -68,7 +68,6 @@ class Agisoft:
         self.setup_camera()
 
         self.image_type = arguments.image_type
-        self.images = self.list_images(arguments.image_folder)
 
     def create_new_project(self):
         if not os.path.exists(path=self.project_file_path + self.PROJECT_TYPE):
@@ -165,7 +164,7 @@ class Agisoft:
             sys.exit(-1)
 
     def align_images(self):
-        self.chunk.addPhotos(self.images)
+        self.chunk.addPhotos(self.list_images(arguments.image_folder))
         self.load_image_references()
         self.chunk.matchPhotos(
             accuracy=self.IMAGE_ACCURACY_MATCHING,
