@@ -80,6 +80,13 @@ class Agisoft:
                 chunks=[chunk]
             )
 
+    def project_file_path(self, project_name):
+        run_date = datetime.date.today().strftime('%Y_%m_%d')
+        project_name = project_name + '_' + run_date
+        return os.path.join(
+            self.project_base_path, project_name
+        )
+
     def setup_application(self):
         app = PhotoScan.Application()
         # Use all available GPUs, needs a bit mask
@@ -95,12 +102,13 @@ class Agisoft:
         settings.log_path = self.project_file_name + '_agisoft.log'
         settings.save()
 
-    def project_file_path(self, project_name):
-        run_date = datetime.date.today().strftime('%Y_%m_%d')
-        project_name = project_name + '_' + run_date
-        return os.path.join(
-            self.project_base_path, project_name
-        )
+    def setup_camera(self):
+        # Imported camera coordinates projection
+        self.chunk.crs = self.WGS_84
+        # Accuracy for camera position in m
+        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
+        # Accuracy for camera orientations in degree
+        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
 
     def list_images(self, source_folder):
         source_folder = os.path.join(
@@ -116,14 +124,6 @@ class Agisoft:
             sys.exit(-1)
         else:
             return images
-
-    def setup_camera(self):
-        # Imported camera coordinates projection
-        self.chunk.crs = self.WGS_84
-        # Accuracy for camera position in m
-        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
-        # Accuracy for camera orientations in degree
-        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
 
     def check_reference_file(self, file):
         """
