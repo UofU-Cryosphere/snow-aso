@@ -58,13 +58,13 @@ class Agisoft:
     def __init__(self, options):
         # Ensure trailing slash
         self.project_base_path = os.path.join(options.base_path, '')
-        self.project_file_path = self.project_path(options.project_name)
+        self.project_file_name = self.project_file_path(options.project_name)
 
         self.setup_application()
 
         self.create_new_project()
         self.project = PhotoScan.app.document
-        self.project.open(self.project_file_path + self.PROJECT_TYPE)
+        self.project.open(self.project_file_name + self.PROJECT_TYPE)
         self.chunk = self.project.chunk
 
         self.setup_camera()
@@ -72,11 +72,11 @@ class Agisoft:
         self.image_type = options.image_type
 
     def create_new_project(self):
-        if not os.path.exists(path=self.project_file_path + self.PROJECT_TYPE):
+        if not os.path.exists(path=self.project_file_name + self.PROJECT_TYPE):
             new_project = PhotoScan.Document()
             chunk = new_project.addChunk()
             new_project.save(
-                path=self.project_file_path + self.PROJECT_TYPE,
+                path=self.project_file_name + self.PROJECT_TYPE,
                 chunks=[chunk]
             )
 
@@ -92,20 +92,14 @@ class Agisoft:
         settings = PhotoScan.Application.Settings()
         # Logging
         settings.log_enable = True
-        settings.log_path = self.project_base_path + \
-            'agisoft_' + self.today_as_filename() + '.log'
+        settings.log_path = self.project_file_name + '_agisoft.log'
         settings.save()
 
-    @staticmethod
-    def today_as_filename():
-        return datetime.date.today().strftime('%Y_%m_%d')
-
-    def project_name(self, base_name):
-        return base_name + '_' + self.today_as_filename()
-
-    def project_path(self, project_name):
+    def project_file_path(self, project_name):
+        run_date = datetime.date.today().strftime('%Y_%m_%d')
+        project_name = project_name + '_' + run_date
         return os.path.join(
-            self.project_base_path, self.project_name(project_name)
+            self.project_base_path, project_name
         )
 
     def list_images(self, source_folder):
@@ -201,15 +195,15 @@ class Agisoft:
 
     def export_results(self):
         self.chunk.exportDem(
-            path=self.project_file_path + '_dem' + self.EXPORT_IMAGE_TYPE,
+            path=self.project_file_name + '_dem' + self.EXPORT_IMAGE_TYPE,
             **self.EXPORT_DEFAULTS
         )
         self.chunk.exportOrthomosaic(
-            path=self.project_file_path + self.EXPORT_IMAGE_TYPE,
+            path=self.project_file_name + self.EXPORT_IMAGE_TYPE,
             tiff_big=True,
             **self.EXPORT_DEFAULTS
         )
-        self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
+        self.chunk.exportReport(self.project_file_name + self.PROJECT_REPORT)
 
     def process(self, options):
         self.align_images()
