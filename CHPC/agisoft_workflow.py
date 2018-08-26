@@ -55,10 +55,10 @@ class Agisoft:
         dy=Y_1M_IN_DEG,
     )
 
-    def __init__(self, arguments):
+    def __init__(self, options):
         # Ensure trailing slash
-        self.project_base_path = os.path.join(arguments.base_path, '')
-        self.project_file_path = self.project_path(arguments.project_name)
+        self.project_base_path = os.path.join(options.base_path, '')
+        self.project_file_path = self.project_path(options.project_name)
 
         self.setup_application()
 
@@ -69,13 +69,13 @@ class Agisoft:
 
         self.setup_camera()
 
-        self.image_type = arguments.image_type
+        self.image_type = options.image_type
 
     def create_new_project(self):
         if not os.path.exists(path=self.project_file_path + self.PROJECT_TYPE):
-            project = PhotoScan.Document()
-            chunk = project.addChunk()
-            project.save(
+            new_project = PhotoScan.Document()
+            chunk = new_project.addChunk()
+            new_project.save(
                 path=self.project_file_path + self.PROJECT_TYPE,
                 chunks=[chunk]
             )
@@ -211,16 +211,16 @@ class Agisoft:
         )
         self.chunk.exportReport(self.project_file_path + self.PROJECT_REPORT)
 
-    def process(self, arguments):
+    def process(self, options):
         self.align_images()
         self.filter_sparse_cloud()
-        self.build_dense_cloud(arguments.dense_cloud_quality)
+        self.build_dense_cloud(options.dense_cloud_quality)
 
         self.chunk.buildDem()
         self.chunk.buildOrthomosaic()
         self.project.save()
 
-        if arguments.with_export:
+        if options.with_export:
             self.export_results()
 
 
