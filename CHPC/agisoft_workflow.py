@@ -69,6 +69,9 @@ class Agisoft:
 
         self.setup_camera()
 
+        self.image_folder = os.path.join(
+            self.project_base_path, options.image_folder, ''
+        )
         self.image_type = options.image_type
 
     def create_new_project(self):
@@ -110,52 +113,48 @@ class Agisoft:
         # Accuracy for camera orientations in degree
         self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
 
-    def list_images(self, source_folder):
-        source_folder = os.path.join(
-            self.project_base_path, source_folder, '**', ''
-        )
+    def image_list(self):
         images = glob.glob(
-            source_folder + '*' + self.image_type, recursive=True
+            self.image_folder + '*' + self.image_type, recursive=True
         )
         if len(images) == 0:
             print('**** EXIT - ' + self.image_type +
                   ' no files found in directory:')
-            print('    ' + source_folder)
+            print('    ' + self.image_folder)
             sys.exit(-1)
         else:
             return images
 
     def check_reference_file(self, file):
         """
-        Check that the given reference file also has the image types loaded
-        with this project by comparing file endings.
+        Check that the given reference file exists and has the image types
+        loaded with this project by comparing file endings.
         """
-        with open(file) as file:
-            next(file)  # skip header line
-            first_file = next(file).split(',')[0]
-            if not first_file.endswith(self.image_type):
-                print('**** Reference file has different '
-                      'source image types *****\n'
-                      '   given: ' + self.image_type + '\n'
-                      '   first image: ' + first_file)
-                sys.exit(-1)
-
-    def load_image_references(self):
-        reference_file = self.project_base_path + self.REFERENCE_FILE
-        if os.path.exists(reference_file):
-            self.check_reference_file(reference_file)
-            self.chunk.loadReference(
-                path=reference_file,
-                delimiter=',',
-                format=PhotoScan.ReferenceFormatCSV,
-            )
-            return True
+        if os.path.exists(file):
+            with open(file) as file:
+                next(file)  # skip header line
+                first_file = next(file).split(',')[0]
+                if not first_file.endswith(self.image_type):
+                    print('**** Reference file has different '
+                          'source image types *****\n'
+                          '   given: ' + self.image_type + '\n'
+                          '   first image: ' + first_file)
+                    sys.exit(-1)
         else:
             print('**** EXIT - No reference file found ****')
             sys.exit(-1)
 
+    def load_image_references(self):
+        reference_file = self.project_base_path + self.REFERENCE_FILE
+        self.check_reference_file(reference_file)
+        self.chunk.loadReference(
+            path=reference_file,
+            delimiter=',',
+            format=PhotoScan.ReferenceFormatCSV,
+        )
+
     def align_images(self):
-        self.chunk.addPhotos(self.list_images(arguments.image_folder))
+        self.chunk.addPhotos(self.image_list())
         self.load_image_references()
         self.chunk.matchPhotos(
             accuracy=self.IMAGE_ACCURACY_MATCHING,
