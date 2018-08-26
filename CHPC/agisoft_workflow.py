@@ -63,7 +63,9 @@ class Agisoft:
         self.setup_application()
 
         self.create_new_project()
-        self.load_project()
+        self.project = PhotoScan.app.document
+        self.project.open(self.project_file_path + self.PROJECT_TYPE)
+        self.chunk = self.project.chunk
 
         self.setup_camera()
 
@@ -77,11 +79,6 @@ class Agisoft:
                 path=self.project_file_path + self.PROJECT_TYPE,
                 chunks=[chunk]
             )
-
-    def load_project(self):
-        self.project = PhotoScan.app.document
-        self.project.open(self.project_file_path + self.PROJECT_TYPE)
-        self.chunk = self.project.chunk
 
     def setup_application(self):
         app = PhotoScan.Application()
