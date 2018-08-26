@@ -113,6 +113,10 @@ class Agisoft:
         # Accuracy for camera orientations in degree
         self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
 
+    def save_and_exit(self):
+        self.project.save()
+        sys.exit(-1)
+
     def image_list(self):
         images = glob.glob(
             self.image_folder + '*' + self.image_type, recursive=True
@@ -121,7 +125,7 @@ class Agisoft:
             print('**** EXIT - ' + self.image_type +
                   ' no files found in directory:')
             print('    ' + self.image_folder)
-            sys.exit(-1)
+            self.save_and_exit()
         else:
             return images
 
@@ -139,10 +143,10 @@ class Agisoft:
                           'source image types *****\n'
                           '   given: ' + self.image_type + '\n'
                           '   first image: ' + first_file)
-                    sys.exit(-1)
+                    self.save_and_exit()
         else:
             print('**** EXIT - No reference file found ****')
-            sys.exit(-1)
+            self.save_and_exit()
 
     def load_image_references(self):
         reference_file = self.project_base_path + self.REFERENCE_FILE
