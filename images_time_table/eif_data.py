@@ -5,6 +5,7 @@ import os
 import pandas
 
 from images_meta_csv import ImagesMetaCsv
+from converters import DecimalConverter
 
 
 class EifData(object):
@@ -16,10 +17,19 @@ class EifData(object):
         'sequenceID;roll[deg];pitch[deg];yaw[deg];omega[deg];phi[deg];' \
         'kappa[deg];latitude[deg];longitude[deg];altitude[m]'.split(';')
 
+    EIF_CSV_DTYPES = {
+        'longitude[deg]': DecimalConverter.parse_value,
+        'latitude[deg]': DecimalConverter.parse_value,
+        'altitude[m]': DecimalConverter.parse_value,
+        'roll[deg]': DecimalConverter.parse_value,
+        'pitch[deg]': DecimalConverter.parse_value,
+        'yaw[deg]': DecimalConverter.parse_value,
+    }
     OLD_CSV_OPTIONS = dict(names=OLD_EIF_HEADERS, sep=' ')
     NEW_CSV_OPTIONS = dict(
         names=NEW_EIF_HEADERS, sep=';', comment='#',
-        usecols=NEW_EIF_HEADERS, lineterminator='\n'
+        usecols=NEW_EIF_HEADERS, lineterminator='\n',
+        converters=EIF_CSV_DTYPES
     )
 
     def __init__(self, base_path, **kwargs):
