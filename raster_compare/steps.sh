@@ -20,3 +20,6 @@ pdal pipeline pdal_pipeline_crop.json
 gdalwarp source.tif outfile.tif -t_srs "+proj=utm +zone=13 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 gdalwarp source.tif outfile.tif -t_srs EPSG:32613
 
+# Convert ENVI file to GeoTiff
+# Have the corresponding .hdr in same folder with identical name
+gddal_translate -of GTiff infile outfile.tif
