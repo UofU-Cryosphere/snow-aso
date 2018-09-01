@@ -26,7 +26,7 @@ class SbetFile(object):
     }
 
     def __init__(self, base_path):
-        print('Adding IMU data')
+        print('Loading IMU data')
         self.file_path = self.csv_file_path(base_path)
         self.sbet_table = pandas.read_csv(
             self.file_path,
@@ -72,10 +72,13 @@ class SbetFile(object):
             row[key] = value
         return row
 
+    def gps_week_time_for_row(self, row):
+        return self.gps_seconds_beginning_of_day + \
+               row.get(ImagesMetaCsv.TIME_COLUMN) + \
+               self.GPS_LEAP_SECONDS
+
     def imu_data_for_row(self, row):
-        gps_week_time = self.gps_seconds_beginning_of_day + \
-                        row.get(ImagesMetaCsv.TIME_COLUMN) + \
-                        self.GPS_LEAP_SECONDS
+        gps_week_time = self.gps_week_time_for_row(row)
 
         sbet_record = self.find_sbet_record(gps_week_time)
 
@@ -93,3 +96,7 @@ class SbetFile(object):
         ]
 
         return self.update_row(row, result)
+
+    def set_altitude_for_row(self, row):
+        sbet_record = self.find_sbet_record(self.gps_week_time_for_row(row))
+        row['Z'] = sbet_record.Z

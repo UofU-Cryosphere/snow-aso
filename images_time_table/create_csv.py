@@ -47,13 +47,15 @@ if __name__ == '__main__':
     )
     eif_data.get_images()
 
+    sbet = SbetFile(basin_dir)
+
     if query_sbet:
-        sbet = SbetFile(basin_dir)
         image_list = [
             sbet.imu_data_for_row(row)
             for row in eif_data.images_time_table
         ]
     else:
         image_list = eif_data.images_time_table
+        [sbet.set_altitude_for_row(row) for row in image_list]
 
     ImagesMetaCsv.write_output_file(basin_dir, image_list)
