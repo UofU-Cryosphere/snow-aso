@@ -8,7 +8,7 @@
 #SBATCH --nodes=1                               # number of cluster nodes
 #SBATCH --ntasks=32                             # number of requested CPU cores
 #SBATCH --mem=0                                 
-#SBATCH --constraint=titanv                     # notch055 has four Titan V GPUs
+#SBATCH --constraint="titanv"                   # notch055 has four Titan V GPUs
 #SBATCH --gres=gpu:titanv:4                     
 #SBATCH --exclusive
 
