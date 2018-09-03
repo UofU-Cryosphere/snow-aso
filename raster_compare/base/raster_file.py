@@ -5,12 +5,22 @@ import numpy as np
 class RasterFile(object):
     def __init__(self, filename):
         self.filename = filename
-        self.file = gdal.Open(filename)
+        self._file = None
         self._extent = None
         self._elevation = None
         self._hillshade = None
         self._slope = None
         self._aspect = None
+
+    @property
+    def file(self):
+        if self._file is None:
+            self._file = gdal.Open(self.filename)
+        return self._file
+
+    @file.setter
+    def file(self, value):
+        self._file = value
 
     @property
     def extent(self):
@@ -74,4 +84,10 @@ class RasterFile(object):
         return self._elevation
 
     def geo_transform(self):
-        return self.file.GetGeoTransform()
+        return self._file.GetGeoTransform()
+
+    def crop_to_shape(self, shape_file):
+        self.file = gdal.Warp(
+            '', self.filename, format='MEM', dstAlpha=True, cropToCutline=True,
+            cutlineDSName=shape_file
+        )
