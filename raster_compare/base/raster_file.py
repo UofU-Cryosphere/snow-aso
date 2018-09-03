@@ -34,53 +34,45 @@ class RasterFile(object):
             self._extent = x_min, x_max, y_min, y_max
         return self._extent
 
+    @staticmethod
+    def get_values_for_raster(raster, band_number=1):
+        band = raster.GetRasterBand(band_number)
+        values = np.ma.masked_values(
+            band.ReadAsArray(), band.GetNoDataValue() or 0., copy=False
+        )
+        del band
+        return values
+
+    def get_raster_attribute(self, attribute):
+        raster = gdal.DEMProcessing(
+                '', self.file, attribute, format='MEM'
+            )
+        raster_values = self.get_values_for_raster(raster)
+        del raster
+        return raster_values
+
     @property
     def hill_shade(self):
         if self._hillshade is None:
-            hill_shade = gdal.DEMProcessing(
-                '', self.filename, 'hillshade', format='MEM'
-            )
-            band = hill_shade.GetRasterBand(1)
-            self._hillshade = np.ma.masked_values(
-                band.ReadAsArray(), band.GetNoDataValue(), copy=False
-            )
-            del hill_shade
+            self._hillshade = self.get_raster_attribute('hillshade')
         return self._hillshade
 
     @property
     def slope(self):
         if self._slope is None:
-            slope = gdal.DEMProcessing(
-                '', self.filename, 'slope', format='MEM'
-            )
-            band = slope.GetRasterBand(1)
-            self._slope = np.ma.masked_values(
-                band.ReadAsArray(), band.GetNoDataValue(), copy=False
-            )
-            del slope
+            self._slope = self.get_raster_attribute('slope')
         return self._slope
 
     @property
     def aspect(self):
         if self._aspect is None:
-            aspect = gdal.DEMProcessing(
-                '', self.filename, 'aspect', format='MEM'
-            )
-            band = aspect.GetRasterBand(1)
-            self._aspect = np.ma.masked_values(
-                band.ReadAsArray(), band.GetNoDataValue(), copy=False
-            )
-            del aspect
+            self._aspect = self.get_raster_attribute('aspect')
         return self._aspect
 
     @property
     def elevation(self):
         if self._elevation is None:
-            band = self.file.GetRasterBand(1)
-            self._elevation = np.ma.masked_values(
-                band.ReadAsArray(), band.GetNoDataValue(), copy=False
-            )
-            del band
+            self._elevation = self.get_values_for_raster(self.file)
         return self._elevation
 
     def geo_transform(self):
