@@ -119,7 +119,7 @@ class Agisoft:
 
     def image_list(self):
         images = glob.glob(
-            self.image_folder + '*' + self.image_type, recursive=True
+            self.image_folder + '**/*' + self.image_type, recursive=True
         )
         if len(images) == 0:
             print('**** EXIT - ' + self.image_type +
