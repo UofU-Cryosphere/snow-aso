@@ -22,7 +22,7 @@
 export OMP_NUM_THREADS=$SLURM_NTASKS
 
 # Needed for PDF export in Agisoft using QT
-export export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
+export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 
 PROJECT_NAME='SB_20170221'
 
