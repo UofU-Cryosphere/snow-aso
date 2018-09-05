@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 from base.raster_file import RasterFile
 from area_plot import AreaPlot
@@ -53,6 +54,9 @@ if __name__ == '__main__':
     if arguments.shape_file and os.path.exists(shape_file):
         lidar_file.crop_to_shape(shape_file)
         sfm_file.crop_to_shape(shape_file)
+    elif arguments.shape_file:
+        print('ERROR - Shapefile not found:\n   ' + shape_file)
+        sys.exit()
 
     area_plot = AreaPlot(lidar_file, sfm_file, output_path)
     [area_plot.plot(attr) for attr in AreaPlot.TYPES]
