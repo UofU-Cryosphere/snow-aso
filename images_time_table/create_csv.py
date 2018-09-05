@@ -29,8 +29,8 @@ parser.add_argument(
 parser.add_argument(
     '--image-type',
     type=str,
-    help='Change image file names to given type. Default: iiq',
-    default='iiq',
+    help='Change image file names to given type. Default: tif',
+    default='tif',
 )
 
 if __name__ == '__main__':
