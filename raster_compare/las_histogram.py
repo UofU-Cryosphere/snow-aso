@@ -1,9 +1,9 @@
 import pdal
 
 from matplotlib import pyplot
-from base.common import ROOT_PATH
 from base.plot_base import PlotBase
 
+ROOT_PATH = ''
 
 def read_laz():
     json = """

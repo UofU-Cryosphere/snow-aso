@@ -4,7 +4,6 @@ import numpy as np
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-from base.common import LIDAR
 from base.raster_file import RasterFile
 
 
@@ -39,5 +38,5 @@ def render_3d(source):
 
 
 if __name__ == '__main__':
-    lidar = RasterFile(LIDAR)
+    lidar = RasterFile('')
     render_3d(lidar)
