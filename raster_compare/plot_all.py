@@ -34,6 +34,7 @@ parser.add_argument(
     '--output-path',
     type=str,
     help='Directory where plots should be saved to',
+    default='comparison'
 )
 
 if __name__ == '__main__':
@@ -44,10 +45,9 @@ if __name__ == '__main__':
     lidar_file = RasterFile(os.path.join(base_path, arguments.lidar_dem))
     sfm_file = RasterFile(os.path.join(base_path, arguments.sfm_dem))
 
-    if arguments.output_path:
-        output_path = os.path.join(base_path, arguments.output_path)
-    else:
-        output_path = base_path
+    output_path = os.path.join(base_path, arguments.output_path, '')
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
 
     shape_file = os.path.join(base_path, arguments.shape_file)
     if arguments.shape_file and os.path.exists(shape_file):
