@@ -10,12 +10,6 @@ from base.plot_base import PlotBase
 
 # Plot differences between rasters and show histogram of the differences
 class AreaDifferences(PlotBase):
-    TYPES = ['elevation', 'slope', 'aspect']
-    SCALE_BAR_LABEL = {
-        'aspect': 'Degree',
-        'elevation': 'Meter',
-        'slope': 'Angle',
-    }
     TITLE = '{0} differences'
     TITLE_HIST = '{0} difference distribution'
 

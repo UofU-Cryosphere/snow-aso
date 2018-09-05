@@ -7,13 +7,6 @@ from base.plot_base import PlotBase
 
 # Plot DEMs side by side
 class AreaPlot(PlotBase):
-    TYPES = ['elevation', 'slope', 'aspect']
-    SCALE_BAR_LABEL = {
-        'aspect': 'Degree',
-        'elevation': 'Meter',
-        'slope': 'Angle',
-    }
-
     OUTPUT_FILE = '{0}{1}_comparison.png'
 
     def plot(self, raster_attr):

@@ -7,7 +7,6 @@ from base.raster_difference import RasterDifference
 
 class Histogram(PlotBase):
     BOX_TEXT = 'Mean: {0}'
-    TYPES = ['elevation', 'slope', 'aspect']
 
     OUTPUT_FILE = '{0}{1}_histogram.png'
 

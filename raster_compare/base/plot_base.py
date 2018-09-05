@@ -3,6 +3,13 @@ import matplotlib.patches as mpatches
 
 
 class PlotBase(object):
+    TYPES = ['elevation', 'slope', 'aspect']
+    SCALE_BAR_LABEL = {
+        'aspect': 'Degree',
+        'elevation': 'Meter',
+        'slope': 'Angle',
+    }
+
     NUM_BINS = 50
 
     TITLE_FONT_SIZE = 20
