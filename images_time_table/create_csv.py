@@ -16,15 +16,13 @@ parser.add_argument(
 )
 parser.add_argument(
     '--old-eif-type',
-    type=bool,
+    action="store_true",
     help='Flag to indicate old eif files with no IMU data',
-    default=False,
 )
 parser.add_argument(
     '--query-sbet',
-    type=bool,
+    action="store_true",
     help='Flag to force querying the SBET file for new EIF file type',
-    default=False,
 )
 parser.add_argument(
     '--image-type',
