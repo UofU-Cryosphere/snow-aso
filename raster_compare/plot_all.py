@@ -56,9 +56,11 @@ if __name__ == '__main__':
 
     area_plot = AreaPlot(lidar_file, sfm_file, output_path)
     [area_plot.plot(attr) for attr in AreaPlot.TYPES]
+    del area_plot
 
     area_difference = AreaDifferences(lidar_file, sfm_file, output_path)
     [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
+    del area_difference
 
     histogram = Histogram(lidar_file, sfm_file, output_path)
     [histogram.plot(attr) for attr in Histogram.TYPES]
