@@ -21,8 +21,13 @@ class PlotBase(object):
         pad=0.6
     )
 
-    def __init__(self, lidar, sfm):
+    def __init__(self, lidar, sfm, output_path):
+        self._output_path = output_path
         self.raster_difference = RasterDifference(lidar, sfm)
+
+    @property
+    def output_path(self):
+        return self._output_path
 
     @property
     def lidar(self):

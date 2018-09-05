@@ -2,12 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
-from base.common import ROOT_PATH, SFM, LIDAR
 from base.plot_base import PlotBase
 
-OUTPUT_FILE = ROOT_PATH + '/{0}_comparison.png'
 
-
+# Plot DEMs side by side
 class AreaPlot(PlotBase):
     TYPES = ['elevation', 'slope', 'aspect']
     SCALE_BAR_LABEL = {
@@ -15,6 +13,8 @@ class AreaPlot(PlotBase):
         'elevation': 'Meter',
         'slope': 'Angle',
     }
+
+    OUTPUT_FILE = '{0}{1}_comparison.png'
 
     def plot(self, raster_attr):
         figure, (ax1, ax2, cax) = plt.subplots(
@@ -68,12 +68,7 @@ class AreaPlot(PlotBase):
         )
 
         plt.subplots_adjust(hspace=0.1)
-
         plt.savefig(
-            OUTPUT_FILE.format(raster_attr), **PlotBase.output_defaults()
+            self.OUTPUT_FILE.format(self.output_path, raster_attr),
+            **PlotBase.output_defaults()
         )
-
-
-# Plot DEMs side by side
-if __name__ == '__main__':
-    [AreaPlot(LIDAR, SFM).plot(attr) for attr in AreaPlot.TYPES]

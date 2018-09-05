@@ -1,16 +1,15 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
-from base.common import ROOT_PATH, SFM, LIDAR
 from base.plot_base import PlotBase
 from base.raster_difference import RasterDifference
-
-OUTPUT_FILE = ROOT_PATH + '/{0}_histogram.png'
 
 
 class Histogram(PlotBase):
     BOX_TEXT = 'Mean: {0}'
     TYPES = ['elevation', 'slope', 'aspect']
+
+    OUTPUT_FILE = '{0}{1}_histogram.png'
 
     @staticmethod
     def show_mean(ax, value):
@@ -136,8 +135,7 @@ class Histogram(PlotBase):
         elif style == 'side-by-side':
             self.render_side_by_side()
 
-        plt.savefig(OUTPUT_FILE.format(style), **PlotBase.output_defaults())
-
-
-if __name__ == '__main__':
-    [Histogram(LIDAR, SFM).plot(attr) for attr in Histogram.TYPES]
+        plt.savefig(
+            self.OUTPUT_FILE.format(self.output_path, style),
+            **PlotBase.output_defaults()
+        )

@@ -5,12 +5,10 @@ import numpy as np
 from matplotlib import cm
 from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
-from base.common import ROOT_PATH, SFM, LIDAR
 from base.plot_base import PlotBase
 
-OUTPUT_FILE = ROOT_PATH + '/{0}_differences.png'
 
-
+# Plot differences between rasters and show histogram of the differences
 class AreaDifferences(PlotBase):
     TYPES = ['elevation', 'slope', 'aspect']
     SCALE_BAR_LABEL = {
@@ -23,6 +21,8 @@ class AreaDifferences(PlotBase):
 
     BOX_PLOT_TEXT = '{0}: {1:.3f}'
     BOX_PLOT_WHISKERS = [2.5, 97.5]
+
+    OUTPUT_FILE = '{0}{1}_differences.png'
 
     @staticmethod
     def add_hist_stats(ax, diff):
@@ -138,10 +138,6 @@ class AreaDifferences(PlotBase):
 
         plt.subplots_adjust(hspace=0.1)
         plt.savefig(
-            OUTPUT_FILE.format(raster_attr), **PlotBase.output_defaults()
+            self.OUTPUT_FILE.format(self.output_path, raster_attr),
+            **PlotBase.output_defaults()
         )
-
-
-# Plot differences between rasters and show histogram of the differences
-if __name__ == '__main__':
-    [AreaDifferences(LIDAR, SFM).plot(attr) for attr in AreaDifferences.TYPES]
