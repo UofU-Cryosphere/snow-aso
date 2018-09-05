@@ -131,8 +131,10 @@ class Histogram(PlotBase):
 
     def plot(self, style):
         if style in self.TYPES:
+            self.print_status(str(style))
             self.render_stacked(style)
         elif style == 'side-by-side':
+            self.print_status(style)
             self.render_side_by_side()
 
         plt.savefig(

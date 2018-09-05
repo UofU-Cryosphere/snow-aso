@@ -86,6 +86,8 @@ class RasterFile(object):
         return self._file.GetGeoTransform()
 
     def crop_to_shape(self, shape_file):
+        print('Cropping raster:\n   ' + self.filename +
+              '\nto shape:\n   ' + shape_file + '\n')
         self.file = gdal.Warp(
             '', self.filename, format='MEM', dstAlpha=True, cropToCutline=True,
             cutlineDSName=shape_file

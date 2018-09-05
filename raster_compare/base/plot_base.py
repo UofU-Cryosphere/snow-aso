@@ -68,3 +68,5 @@ class PlotBase(object):
         handles.append(mean)
         axes.legend(handles=handles)
 
+    def print_status(self, message):
+        print('Plotting ' + self.__class__.__name__ + ':\n   ' + message + '\n')

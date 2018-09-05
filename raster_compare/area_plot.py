@@ -17,6 +17,8 @@ class AreaPlot(PlotBase):
     OUTPUT_FILE = '{0}{1}_comparison.png'
 
     def plot(self, raster_attr):
+        self.print_status(str(raster_attr))
+
         figure, (ax1, ax2, cax) = plt.subplots(
             ncols=3,
             gridspec_kw={"width_ratios": [1, 1, 0.1]}

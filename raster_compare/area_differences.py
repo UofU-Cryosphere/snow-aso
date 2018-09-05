@@ -53,7 +53,6 @@ class AreaDifferences(PlotBase):
         ]
         PlotBase.add_to_legend(ax, '\n'.join(text))
 
-
     @staticmethod
     def setup_figure():
         figure, (ax1, cax, ax2, ax3) = plt.subplots(
@@ -78,6 +77,8 @@ class AreaDifferences(PlotBase):
         return dict(norm=colors.BoundaryNorm(boundaries=bounds, ncolors=256))
 
     def plot(self, raster_attr):
+        self.print_status(str(raster_attr))
+
         ax1, cax, ax2, ax3 = self.setup_figure()
 
         if raster_attr is 'elevation':
