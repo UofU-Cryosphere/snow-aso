@@ -1,10 +1,17 @@
 import gdal
 import numpy as np
+import os
+import sys
 
 
 class RasterFile(object):
     def __init__(self, filename):
-        self.filename = filename
+        if os.path.exists(filename):
+            self.filename = filename
+        else:
+            print('File not found:\n  ' + filename)
+            sys.exit()
+
         self._file = None
         self._extent = None
         self._elevation = None
