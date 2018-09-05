@@ -36,7 +36,6 @@ class EifData(object):
         print('Getting image list')
         self.file_list = glob.glob(self.eif_files(base_path), recursive=True)
         self.new_eif_type = not kwargs['old_eif_type']
-        self.force_query = kwargs['force_query']
         self.image_type = kwargs['image_type']
         self.images_time_table = []
 

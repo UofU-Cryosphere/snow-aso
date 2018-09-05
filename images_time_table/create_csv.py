@@ -40,7 +40,6 @@ if __name__ == '__main__':
     eif_data = EifData(
         os.path.join(basin_dir, IMAGE_DIR),
         old_eif_type=arguments.old_eif_type,
-        force_query=arguments.query_sbet,
         image_type=arguments.image_type
     )
     eif_data.get_images()
