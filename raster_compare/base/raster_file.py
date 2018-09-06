@@ -86,9 +86,14 @@ class RasterFile(object):
         return self._file.GetGeoTransform()
 
     def crop_to_shape(self, shape_file):
-        print('Cropping raster:\n   ' + self.filename +
-              '\nto shape:\n   ' + shape_file + '\n')
-        self.file = gdal.Warp(
-            '', self.filename, format='MEM', dstAlpha=True, cropToCutline=True,
-            cutlineDSName=shape_file
-        )
+        output_file = self.filename.replace('.tif', '_cropped.tif')
+        if os.path.exists(output_file):
+            self.filename = output_file
+        else:
+            print('Cropping raster:\n   ' + self.filename +
+                  '\nto shape:\n   ' + shape_file + '\n')
+            self.file = gdal.Warp(
+                output_file, self.filename,
+                format='GTiff', dstAlpha=True, cropToCutline=True,
+                cutlineDSName=shape_file
+            )
