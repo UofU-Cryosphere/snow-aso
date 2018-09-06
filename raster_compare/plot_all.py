@@ -6,6 +6,7 @@ from base.raster_file import RasterFile
 from area_plot import AreaPlot
 from area_differences import AreaDifferences
 from histograms import Histogram
+from regression import Regression
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -37,6 +38,16 @@ parser.add_argument(
     help='Directory where plots should be saved to',
     default='comparison'
 )
+parser.add_argument(
+    '--plots',
+    action='store_true',
+    help='Create comparison plots for elevation, slope, and aspect difference'
+)
+parser.add_argument(
+    '--regression',
+    action='store_true',
+    help='Run regression analysis'
+)
 
 if __name__ == '__main__':
     arguments = parser.parse_args()
@@ -60,13 +71,18 @@ if __name__ == '__main__':
 
     args = dict(lidar=lidar_file, sfm=sfm_file, output_path=output_path)
 
-    area_plot = AreaPlot(**args)
-    [area_plot.plot(attr) for attr in AreaPlot.TYPES]
-    del area_plot
+    if arguments.plots:
+        area_plot = AreaPlot(**args)
+        [area_plot.plot(attr) for attr in AreaPlot.TYPES]
+        del area_plot
 
-    area_difference = AreaDifferences(**args)
-    [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
-    del area_difference
+        area_difference = AreaDifferences(**args)
+        [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
+        del area_difference
 
-    histogram = Histogram(**args)
-    [histogram.plot(attr) for attr in Histogram.TYPES]
+        histogram = Histogram(**args)
+        [histogram.plot(attr) for attr in Histogram.TYPES]
+        del histogram
+
+    if arguments.regression:
+        Regression(**args).scatter_plots()
