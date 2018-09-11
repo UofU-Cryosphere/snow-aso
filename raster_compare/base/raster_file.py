@@ -1,18 +1,10 @@
 import gdal
 import numpy as np
-import os
-import sys
 
 
 class RasterFile(object):
     def __init__(self, filename):
-        if os.path.exists(filename):
-            self.filename = filename
-        else:
-            print('File not found:\n  ' + filename)
-            sys.exit()
-
-        self._file = None
+        self.file = filename
         self._extent = None
         self._elevation = None
         self._hillshade = None
@@ -21,13 +13,11 @@ class RasterFile(object):
 
     @property
     def file(self):
-        if self._file is None:
-            self._file = gdal.Open(self.filename)
         return self._file
 
     @file.setter
-    def file(self, value):
-        self._file = value
+    def file(self, filename):
+        self._file = gdal.Open(filename)
 
     @property
     def extent(self):
@@ -51,9 +41,7 @@ class RasterFile(object):
         return values
 
     def get_raster_attribute(self, attribute):
-        raster = gdal.DEMProcessing(
-                '', self.file, attribute, format='MEM'
-            )
+        raster = gdal.DEMProcessing('', self.file, attribute, format='MEM')
         raster_values = self.get_values_for_raster(raster)
         del raster
         return raster_values
@@ -83,17 +71,4 @@ class RasterFile(object):
         return self._elevation
 
     def geo_transform(self):
-        return self._file.GetGeoTransform()
-
-    def crop_to_shape(self, shape_file):
-        output_file = self.filename.replace('.tif', '_cropped.tif')
-        if os.path.exists(output_file):
-            self.filename = output_file
-        else:
-            print('Cropping raster:\n   ' + self.filename +
-                  '\nto shape:\n   ' + shape_file + '\n')
-            self.file = gdal.Warp(
-                output_file, self.filename,
-                format='GTiff', dstAlpha=True, cropToCutline=True,
-                cutlineDSName=shape_file
-            )
+        return self.file.GetGeoTransform()
