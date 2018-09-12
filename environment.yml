@@ -1,7 +1,7 @@
 name: snow_aso
 channels:
-  - defaults
   - conda-forge
+  - defaults
 dependencies:
   - boost-cpp=1.66.0
   - flann=1.9.1
@@ -17,7 +17,7 @@ dependencies:
   - bzip2=1.0.6
   - ca-certificates=2018.03.07
   - cairo=1.14.12
-  - certifi=2018.4.16
+  - certifi=2018.8.24
   - curl=7.60.0
   - cycler=0.10.0
   - expat=2.2.5
@@ -58,19 +58,20 @@ dependencies:
   - libtiff=4.0.9
   - libuuid=1.0.3
   - libxml2=2.9.8
-  - matplotlib=2.2.2
+  - matplotlib=2.2.3
   - mkl=2018.0.3
   - mkl_fft=1.0.4
   - mkl_random=1.0.1
   - ncurses=6.1
-  - numpy=1.15.0
-  - numpy-base=1.15.0
+  - numpy=1.15.1
+  - numpy-base=1.15.1
   - openblas=0.2.20
   - openblas-devel=0.2.20
   - openjpeg=2.3.0
-  - openssl=1.0.2o
+  - openssl=1.0.2p
   - packaging=17.1
-  - pandas=0.23.1
+  - pandas=0.23.4
+  - patsy=0.5.0
   - pcre=8.42
   - pip=10.0.1
   - pixman=0.34.0
@@ -83,12 +84,16 @@ dependencies:
   - python-dateutil=2.7.3
   - pytz=2018.4
   - readline=7.0
+  - scipy=1.1.0
   - setuptools=39.2.0
   - six=1.11.0
   - sqlite=3.24.0
+  - statsmodels=0.9.0
   - tk=8.6.7
   - tornado=5.0.2
   - wheel=0.31.1
   - xerces-c=3.2.1
   - xz=5.2.4
   - zlib=1.2.11
+prefix: /Volumes/warehouse/projects/UofU/miniconda3/envs/snow_aso
+
