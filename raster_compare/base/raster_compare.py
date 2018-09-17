@@ -75,11 +75,16 @@ class RasterCompare(object):
         if not os.path.exists(output_file):
             print('Cropping raster:\n   ' + raster_file +
                   '\nto shape:\n   ' + shape_file + '\n')
-            gdal.Warp(
-                output_file, raster_file,
-                format='GTiff', dstAlpha=True, cropToCutline=True,
+            warped = gdal.Warp(
+                '', raster_file,
+                format='MEM', dstAlpha=True, cropToCutline=True,
                 cutlineDSName=shape_file
             )
+            gdal.Translate(
+                output_file, warped,
+                creationOptions=["COMPRESS=LZW", "TILED=YES", "BIGTIFF=IF_SAFER"]
+            )
+            del warped
 
         return output_file
 
