@@ -23,3 +23,6 @@ gdalwarp source.tif outfile.tif -t_srs EPSG:32613
 # Convert ENVI file to GeoTiff
 # Have the corresponding .hdr in same folder with identical name
 gddal_translate -of GTiff infile outfile.tif
+
+# Compress Tiff file
+gdal_translate -co COMPRESS=LZW -co TILED=YES -co BIGTIFF=IF_SAFER ERW_20180528_dem_3m_cropped.tif ERW_20180528_dem_3m_cropped_cmpr.tif
