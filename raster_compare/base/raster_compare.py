@@ -57,6 +57,8 @@ class RasterCompare(object):
     def shape_file(self, path):
         if path is not None:
             self._shape_file = self.check_path(path)
+        else:
+            self._shape_file = None
 
     def check_path(self, path):
         if hasattr(self, 'base_path'):
