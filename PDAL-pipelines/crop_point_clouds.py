@@ -6,12 +6,17 @@ from multiprocessing import Pool
 
 import pdal
 
+BASINS_BOUNDARIES = {
+    'SBB': "([259249.411, 261872.873], [4198548, 4200442.470])",
+    'TRW': "([254245.744045, 307343.886432], [4179326.892644, 4229667.195265])"
+}
+
 PIPELINE_JSON_TEMPLATE = {
     'pipeline': [
         'infile',
         {
             'type': 'filters.crop',
-            'bounds': "([259249.411, 261872.873], [4198548, 4200442.470])"
+            'bounds': 'boundaries'
         },
         'outfile'
     ]
@@ -24,6 +29,12 @@ parser.add_argument(
     '--base-path',
     type=str,
     help='Root directory',
+    required=True
+)
+parser.add_argument(
+    '--basin',
+    type=str,
+    help='Basin boundaries - Options: SBB, TRW',
     required=True
 )
 
@@ -47,6 +58,8 @@ if __name__ == '__main__':
 
         pipeline_json = copy.deepcopy(PIPELINE_JSON_TEMPLATE)
         pipeline_json['pipeline'][0] = input_file
+        pipeline_json['pipeline'][1]['bounds'] = \
+            BASINS_BOUNDARIES[arguments.basin]
         pipeline_json['pipeline'][2] = output_file
 
         pipelines.append(pipeline_json)
