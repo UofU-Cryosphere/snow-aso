@@ -1,15 +1,15 @@
 // Produce DEM from lidar sampled down to 1m resolution
 {
-    "pipeline": [
-        "/Path/To/Lidar.laz",
-        {
-            "type": "filters.sample",
-            "radius": "1m"
-        },
-        {
-            "filename":"Path/To/Output.tif",
-            "resolution": 1,
-            "type": "writers.gdal"
-        }
-    ]
+  "pipeline": [
+    "/Path/To/Lidar.laz",
+    {
+      "type": "filters.sample",
+      "radius": "1m"
+    },
+    {
+      "filename": "Path/To/Output.tif",
+      "resolution": 1,
+      "type": "writers.gdal"
+    }
+  ]
 }

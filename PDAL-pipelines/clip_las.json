@@ -1,9 +1,9 @@
 {
-  "pipeline":[
-   "/Path/To/Lidar.laz",
+  "pipeline": [
+    "/Path/To/Lidar.laz",
     {
-      "type":"filters.crop",
-      "bounds":"([259249.411, 261872.873], [4198548, 4200442.470])"
+      "type": "filters.crop",
+      "bounds": "([259249.411, 261872.873], [4198548, 4200442.470])"
     },
     "/Path/To/Lidar_clipped.laz"
   ]
