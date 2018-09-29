@@ -1,13 +1,14 @@
 {
-    "pipeline": [
-        "/Path/To/Lidar.laz",
-        {
-            "filename":"/Path/To/Output.tif",
-            "gdaldriver":"GTiff",
-            "output_type":"all",
-            "resolution":"1.0",
-            "type": "writers.gdal",
-            "bounds":"([259249.411, 261872.873], [4198548, 4200442.470])"
-        }
-    ]
+  "pipeline": [
+    "/Path/To/Lidar.laz",
+    {
+      "filename": "/Path/To/Output.tif",
+      "gdaldriver": "GTiff",
+      "gdalopts": "t_srs=EPGS::32613",
+      "output_type": "all",
+      "resolution": "1.0",
+      "type": "writers.gdal",
+      "bounds": "([259249.411, 261872.873], [4198548, 4200442.470])"
+    }
+  ]
 }
