@@ -2,6 +2,7 @@ import argparse
 import copy
 import glob
 import json
+import re
 from multiprocessing import Pool
 
 import pdal
@@ -22,7 +23,7 @@ PIPELINE_JSON_TEMPLATE = {
     ]
 }
 
-LAZ_FILE_PATTERN = "{0}/*.laz"
+LAZ_FILE_PATTERN = "{0}/*.la[s|z]"
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -54,7 +55,7 @@ if __name__ == '__main__':
 
     pipelines = []
     for input_file in files:
-        output_file = input_file.replace('.laz', '_cropped.laz')
+        output_file = re.sub(r'\.la[s|z]', '_cropped.laz', input_file)
 
         pipeline_json = copy.deepcopy(PIPELINE_JSON_TEMPLATE)
         pipeline_json['pipeline'][0] = input_file
