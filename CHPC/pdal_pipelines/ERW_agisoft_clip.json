@@ -1,0 +1,10 @@
+{
+  "pipeline": [
+    "/uufs/chpc.utah.edu/common/home/u1135435/scratch/CB_20180524/CB_20180524_Agisoft.laz",
+    {
+      "type": "filters.crop",
+      "bounds": "([322522.941446, 336546.729388], [4305592.330964, 4322441.471803])"
+    },
+    "/uufs/chpc.utah.edu/common/home/u1135435/scratch/CB_20180524/CB_20180524_Agisoft_clipped.laz"
+  ]
+}
