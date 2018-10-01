@@ -1,0 +1,24 @@
+{
+  "pipeline": [
+    "/Path/To/Source.laz",
+    {
+      "type": "filters.colorization",
+      "raster": "/Path/To/Vegetation_mask.tif",
+      "dimensions": "Red:1"
+    },
+    {
+      "type": "filters.range",
+      "limits": "Red[0:1]"
+    },
+    {
+      "type": "writers.las",
+      "compression":"laszip",
+      "forward": "all",
+      "dataformat_id": 0,
+      "filename": "/Path/To/Output.laz"
+    }
+  ]
+}
+
+
+
