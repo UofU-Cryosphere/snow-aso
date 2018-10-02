@@ -72,3 +72,16 @@ class RasterFile(object):
 
     def geo_transform(self):
         return self.file.GetGeoTransform()
+
+    def join_masks(self, attribute, other):
+        """
+        Extend the numpy mask for given attribute with mask from given other
+        masked numpy array.
+
+        Note: This will *permanently* change the mask.
+
+        :param attribute: name of property to change the mask
+        :param other: Masked numpy array to extend the mask with
+        """
+        attr = getattr(self, attribute)
+        attr.mask = np.ma.mask_or(attr.mask, other.mask)
