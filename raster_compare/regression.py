@@ -28,10 +28,11 @@ class Regression(PlotBase):
         )
 
     def plot_lidar_vs_sfm(self):
+        self.print_status('Lidar vs. SfM elevations')
         self.scatter_plot(
             self.sfm.elevation,
             self.lidar.elevation,
-            name='lidar_vs_sfm',
+            name='Lidar_vs_sfm',
             xlabel='SfM',
             ylabel='Lidar',
         )
@@ -80,4 +81,4 @@ class Regression(PlotBase):
 
     def run(self):
         self.plot_all()
-        self.fit_all()
+        # self.fit_all()
