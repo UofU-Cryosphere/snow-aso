@@ -38,14 +38,13 @@ class Regression(PlotBase):
 
     def plot_difference_vs_source(self, source, name):
         for variable in self.TYPES:
-            name = name + '_' + variable
-            self.print_status(name)
+            self.print_status(name + ' vs. ' + variable)
             self.scatter_plot(
                 self.elevation_differences,
                 getattr(source, variable),
-                name=name,
+                name=name + '_' + variable,
                 xlabel='Difference in Elevation',
-                ylabel=name + ': ' + str(variable),
+                ylabel=name + ': ' + variable,
             )
 
     def plot_all(self):
