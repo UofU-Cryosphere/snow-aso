@@ -25,6 +25,7 @@ class AreaPlot(PlotBase):
         ax1.imshow(
             self.lidar.hill_shade, extent=self.lidar.extent, **hillshade_opts
         )
+        self.sfm.join_masks('hill_shade', getattr(self.lidar, raster_attr))
         ax2.imshow(
             self.sfm.hill_shade, extent=self.sfm.extent, **hillshade_opts
         )
@@ -43,6 +44,7 @@ class AreaPlot(PlotBase):
         )
         ax1.set_title(PlotBase.LIDAR_LABEL, **PlotBase.title_opts())
 
+        self.sfm.join_masks(raster_attr, getattr(self.lidar, raster_attr))
         image = ax2.imshow(
             getattr(self.sfm, raster_attr), extent=self.sfm.extent, **im_opts
         )

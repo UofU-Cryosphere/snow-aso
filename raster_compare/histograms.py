@@ -101,6 +101,7 @@ class Histogram(PlotBase):
         ax1.set_xlim(min_value, max_value + 1)
 
         ax2 = plt.subplot(3, 1, 2)
+        self.sfm.join_masks(raster_attr, getattr(self.lidar, raster_attr))
         h2 = plt.hist(
             getattr(self.sfm, raster_attr).compressed(),
             label=PlotBase.SFM_LABEL,
