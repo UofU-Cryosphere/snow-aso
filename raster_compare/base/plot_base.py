@@ -1,5 +1,7 @@
-from base.raster_difference import RasterDifference
 import matplotlib.patches as mpatches
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+from base.raster_difference import RasterDifference
 
 
 class PlotBase(object):
@@ -74,6 +76,13 @@ class PlotBase(object):
         handles, labels = axes.get_legend_handles_labels()
         handles.append(mean)
         axes.legend(handles=handles)
+
+    @staticmethod
+    def insert_colorbar(plt, ax, data, label):
+        legend = make_axes_locatable(ax)
+        cax = legend.append_axes("right", size="5%", pad=0.05)
+        scale_bar = plt.colorbar(data, cax=cax)
+        scale_bar.set_label(label=label, size=PlotBase.LABEL_FONT_SIZE)
 
     def print_status(self, message):
         print('Plotting ' + self.__class__.__name__ + ':\n   ' + message + '\n')
