@@ -114,6 +114,9 @@ class AreaDifferences(PlotBase):
             sym='k+',
             whis=self.BOX_PLOT_WHISKERS,
         )
+        ax3.tick_params(
+            axis='x', which='both', bottom=False, top=False, labelbottom=False
+        )
         self.add_box_plot_stats(ax3, box)
 
         plt.tight_layout()
