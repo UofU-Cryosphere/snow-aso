@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
 from base.plot_base import PlotBase
 
@@ -12,11 +11,8 @@ class AreaPlot(PlotBase):
     def plot(self, raster_attr):
         self.print_status(str(raster_attr))
 
-        figure, (ax1, ax2, cax) = plt.subplots(
-            ncols=3,
-            gridspec_kw={"width_ratios": [1, 1, 0.1]}
-        )
-        figure.set_size_inches(10, 8)
+        figure, (ax1, ax2) = plt.subplots(ncols=2)
+        figure.set_size_inches(10, 5)
 
         axes = (ax1, ax2)
         ax1.get_shared_x_axes().join(ax1, ax2)
@@ -53,17 +49,9 @@ class AreaPlot(PlotBase):
         ax2.set_yticklabels([])
         ax2.set_title(PlotBase.SFM_LABEL, **PlotBase.title_opts())
 
-        # Lidar and SfM scale bar
-        ip_1 = InsetPosition(ax2, [1.03, 0, 0.05, 1])
-        cax.set_axes_locator(ip_1)
-        scale_bar = plt.colorbar(image, cax=cax)
-        scale_bar.set_label(
-            label=self.SCALE_BAR_LABEL[raster_attr],
-            size=PlotBase.LABEL_FONT_SIZE
-        )
+        self.insert_colorbar(plt, ax2, image, self.SCALE_BAR_LABEL[raster_attr])
 
-        plt.subplots_adjust(hspace=0.1)
+        plt.tight_layout()
         plt.savefig(
             self.OUTPUT_FILE.format(self.output_path, raster_attr),
-            **PlotBase.output_defaults()
         )
