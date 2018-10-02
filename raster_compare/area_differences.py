@@ -17,6 +17,7 @@ class AreaDifferences(PlotBase):
                 'SD: {:10.2f}\n' \
                 'Min: {:10.2f}\n' \
                 'Max: {:10.2f}'
+    HIST_BIN_WIDTH = 0.05
     BOX_PLOT_TEXT = '{0}: {1:.3f}'
     BOX_PLOT_WHISKERS = [2.5, 97.5]
 
@@ -65,14 +66,22 @@ class AreaDifferences(PlotBase):
         fig.set_size_inches(12, 10)
         grid_spec = GridSpec(2, 2, figure=fig)
 
+        difference = getattr(self.raster_difference, raster_attr)
+
         if raster_attr is 'elevation':
             bounds = self.elevation_bounds()
+            bins = np.arange(
+                difference.min(),
+                difference.max() + self.HIST_BIN_WIDTH,
+                self.HIST_BIN_WIDTH
+            )
         else:
             bounds = dict()
+            bins = 'auto'
 
         ax1 = fig.add_subplot(grid_spec[0, :])
         diff_plot = ax1.imshow(
-            getattr(self.raster_difference, raster_attr),
+            difference,
             cmap=cm.get_cmap('PuOr'),
             alpha=0.8,
             extent=self.sfm.extent,
@@ -86,11 +95,7 @@ class AreaDifferences(PlotBase):
         )
 
         ax2 = fig.add_subplot(grid_spec[1, :1])
-        ax2.hist(
-            getattr(self.raster_difference, raster_attr).compressed(),
-            bins='auto',
-            label='Count',
-        )
+        ax2.hist(difference.compressed(), bins=bins, label='Count')
         ax2.set_title(
             self.TITLE_HIST.format(raster_attr.capitalize()),
             **PlotBase.title_opts()
@@ -98,13 +103,11 @@ class AreaDifferences(PlotBase):
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
-        self.add_hist_stats(
-            ax2, getattr(self.raster_difference, raster_attr)
-        )
+        self.add_hist_stats(ax2, difference)
 
         ax3 = fig.add_subplot(grid_spec[1:, -1])
         box = ax3.boxplot(
-            getattr(self.raster_difference, raster_attr).compressed(),
+            difference.compressed(),
             sym='k+',
             whis=self.BOX_PLOT_WHISKERS,
         )
