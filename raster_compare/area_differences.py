@@ -14,6 +14,10 @@ class AreaDifferences(PlotBase):
     TITLE = '{0} differences'
     TITLE_HIST = '{0} difference distribution'
 
+    HIST_TEXT = 'Mean: {:10.2f}\n' \
+                'SD: {:10.2f}\n' \
+                'Min: {:10.2f}\n' \
+                'Max: {:10.2f}'
     BOX_PLOT_TEXT = '{0}: {1:.3f}'
     BOX_PLOT_WHISKERS = [2.5, 97.5]
 
@@ -21,9 +25,9 @@ class AreaDifferences(PlotBase):
 
     @staticmethod
     def add_hist_stats(ax, diff):
-        mean = diff.mean()
-        sd = diff.std()
-        box_text = 'Mean: ' + str(mean.round(2)) + '\nSD: ' + str(sd.round(2))
+        box_text = AreaDifferences.HIST_TEXT.format(
+            diff.mean(), diff.std(), diff.min(), diff.max()
+        )
         PlotBase.add_to_legend(ax, box_text)
 
     def add_box_plot_stats(self, ax, box_plot_data):
