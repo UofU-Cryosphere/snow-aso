@@ -84,7 +84,8 @@ class RasterCompare(object):
             )
             gdal.Translate(
                 output_file, warped,
-                creationOptions=["COMPRESS=LZW", "TILED=YES", "BIGTIFF=IF_SAFER"]
+                creationOptions=["COMPRESS=LZW", "TILED=YES",
+                                 "BIGTIFF=IF_SAFER", "NUM_THREADS=ALL_CPUS"]
             )
             del warped
 
