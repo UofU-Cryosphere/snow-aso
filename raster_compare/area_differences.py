@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from matplotlib import cm
-from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
+from matplotlib.gridspec import GridSpec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from base.plot_base import PlotBase
 
@@ -48,22 +49,6 @@ class AreaDifferences(PlotBase):
         PlotBase.add_to_legend(ax, '\n'.join(text))
 
     @staticmethod
-    def setup_figure():
-        figure, (ax1, cax, ax2, ax3) = plt.subplots(
-            ncols=4,
-            gridspec_kw={"width_ratios": [1, 0.1, 1, 1], 'height_ratios': [1]}
-        )
-        figure.set_size_inches(18, 8)
-
-        return ax1, cax, ax2, ax3
-
-    @staticmethod
-    def equal_aspect_axes(x_min, x_max, y_min, y_max):
-        x_range = x_max - x_min
-        y_range = y_max - y_min
-        return x_range / y_range
-
-    @staticmethod
     def elevation_bounds():
         bounds = np.array(
             [-20, -10, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 10, 20]
@@ -73,13 +58,16 @@ class AreaDifferences(PlotBase):
     def plot(self, raster_attr):
         self.print_status(str(raster_attr))
 
-        ax1, cax, ax2, ax3 = self.setup_figure()
+        fig = plt.figure(constrained_layout=False)
+        fig.set_size_inches(12, 10)
+        grid_spec = GridSpec(2, 2, figure=fig)
 
         if raster_attr is 'elevation':
             bounds = self.elevation_bounds()
         else:
             bounds = dict()
 
+        ax1 = fig.add_subplot(grid_spec[0, :])
         diff_plot = ax1.imshow(
             getattr(self.raster_difference, raster_attr),
             cmap=cm.get_cmap('PuOr'),
@@ -91,7 +79,16 @@ class AreaDifferences(PlotBase):
             self.TITLE.format(raster_attr.capitalize()), **PlotBase.title_opts()
         )
 
-        hist = ax2.hist(
+        legend = make_axes_locatable(ax1)
+        cax = legend.append_axes("right", size="5%", pad=0.05)
+        scale_bar = plt.colorbar(diff_plot, cax=cax)
+        scale_bar.set_label(
+            label=self.SCALE_BAR_LABEL[raster_attr],
+            size=PlotBase.LABEL_FONT_SIZE
+        )
+
+        ax2 = fig.add_subplot(grid_spec[1, :1])
+        ax2.hist(
             getattr(self.raster_difference, raster_attr).compressed(),
             bins='auto',
             label='Count',
@@ -103,36 +100,20 @@ class AreaDifferences(PlotBase):
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
-        ax2.set_aspect(self.equal_aspect_axes(
-            x_min=hist[1].min(), x_max=hist[1].max(),
-            y_min=hist[0].min(), y_max=hist[0].max(),
-        ))
         self.add_hist_stats(
             ax2, getattr(self.raster_difference, raster_attr)
         )
 
+        ax3 = fig.add_subplot(grid_spec[1:, -1])
         box = ax3.boxplot(
             getattr(self.raster_difference, raster_attr).compressed(),
             sym='k+',
             whis=self.BOX_PLOT_WHISKERS,
         )
-        ax3.set_aspect(self.equal_aspect_axes(
-            x_min=ax3.get_xlim()[0], x_max=ax3.get_xlim()[1],
-            y_min=ax3.get_ylim()[0], y_max=ax3.get_ylim()[1],
-        ))
         self.add_box_plot_stats(ax3, box)
 
-        # Differences scale bar
-        ip_2 = InsetPosition(ax1, [1.03, 0, 0.05, 1])
-        cax.set_axes_locator(ip_2)
-        scale_bar = plt.colorbar(diff_plot, cax=cax)
-        scale_bar.set_label(
-            label=self.SCALE_BAR_LABEL[raster_attr],
-            size=PlotBase.LABEL_FONT_SIZE
-        )
-
-        plt.subplots_adjust(hspace=0.1)
+        plt.tight_layout()
         plt.savefig(
             self.OUTPUT_FILE.format(self.output_path, raster_attr),
-            **PlotBase.output_defaults()
+            dpi=PlotBase.DEFAULT_DPI
         )
