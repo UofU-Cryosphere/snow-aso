@@ -4,7 +4,6 @@ import numpy as np
 
 from matplotlib import cm
 from matplotlib.gridspec import GridSpec
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from base.plot_base import PlotBase
 
@@ -82,13 +81,8 @@ class AreaDifferences(PlotBase):
         ax1.set_title(
             self.TITLE.format(raster_attr.capitalize()), **PlotBase.title_opts()
         )
-
-        legend = make_axes_locatable(ax1)
-        cax = legend.append_axes("right", size="5%", pad=0.05)
-        scale_bar = plt.colorbar(diff_plot, cax=cax)
-        scale_bar.set_label(
-            label=self.SCALE_BAR_LABEL[raster_attr],
-            size=PlotBase.LABEL_FONT_SIZE
+        self.insert_colorbar(
+            plt, ax1, diff_plot, self.SCALE_BAR_LABEL[raster_attr]
         )
 
         ax2 = fig.add_subplot(grid_spec[1, :1])
