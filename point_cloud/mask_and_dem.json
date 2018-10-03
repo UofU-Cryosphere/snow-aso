@@ -1,0 +1,26 @@
+{
+  "pipeline": [
+    "/Path/To/source.laz",
+    {
+      "type": "filters.colorization",
+      "raster": "/Path/To/mask.tif",
+      "dimensions": "Red:1"
+    },
+    {
+      "type": "filters.range",
+      "limits": "Red[0:1]"
+    },
+    {
+      "filename": "/Path/To/Output.tif",
+      "gdaldriver": "GTiff",
+      "gdalopts": "t_srs=EPGS::32613",
+      "output_type": "all",
+      "resolution": "1.0",
+      "type": "writers.gdal",
+      "bounds": "([322522.941446, 336546.729388], [4305592.330964, 4322441.471803])"
+    }
+  ]
+}
+
+
+
