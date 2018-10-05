@@ -3,12 +3,12 @@
     "/Path/To/Source.laz",
     {
       "type": "filters.colorization",
-      "raster": "/Path/To/Vegetation_mask.tif",
+      "raster": "/Path/To/Mask.tif",
       "dimensions": "Red:1"
     },
     {
       "type": "filters.range",
-      "limits": "Red[0:1]"
+      "limits": "Red[0:2]"
     },
     {
       "type": "writers.las",
