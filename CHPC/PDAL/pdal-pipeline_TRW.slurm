@@ -22,4 +22,4 @@ source activate ~/conda_envs/snow_aso
 
 cd ~/scratch
 
-pdal pipeline ~/snow-aso/CHPC/pdal_pipelines/SBB_agisoft_clip.json
+pdal pipeline ~/snow-aso/CHPC/PDAL/pipelines/TRW_agisoft_clip.json
