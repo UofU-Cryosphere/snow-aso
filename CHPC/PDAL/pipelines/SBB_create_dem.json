@@ -1,0 +1,14 @@
+{
+  "pipeline": [
+    "/Volumes/warehouse/projects/UofU/ASO/SBB_20170221/run/run-trans_source.laz",
+    {
+      "filename": "/Volumes/warehouse/projects/UofU/ASO/SBB_20170221/GeoTiffs/SB_20170221_Agisoft_1m.tif",
+      "gdaldriver": "GTiff",
+      "gdalopts": "t_srs=EPGS::32613",
+      "output_type": "all",
+      "resolution": "1.0",
+      "type": "writers.gdal",
+      "bounds": "([259249.411, 261872.873], [4198548, 4200442.470])"
+    }
+  ]
+}

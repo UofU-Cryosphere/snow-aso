@@ -1,0 +1,14 @@
+{
+  "pipeline": [
+    "/Volumes/warehouse/projects/UofU/ASO/TE_20180528/TRW_20180528__Agisoft.laz",
+    {
+      "filename": "/Volumes/warehouse/projects/UofU/ASO/TE_20180528/TRW_20180528_Agisoft_3m.tif",
+      "gdaldriver": "GTiff",
+      "gdalopts": "t_srs=EPGS::32611",
+      "output_type": "all",
+      "resolution": "3.0",
+      "type": "writers.gdal",
+      "bounds": "([254245.744045, 307343.886432], [4179326.892644, 4229667.195265])"
+    }
+  ]
+}
