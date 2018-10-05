@@ -25,11 +25,11 @@ export OMP_NUM_THREADS=$SLURM_NTASKS
 # Needed for PDF export in Agisoft using QT
 export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 
-PROJECT_NAME='CB_20180524'
+PROJECT_NAME='TE_20180528'
 
 module load photoscan
 photoscan.sh -platform offscreen \
-             -r $HOME/snow-aso/CHPC/agisoft_workflow.py \
+             -r $HOME/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
              --base-path $HOME/scratch/$PROJECT_NAME \
              --project-name $PROJECT_NAME \
              --dense-cloud-quality medium \
