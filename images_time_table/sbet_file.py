@@ -32,9 +32,8 @@ class SbetFile(object):
             self.file_path,
             header=0,
             dtype={ self.GPS_COLUMN: float },
-            converters=self.SBET_CSV_DTYPES
+            converters=self.SBET_CSV_DTYPES,
         )
-        self.gps_seconds_beginning_of_day = self.get_gps_day_of_week()
 
     @staticmethod
     def csv_file_path(base_path):
@@ -46,10 +45,22 @@ class SbetFile(object):
     def yaw_to_360(yaw):
         return yaw + 360 if yaw < 0 else yaw
 
-    def get_gps_day_of_week(self):
-        days = datetime.timedelta(
-            seconds=float(self.sbet_table[:1][self.GPS_COLUMN][0])
-        ).days
+    def get_gps_day_of_week(self, first_entry=True):
+        """
+        Get GPS day based on entries in the loaded SBET file. Default is to
+        calculate the day based on the first day. If parameter is given as
+        False the last entry will be used to calculate the day of the week.
+
+        :param first_entry: Default True, whether to use the first day
+
+        :return: Number of seconds for calculated day
+        """
+        if first_entry:
+            sbet_entry = self.sbet_table.iloc[0][self.GPS_COLUMN]
+        else:
+            sbet_entry = self.sbet_table.iloc[-1][self.GPS_COLUMN]
+
+        days = datetime.timedelta(seconds=float(sbet_entry)).days
         return datetime.timedelta(days=days).total_seconds()
 
     def find_sbet_record(self, row_time):
@@ -72,8 +83,8 @@ class SbetFile(object):
             row[key] = value
         return row
 
-    def gps_week_time_for_row(self, row):
-        return self.gps_seconds_beginning_of_day + \
+    def gps_week_time_for_row(self, row, first_entry=True):
+        return self.get_gps_day_of_week(first_entry) + \
                row.get(ImagesMetaCsv.TIME_COLUMN) + \
                self.GPS_LEAP_SECONDS
 
@@ -81,6 +92,14 @@ class SbetFile(object):
         gps_week_time = self.gps_week_time_for_row(row)
 
         sbet_record = self.find_sbet_record(gps_week_time)
+        if len(sbet_record) == 0:
+            gps_week_time = self.gps_week_time_for_row(row, False)
+            sbet_record = self.find_sbet_record(gps_week_time)
+
+        return sbet_record, gps_week_time
+
+    def set_imu_data_for_row(self, row):
+        sbet_record, gps_week_time = self.imu_data_for_row(row)
 
         result = [
             row.get(ImagesMetaCsv.FILE_COLUMN),
@@ -98,5 +117,5 @@ class SbetFile(object):
         return self.update_row(row, result)
 
     def set_altitude_for_row(self, row):
-        sbet_record = self.find_sbet_record(self.gps_week_time_for_row(row))
+        sbet_record, gps_week_time = self.imu_data_for_row(row)
         row['Z'] = sbet_record.Z

@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     if query_sbet:
         image_list = [
-            sbet.imu_data_for_row(row)
+            sbet.set_imu_data_for_row(row)
             for row in eif_data.images_time_table
         ]
     else:
