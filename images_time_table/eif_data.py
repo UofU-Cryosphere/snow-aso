@@ -87,7 +87,7 @@ class EifData(object):
             self.file_name_from_path(row.get(self.FILE_COLUMN)),
             row.get('longitude[deg]'),
             row.get('latitude[deg]'),
-            row.get('altitude[m]'),
+            '',
             self.yaw_to_360(row),
             self.transform_pitch(row),
             self.transform_roll(row),
