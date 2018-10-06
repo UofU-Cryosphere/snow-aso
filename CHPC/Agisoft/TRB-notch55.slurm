@@ -3,6 +3,7 @@
 #SBATCH --job-name=u1135435_agisoft
 #SBATCH --account=owner-gpu-guest
 #SBATCH --partition=notchpeak-gpu-guest
+#SBATCH --qos=photoscan
 
 #SBATCH --time=24:00:00                         # wall time
 #SBATCH --nodes=1                               # number of cluster nodes

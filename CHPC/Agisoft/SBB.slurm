@@ -3,6 +3,7 @@
 #SBATCH --job-name=u1135435_agisoft
 #SBATCH --account=notchpeak-gpu                 # account - abbreviated by -A
 #SBATCH --partition=notchpeak-gpu               # partition, abbreviated by -p
+#SBATCH --qos=photoscan
 
 #SBATCH --time=24:00:00                         # wall time, abbreviated by -t
 #SBATCH --nodes=1                               # number of cluster nodes, abbreviated by -N
