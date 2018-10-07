@@ -26,7 +26,7 @@ class RasterDifference(object):
         if self._elevation is None:
             self._elevation = self.sfm.elevation - self.lidar.elevation
             self._elevation.mask = np.ma.mask_or(
-                self._elevation.mask,
+                self.lidar.elevation.mask,
                 np.ma.masked_outside(
                     self._elevation,
                     self.ELEVATION_LOWER_FILTER,
