@@ -1,11 +1,12 @@
 import argparse
+import os
 
 import matplotlib as mpl
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 
-from base import RasterFile
+from base import RasterFile, PlotBase
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
     fig, (ax1, ax2, cax) = plt.subplots(
-        nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07]}
+        nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3 }
     )
 
     diff_options = dict(
@@ -62,16 +63,21 @@ if __name__ == '__main__':
     ax1.imshow(ortho_img, zorder=0, extent=diff.extent)
     values.mask = inside_sd
     ax1.imshow(values, **diff_options)
-    ax1.set_title('Inside Standard deviation', size=24)
+    ax1.set_title('Inside Standard deviation', size=PlotBase.TITLE_FONT_SIZE)
 
     ax2.imshow(ortho_img, zorder=0, extent=diff.extent)
     values.mask = outside_sd
     img = ax2.imshow(values, **diff_options)
-    ax2.set_title('Outside Standard deviation', size=24)
+    ax2.set_title('Outside Standard deviation', size=PlotBase.TITLE_FONT_SIZE)
 
     fig.colorbar(
         img, cax=cax, orientation='horizontal', extend='both',
         extendfrac='auto', spacing='uniform', boundaries=[-20.] + bounds + [20.]
     )
+
     fig.set_size_inches(6, 10)
-    plt.show()
+    base_path = os.path.dirname(arguments.ortho_image)
+    plt.savefig(
+        os.path.join(base_path, 'elevation_difference_overlay.png'),
+        **PlotBase.output_defaults()
+    )
