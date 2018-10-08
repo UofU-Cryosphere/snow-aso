@@ -37,6 +37,11 @@ parser.add_argument(
     default='comparison'
 )
 parser.add_argument(
+    '--save-difference',
+    action='store_true',
+    help='Store the elevation difference in GeoTiff file'
+)
+parser.add_argument(
     '--plots',
     action='store_true',
     help='Create comparison plots for elevation, slope, and aspect difference'
@@ -60,6 +65,8 @@ if __name__ == '__main__':
 
         area_difference = AreaDifferences(**comparison.file_args())
         [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
+        if arguments.save_difference:
+            area_difference.raster_difference.save()
         del area_difference
 
         histogram = Histogram(**comparison.file_args())
