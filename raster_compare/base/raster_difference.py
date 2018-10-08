@@ -1,4 +1,6 @@
 import numpy as np
+from osgeo import gdal, gdalnumeric
+
 from base.raster_file import RasterFile
 
 
@@ -7,6 +9,10 @@ class RasterDifference(object):
     ELEVATION_LOWER_FILTER = -10
 
     BIN_WIDTH = 10  # 10m
+
+    GDAL_DRIVER = gdal.GetDriverByName('GTiff')
+    GDAL_OPTIONS = ["COMPRESS=LZW", "TILED=YES",
+                    "BIGTIFF=IF_SAFER", "NUM_THREADS=ALL_CPUS"]
 
     def __init__(self, lidar, sfm):
         self.lidar = lidar if type(lidar) is RasterFile else RasterFile(lidar)
@@ -67,3 +73,23 @@ class RasterDifference(object):
     @staticmethod
     def round_to_tenth(elevation):
         return elevation - (elevation % 10)
+
+    def save(self):
+        file_name = self.sfm.file.GetDescription()
+        file_name = file_name.replace('.tif', '_difference.tif')
+        output_file = self.GDAL_DRIVER.CreateCopy(
+            file_name,
+            self.sfm.file,
+            strict=0,
+            options=self.GDAL_OPTIONS
+        )
+
+        band = output_file.GetRasterBand(1)
+        no_data_value = band.GetNoDataValue()
+        band.SetNoDataValue(no_data_value)
+        gdalnumeric.BandWriteArray(band, self.elevation.filled(no_data_value))
+
+        print('Saving difference raster:\n   ' + file_name)
+
+        del band
+        del output_file
