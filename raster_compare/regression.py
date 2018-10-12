@@ -85,7 +85,7 @@ class Regression(PlotBase):
     @staticmethod
     def fit_model(y, x, name):
         print('\n** OLS for: ' + name + ' **\n')
-        model = sm.OLS(y, x, missing='drop',).fit()
+        model = sm.OLS(y, x, missing='drop').fit()
         print(model.summary())
 
     def fit_difference_vs_source(self, source, name):
