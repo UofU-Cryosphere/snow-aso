@@ -66,6 +66,9 @@ class RasterDifference(object):
             RasterDifference.BIN_WIDTH
         )
 
+    def percentile(self, percent, attribute='elevation'):
+        return np.percentile(getattr(self, attribute).compressed(), percent)
+
     @staticmethod
     def percentage_mean(diff, count):
         return (np.absolute(diff).sum() / count) * 100
