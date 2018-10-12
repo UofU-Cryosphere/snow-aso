@@ -97,9 +97,34 @@ class Regression(PlotBase):
         )
         self.df[column_name].astype('category')
 
+    def hexbin_plot(self):
+        fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
+        row = 0
+        col = 0
+        for variable in self.EXPLANATORY_VARS:
+            self.print_status('Hexbin plot for ' + variable)
+            self.df.query('-.48 > diff | diff > 0.6').plot.hexbin(
+                x='diff', y=variable, gridsize=40, ax=axes[row, col]
+            )
+            axes[row, col].set_title(variable)
+            axes[row, col].set_xlabel('')
+            if col == 0:
+                axes[row, col].set_ylabel('Difference in Elevation')
+            else:
+                axes[row, col].set_ylabel('')
+
+            if col == 2:
+                col = 0
+                row += 1
+            else:
+                col += 1
+
+        self.save_plot(name='hexbin_elevation_diff')
+
     def plot_all(self):
         self.plot_lidar_vs_sfm()
         self.plot_difference_vs_source()
+        self.hexbin_plot()
 
     @staticmethod
     def fit_model(y, x, name):
