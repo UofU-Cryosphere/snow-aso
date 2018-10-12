@@ -78,6 +78,25 @@ class Regression(PlotBase):
         self.plot_for_query(self.df.query('diff < 0'), 'negative')
         self.plot_for_query(self.df.query('diff > 0'), 'positive')
 
+    @staticmethod
+    def aspect_to_category(degree):
+        if 45 < degree <= 135:
+            return 'East'
+        elif 135 < degree <= 225:
+            return 'South'
+        elif 225 < degree <= 315:
+            return 'West'
+        elif degree is np.NAN:
+            return np.NaN
+        else:
+            return 'North'
+
+    def categorize_aspect(self, column_name, from_column_name):
+        self.df[column_name] = self.df.apply(
+            lambda row: self.aspect_to_category(row[from_column_name]), axis=1
+        )
+        self.df[column_name].astype('category')
+
     def plot_all(self):
         self.plot_lidar_vs_sfm()
         self.plot_difference_vs_source()
