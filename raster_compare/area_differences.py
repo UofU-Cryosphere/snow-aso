@@ -53,11 +53,9 @@ class AreaDifferences(PlotBase):
         PlotBase.add_to_legend(ax, '\n'.join(text))
 
     @staticmethod
-    def elevation_bounds():
-        bounds = np.array(
-            [-20, -10, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 10, 20]
-        )
-        return dict(norm=colors.BoundaryNorm(boundaries=bounds, ncolors=256))
+    def elevation_bounds(difference):
+        bins = np.arange(difference.min(), difference.max() + 0.5, 0.5)
+        return dict(norm=colors.BoundaryNorm(boundaries=bins, ncolors=256))
 
     def plot(self, raster_attr):
         self.print_status(str(raster_attr))
@@ -69,7 +67,7 @@ class AreaDifferences(PlotBase):
         difference = getattr(self.raster_difference, raster_attr)
 
         if raster_attr is 'elevation':
-            bounds = self.elevation_bounds()
+            bounds = self.elevation_bounds(difference)
             bins = np.arange(
                 difference.min(),
                 difference.max() + self.HIST_BIN_WIDTH,
