@@ -17,7 +17,7 @@ class AreaDifferences(PlotBase):
                 'SD: {:10.2f}\n' \
                 'Min: {:10.2f}\n' \
                 'Max: {:10.2f}'
-    HIST_BIN_WIDTH = 0.05
+    HIST_BIN_WIDTH = 0.025
     BOX_PLOT_TEXT = '{0}: {1:.3f}'
     BOX_PLOT_WHISKERS = [2.5, 97.5]
 
