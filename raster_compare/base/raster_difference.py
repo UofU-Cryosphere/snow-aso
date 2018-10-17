@@ -6,7 +6,7 @@ from base.raster_file import RasterFile
 
 class RasterDifference(object):
     ELEVATION_UPPER_FILTER = 20
-    ELEVATION_LOWER_FILTER = -10
+    ELEVATION_LOWER_FILTER = -20
 
     BIN_WIDTH = 10  # 10m
 
