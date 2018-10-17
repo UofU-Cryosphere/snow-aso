@@ -18,7 +18,8 @@ class RasterDifference(object):
         self.lidar = lidar if type(lidar) is RasterFile else RasterFile(lidar)
         self.sfm = sfm if type(sfm) is RasterFile else RasterFile(sfm)
         self._aspect = None
-        self._elevation = None
+        self.elevation_values = self.sfm.elevation - self.lidar.elevation
+        self.elevation_mask = self.elevation_values.mask
         self._slope = None
 
     @property
@@ -28,18 +29,49 @@ class RasterDifference(object):
         return self._aspect
 
     @property
+    def elevation_values(self):
+        return self._elevation_values
+
+    @elevation_values.setter
+    def elevation_values(self, value):
+        self._elevation_values = value
+
+    @property
+    def elevation_mask(self):
+        return self._elevation_mask
+
+    @elevation_mask.setter
+    def elevation_mask(self, value):
+        self._elevation_mask = np.copy(value)
+
+    @property
     def elevation(self):
-        if self._elevation is None:
-            self._elevation = self.sfm.elevation - self.lidar.elevation
-            self._elevation.mask = np.ma.mask_or(
-                self.lidar.elevation.mask,
-                np.ma.masked_outside(
-                    self._elevation,
-                    self.ELEVATION_LOWER_FILTER,
-                    self.ELEVATION_UPPER_FILTER
-                ).mask
-            )
-        return self._elevation
+        self.elevation_values.mask = np.ma.mask_or(
+            self.elevation_mask,
+            np.ma.masked_outside(
+                self.elevation_unfiltered,
+                self.ELEVATION_LOWER_FILTER,
+                self.ELEVATION_UPPER_FILTER
+            ).mask
+        )
+        return self.elevation_values
+
+    @property
+    def elevation_unfiltered(self):
+        self.elevation_values.mask = self.elevation_mask
+        return self.elevation_values
+
+    @property
+    def elevation_filtered(self):
+        self.elevation_values.mask = np.ma.mask_or(
+            self.elevation_mask,
+            np.ma.masked_inside(
+                self.elevation_unfiltered,
+                self.ELEVATION_LOWER_FILTER,
+                self.ELEVATION_UPPER_FILTER
+            ).mask
+        )
+        return self.elevation_values
 
     @property
     def slope(self):
