@@ -3,76 +3,74 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - boost-cpp
-  - flann
-  - hexer
-  - jsoncpp
-  - laszip
-  - laz-perf
-  - nitro
-  - pcl
-  - pdal
-  - python-pdal
   - blas
+  - boost-cpp
   - bzip2
   - ca-certificates
   - cairo
   - certifi
+  - clangdev
   - curl
   - cycler
   - expat
+  - flann
   - fontconfig
   - freetype
   - freexl
   - gdal
   - geos
+  - geotiff
   - gettext
   - giflib
   - glib
   - hdf4
   - hdf5
+  - hexer
   - icu
-  - intel-openmp
-  - jpeg
+  - jpegc
   - json-c
+  - jsoncpp
   - kealib
   - kiwisolver
-  - libboost
-  - libcurl
+  - krb5
+  - laszip
+  - laz-perf
   - libcxx
-  - libcxxabi
   - libdap4
   - libedit
   - libffi
   - libgcc
   - libgdal
-  - libgfortran
   - libiconv
   - libkml
   - libnetcdf
-  - libopenblas
   - libpng
   - libpq
-  - libspatialite
+  - libspatialitea
   - libssh2
   - libtiff
   - libuuid
   - libxml2
+  - libxslt
+  - llvm-meta
+  - llvmdev
   - matplotlib
-  - mkl
   - mkl_fft
   - mkl_random
   - ncurses
+  - nitrodev2
   - numpy
-  - numpy-base
+  - olefile
   - openblas
-  - openblas-devel
   - openjpeg
-  - openssl
+  - opensslp
   - packaging
   - pandas
   - patsy
+  - pcl
   - pcre
+  - pdal
+  - pillow
   - pip
   - pixman
   - poppler
@@ -82,6 +80,7 @@ dependencies:
   - pyparsing
   - python
   - python-dateutil
+  - python-pdal
   - pytz
   - readline
   - scipy
@@ -95,3 +94,17 @@ dependencies:
   - xerces-c
   - xz
   - zlib
+  - intel-openmp
+  - libboost
+  - libcurl
+  - libcxxabi
+  - libgfortran
+  - libopenblas
+  - mkl
+  - nomkl
+  - numpy-base
+  - openblas-devel
+  - pip:
+    - opencv-python==3.4.3.18
+prefix: /Volumes/warehouse/projects/UofU/miniconda3/envs/snow_aso
+
