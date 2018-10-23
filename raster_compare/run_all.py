@@ -74,4 +74,5 @@ if __name__ == '__main__':
         del histogram
 
     if arguments.regression:
-        Regression(**comparison.file_args()).run()
+        regression = Regression(**comparison.file_args())
+        regression.run()
