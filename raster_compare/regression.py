@@ -28,10 +28,10 @@ class Regression(PlotBase):
         return pd.DataFrame({
             'diff': self.raster_difference.elevation.filled(np.NaN).ravel(),
             'lidar_elevation': self.lidar.elevation.filled(np.NaN).ravel(),
-            'lidar_slope': self.lidar.slope.filled(np.NaN).ravel(),
-            'lidar_aspect': self.lidar.aspect.filled(np.NaN).ravel(),
             'sfm_elevation': self.sfm.elevation.filled(np.NaN).ravel(),
+            'lidar_slope': self.lidar.slope.filled(np.NaN).ravel(),
             'sfm_slope': self.sfm.slope.filled(np.NaN).ravel(),
+            'lidar_aspect': self.lidar.aspect.filled(np.NaN).ravel(),
             'sfm_aspect': self.sfm.aspect.filled(np.NaN).ravel(),
         })
 
