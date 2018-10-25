@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 import statsmodels.api as sm
 
 from base import PlotBase
@@ -121,6 +122,18 @@ class Regression(PlotBase):
 
         self.save_plot(name='hexbin_elevation_diff')
 
+    def qqplot(self):
+        fig = plt.figure(figsize=(12,8))
+        stats.probplot(
+            self.raster_difference.elevation.compressed(),
+            dist="norm",
+            plot=fig.gca()
+        )
+        plt.savefig(
+            self.output_path + '/qq_plot.png',
+            **self.output_defaults()
+        )
+
     def plot_all(self):
         self.plot_lidar_vs_sfm()
         self.plot_difference_vs_source()
@@ -154,4 +167,5 @@ class Regression(PlotBase):
 
     def run(self):
         self.plot_all()
+        self.qqplot()
         # self.fit_all()
