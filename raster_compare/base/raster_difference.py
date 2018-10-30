@@ -86,15 +86,15 @@ class RasterDifference(object):
 
     def min_for_attr(self, attr):
         return min(
-                getattr(self.lidar, attr).min(),
-                getattr(self.sfm, attr).min()
-            )
+            getattr(self.lidar, attr).min(),
+            getattr(self.sfm, attr).min()
+        )
 
     def max_for_attr(self, attr):
         return max(
-                getattr(self.lidar, attr).max(),
-                getattr(self.sfm, attr).max()
-            )
+            getattr(self.lidar, attr).max(),
+            getattr(self.sfm, attr).max()
+        )
 
     def bin_range(self, attr):
         return np.arange(
