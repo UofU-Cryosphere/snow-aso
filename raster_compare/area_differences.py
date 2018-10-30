@@ -25,7 +25,7 @@ class AreaDifferences(PlotBase):
 
     def add_hist_stats(self, ax):
         box_text = AreaDifferences.HIST_TEXT.format(
-            self.raster_difference.mad.percentile(50),
+            self.raster_difference.mad.median,
             self.raster_difference.mad.normalized(),
             self.raster_difference.mad.percentile(68.3),
             self.raster_difference.mad.percentile(95),
