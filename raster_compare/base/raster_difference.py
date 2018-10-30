@@ -2,13 +2,10 @@ import numpy as np
 from osgeo import gdal, gdalnumeric
 
 from base.raster_file import RasterFile
+from base.median_absolute_deviation import MedianAbsoluteDeviation
 
 
 class RasterDifference(object):
-    # TODO: Make this more flexible
-    ELEVATION_UPPER_FILTER = 5
-    ELEVATION_LOWER_FILTER = -5
-
     BIN_WIDTH = 10  # 10m
 
     GDAL_DRIVER = gdal.GetDriverByName('GTiff')
@@ -21,6 +18,7 @@ class RasterDifference(object):
         self._aspect = None
         self.elevation_values = self.sfm.elevation - self.lidar.elevation
         self.elevation_mask = self.elevation_values.mask
+        self.mad = MedianAbsoluteDeviation(self.elevation_values.compressed())
         self._slope = None
 
     @property
@@ -45,14 +43,20 @@ class RasterDifference(object):
     def elevation_mask(self, value):
         self._elevation_mask = np.copy(value)
 
+    def elevation_upper_filter(self):
+        return self.mad.data_median + self.mad.percentile(95)
+
+    def elevation_lower_filter(self):
+        return self.mad.data_median - self.mad.percentile(95)
+
     @property
     def elevation(self):
         self.elevation_values.mask = np.ma.mask_or(
             self.elevation_mask,
             np.ma.masked_outside(
                 self.elevation_unfiltered,
-                self.ELEVATION_LOWER_FILTER,
-                self.ELEVATION_UPPER_FILTER
+                self.elevation_lower_filter(),
+                self.elevation_upper_filter()
             ).mask
         )
         return self.elevation_values
@@ -68,8 +72,8 @@ class RasterDifference(object):
             self.elevation_mask,
             np.ma.masked_inside(
                 self.elevation_unfiltered,
-                self.ELEVATION_LOWER_FILTER,
-                self.ELEVATION_UPPER_FILTER
+                self.elevation_lower_filter(),
+                self.elevation_upper_filter()
             ).mask
         )
         return self.elevation_values
