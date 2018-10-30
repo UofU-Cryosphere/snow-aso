@@ -127,7 +127,7 @@ class RasterDifference(object):
         band = output_file.GetRasterBand(1)
         no_data_value = band.GetNoDataValue()
         band.SetNoDataValue(no_data_value)
-        gdalnumeric.BandWriteArray(band, self.elevation.filled(no_data_value))
+        gdalnumeric.BandWriteArray(band, self.elevation_values)
 
         print('Saving difference raster:\n   ' + file_name)
 
