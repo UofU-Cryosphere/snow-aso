@@ -13,12 +13,12 @@ class AreaDifferences(PlotBase):
     TITLE = '{0} differences'
     TITLE_HIST = '{0} difference distribution'
 
-    HIST_TEXT = '50%:  {:10.2f}\n' \
-                'NMAD: {:10.2f}\n' \
-                '68.3%: {:10.2f}\n' \
-                '95%: {:10.2f}'
+    HIST_TEXT = '50%:   {:5.2f}\n' \
+                'NMAD:  {:5.2f}\n' \
+                '68.3%: {:5.2f}\n' \
+                '95%:   {:5.2f}'
     HIST_BIN_WIDTH = 0.05
-    BOX_PLOT_TEXT = '{0:8}: {1:.3f}'
+    BOX_PLOT_TEXT = '{0:8}: {1:6.3f}'
     BOX_PLOT_WHISKERS = [5, 95]
 
     OUTPUT_FILE = '{0}{1}_differences.png'
