@@ -8,7 +8,7 @@ class PlotBase(object):
     TYPES = ['elevation', 'slope', 'aspect']
     SCALE_BAR_LABEL = {
         'aspect': 'Degree',
-        'elevation': 'Meter',
+        'elevation': '∆h [m]',
         'slope': 'Angle',
     }
 

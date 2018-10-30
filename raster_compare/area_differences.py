@@ -103,6 +103,7 @@ class AreaDifferences(PlotBase):
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
+        ax2.set_ylabel('Frequency', **PlotBase.label_opts())
         self.add_hist_stats(ax2)
 
         ax3 = fig.add_subplot(grid_spec[1:, -1])
