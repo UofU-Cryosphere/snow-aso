@@ -23,6 +23,10 @@ class MedianAbsoluteDeviation(object):
     def data_median(self):
         return self._data_mean
 
+    @property
+    def median(self):
+        return self.percentile(50)
+
     def absolute_difference(self, a):
         return math.fabs(a - self.data_median)
 
