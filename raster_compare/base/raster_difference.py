@@ -44,10 +44,10 @@ class RasterDifference(object):
         self._elevation_mask = np.copy(value)
 
     def elevation_upper_filter(self):
-        return self.mad.data_median + self.mad.percentile(95)
+        return self.mad.data_median + self.mad.standard_deviation(2)
 
     def elevation_lower_filter(self):
-        return self.mad.data_median - self.mad.percentile(95)
+        return self.mad.data_median - self.mad.standard_deviation(2)
 
     @property
     def elevation(self):

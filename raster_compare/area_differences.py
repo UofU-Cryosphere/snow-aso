@@ -27,8 +27,8 @@ class AreaDifferences(PlotBase):
         box_text = AreaDifferences.HIST_TEXT.format(
             self.raster_difference.mad.median,
             self.raster_difference.mad.normalized(),
-            self.raster_difference.mad.percentile(68.3),
-            self.raster_difference.mad.percentile(95),
+            self.raster_difference.mad.standard_deviation(),
+            self.raster_difference.mad.standard_deviation(2),
         )
         PlotBase.add_to_legend(ax, box_text)
 
