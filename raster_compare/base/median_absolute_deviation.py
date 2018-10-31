@@ -10,6 +10,12 @@ class MedianAbsoluteDeviation(object):
 
     MAD_CONSTANT = 1.4826
 
+    STANDARD_DEVIATIONS = {
+        1: 68.27,
+        2: 95.45,
+        3: 99.73
+    }
+
     def __init__(self, data):
         self._data = data
         self._data_mean = np.median(self.data)
@@ -26,6 +32,9 @@ class MedianAbsoluteDeviation(object):
     @property
     def median(self):
         return self.percentile(50)
+
+    def standard_deviation(self, width=1):
+        return self.percentile(self.STANDARD_DEVIATIONS[width])
 
     def absolute_difference(self, a):
         return math.fabs(a - self.data_median)
