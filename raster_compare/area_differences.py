@@ -104,7 +104,8 @@ class AreaDifferences(PlotBase):
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
         ax2.set_ylabel('Frequency', **PlotBase.label_opts())
-        self.add_hist_stats(ax2)
+        if raster_attr is 'elevation':
+            self.add_hist_stats(ax2)
 
         ax3 = fig.add_subplot(grid_spec[1:, -1])
         box = ax3.boxplot(
