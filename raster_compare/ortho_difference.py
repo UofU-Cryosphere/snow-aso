@@ -26,22 +26,24 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     ortho_img = plt.imread(arguments.ortho_image)
-    diff = RasterFile(arguments.difference_dem)
 
+    diff = RasterFile(arguments.difference_dem)
     mad = MedianAbsoluteDeviation(diff.elevation.compressed())
-    sd = mad.percentile(68.3) - mad.median
-    outliers = mad.percentile(95) - mad.median
 
     inside = np.ma.mask_or(
         diff.elevation.mask,
         np.ma.masked_outside(
-            diff.elevation, mad.median - outliers, mad.median + outliers
+            diff.elevation,
+            mad.data_median - mad.standard_deviation(2),
+            mad.data_median + mad.standard_deviation(2)
         ).mask
     )
     outside = np.ma.mask_or(
         diff.elevation.mask,
         np.ma.masked_inside(
-            diff.elevation, mad.median + outliers, mad.median - outliers
+            diff.elevation,
+            mad.data_median + mad.standard_deviation(2),
+            mad.data_median - mad.standard_deviation(2)
         ).mask
     )
 
@@ -50,11 +52,11 @@ if __name__ == '__main__':
     cmap.set_under('darkblue')
 
     bounds = [
-        mad.median - outliers,
-        mad.median - sd,
-        mad.median,
-        mad.median + sd,
-        mad.median + outliers
+        mad.data_median - mad.standard_deviation(2),
+        mad.data_median - mad.standard_deviation(1),
+        mad.data_median,
+        mad.data_median + mad.standard_deviation(1),
+        mad.data_median + mad.standard_deviation(2)
     ]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
