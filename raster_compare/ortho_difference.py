@@ -6,7 +6,7 @@ import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 
-from base import RasterFile, PlotBase
+from base import RasterFile, PlotBase, MedianAbsoluteDeviation
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -26,30 +26,38 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     ortho_img = plt.imread(arguments.ortho_image)
+
     diff = RasterFile(arguments.difference_dem)
+    mad = MedianAbsoluteDeviation(diff.elevation.compressed())
 
-    values = diff.elevation
-    mean = values.mean()
-    sd = values.std()
-    upper_sd = mean + sd
-    lower_sd = mean - sd
-    upper = np.percentile(values.compressed(), 97.5)
-    lower = np.percentile(values.compressed(), 2.5)
-
-    inside_sd = np.ma.mask_or(
-        values.mask,
-        np.ma.masked_outside(values, lower_sd, upper_sd).mask
+    inside = np.ma.mask_or(
+        diff.elevation.mask,
+        np.ma.masked_outside(
+            diff.elevation,
+            mad.data_median - mad.standard_deviation(2),
+            mad.data_median + mad.standard_deviation(2)
+        ).mask
     )
-    outside_sd = np.ma.mask_or(
-        values.mask,
-        np.ma.masked_inside(values, upper_sd, lower_sd).mask
+    outside = np.ma.mask_or(
+        diff.elevation.mask,
+        np.ma.masked_inside(
+            diff.elevation,
+            mad.data_median + mad.standard_deviation(2),
+            mad.data_median - mad.standard_deviation(2)
+        ).mask
     )
 
     cmap = mpl.colors.ListedColormap(['dodgerblue', 'cyan', 'yellow', 'orange'])
     cmap.set_over('darkred')
     cmap.set_under('darkblue')
 
-    bounds = [lower, lower_sd, mean, upper_sd, upper]
+    bounds = [
+        mad.data_median - mad.standard_deviation(2),
+        mad.data_median - mad.standard_deviation(1),
+        mad.data_median,
+        mad.data_median + mad.standard_deviation(1),
+        mad.data_median + mad.standard_deviation(2)
+    ]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
     fig, (ax1, ax2, cax) = plt.subplots(
@@ -61,14 +69,14 @@ if __name__ == '__main__':
     )
 
     ax1.imshow(ortho_img, zorder=0, extent=diff.extent)
-    values.mask = inside_sd
-    ax1.imshow(values, **diff_options)
-    ax1.set_title('Inside Standard deviation', size=PlotBase.TITLE_FONT_SIZE)
+    diff.elevation.mask = inside
+    ax1.imshow(diff.elevation, **diff_options)
+    ax1.set_title('95th percentile deviation', size=PlotBase.TITLE_FONT_SIZE)
 
     ax2.imshow(ortho_img, zorder=0, extent=diff.extent)
-    values.mask = outside_sd
-    img = ax2.imshow(values, **diff_options)
-    ax2.set_title('Outside Standard deviation', size=PlotBase.TITLE_FONT_SIZE)
+    diff.elevation.mask = outside
+    img = ax2.imshow(diff.elevation, **diff_options)
+    ax2.set_title('Outliers', size=PlotBase.TITLE_FONT_SIZE)
 
     fig.colorbar(
         img, cax=cax, orientation='horizontal', extend='both',

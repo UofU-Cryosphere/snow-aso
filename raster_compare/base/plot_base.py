@@ -8,7 +8,7 @@ class PlotBase(object):
     TYPES = ['elevation', 'slope', 'aspect']
     SCALE_BAR_LABEL = {
         'aspect': 'Degree',
-        'elevation': 'Meter',
+        'elevation': '∆h [m]',
         'slope': 'Angle',
     }
 
@@ -75,7 +75,7 @@ class PlotBase(object):
         mean = mpatches.Patch(color='none', label=text)
         handles, labels = axes.get_legend_handles_labels()
         handles.append(mean)
-        axes.legend(handles=handles)
+        axes.legend(handles=handles, prop={'family':'monospace'})
 
     @staticmethod
     def insert_colorbar(plt, ax, data, label):

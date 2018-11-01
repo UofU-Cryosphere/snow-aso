@@ -13,20 +13,22 @@ class AreaDifferences(PlotBase):
     TITLE = '{0} differences'
     TITLE_HIST = '{0} difference distribution'
 
-    HIST_TEXT = 'Mean: {:10.2f}\n' \
-                'SD: {:10.2f}\n' \
-                'Min: {:10.2f}\n' \
-                'Max: {:10.2f}'
-    HIST_BIN_WIDTH = 0.025
-    BOX_PLOT_TEXT = '{0}: {1:.3f}'
-    BOX_PLOT_WHISKERS = [2.5, 97.5]
+    HIST_TEXT = '50%:   {:5.2f}\n' \
+                'NMAD:  {:5.2f}\n' \
+                '68.3%: {:5.2f}\n' \
+                '95%:   {:5.2f}'
+    HIST_BIN_WIDTH = 0.05
+    BOX_PLOT_TEXT = '{0:8}: {1:6.3f}'
+    BOX_PLOT_WHISKERS = [5, 95]
 
     OUTPUT_FILE = '{0}{1}_differences.png'
 
-    @staticmethod
-    def add_hist_stats(ax, diff):
+    def add_hist_stats(self, ax):
         box_text = AreaDifferences.HIST_TEXT.format(
-            diff.mean(), diff.std(), diff.min(), diff.max()
+            self.raster_difference.mad.median,
+            self.raster_difference.mad.normalized(),
+            self.raster_difference.mad.standard_deviation(),
+            self.raster_difference.mad.standard_deviation(2),
         )
         PlotBase.add_to_legend(ax, box_text)
 
@@ -37,13 +39,13 @@ class AreaDifferences(PlotBase):
                 box_plot_data['caps'][1].get_ydata()[0]
             ),
             self.BOX_PLOT_TEXT.format(
-                'Upper', box_plot_data['whiskers'][1].get_ydata()[0]
+                'Upper Q3', box_plot_data['whiskers'][1].get_ydata()[0]
             ),
             self.BOX_PLOT_TEXT.format(
                 'Median', box_plot_data['medians'][0].get_ydata()[0]
             ),
             self.BOX_PLOT_TEXT.format(
-                'Lower', box_plot_data['whiskers'][0].get_ydata()[0]
+                'Lower Q2', box_plot_data['whiskers'][0].get_ydata()[0]
             ),
             self.BOX_PLOT_TEXT.format(
                 str(self.BOX_PLOT_WHISKERS[0]) + '%',
@@ -54,7 +56,7 @@ class AreaDifferences(PlotBase):
 
     @staticmethod
     def elevation_bounds(difference):
-        bins = np.arange(difference.min(), difference.max() + 0.5, 0.5)
+        bins = np.arange(difference.min(), difference.max() + 0.1, 0.1)
         return dict(norm=colors.BoundaryNorm(boundaries=bins, ncolors=256))
 
     def plot(self, raster_attr):
@@ -101,7 +103,9 @@ class AreaDifferences(PlotBase):
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
-        self.add_hist_stats(ax2, difference)
+        ax2.set_ylabel('Frequency', **PlotBase.label_opts())
+        if raster_attr is 'elevation':
+            self.add_hist_stats(ax2)
 
         ax3 = fig.add_subplot(grid_spec[1:, -1])
         box = ax3.boxplot(
