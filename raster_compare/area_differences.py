@@ -116,6 +116,9 @@ class AreaDifferences(PlotBase):
         ax3.tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
+        ax3.set_ylabel(
+            self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
+        )
         self.add_box_plot_stats(ax3, box)
 
         plt.tight_layout()
