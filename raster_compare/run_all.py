@@ -37,14 +37,24 @@ parser.add_argument(
     default='comparison'
 )
 parser.add_argument(
+    '--area-plots',
+    action='store_true',
+    help='Side by side comparison plots for elevation, slope, and aspect'
+)
+parser.add_argument(
+    '--differences',
+    action='store_true',
+    help='Plots for elevation, slope, and aspect differences'
+)
+parser.add_argument(
     '--save-difference',
     action='store_true',
     help='Store the elevation difference in GeoTiff file'
 )
 parser.add_argument(
-    '--plots',
+    '--histograms',
     action='store_true',
-    help='Create comparison plots for elevation, slope, and aspect difference'
+    help='Create histograms for elevation, slope, and aspect'
 )
 parser.add_argument(
     '--regression',
@@ -58,17 +68,19 @@ if __name__ == '__main__':
     comparison = RasterCompare(**vars(arguments))
     comparison.prepare()
 
-    if arguments.plots:
+    if arguments.area_plots:
         area_plot = AreaPlot(**comparison.file_args())
         [area_plot.plot(attr) for attr in AreaPlot.TYPES]
         del area_plot
 
+    if arguments.differences:
         area_difference = AreaDifferences(**comparison.file_args())
         [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
         if arguments.save_difference:
             area_difference.raster_difference.save()
         del area_difference
 
+    if arguments.histograms:
         histogram = Histogram(**comparison.file_args())
         [histogram.plot(attr) for attr in Histogram.TYPES]
         del histogram
