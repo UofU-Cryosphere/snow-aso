@@ -1,4 +1,5 @@
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from base.raster_difference import RasterDifference
@@ -30,8 +31,10 @@ class PlotBase(object):
         pad=0.6
     )
 
-    def __init__(self, lidar, sfm, output_path):
-        self._output_path = output_path
+    def __init__(self, lidar, sfm, **kwargs):
+        self._output_path = kwargs['output_path']
+        if 'ortho_image' in kwargs:
+            self._ortho_image = plt.imread(kwargs['ortho_image'])
         self.raster_difference = RasterDifference(lidar, sfm)
 
     @property
@@ -45,6 +48,10 @@ class PlotBase(object):
     @property
     def sfm(self):
         return self.raster_difference.sfm
+
+    @property
+    def ortho_image(self):
+        return self._ortho_image
 
     def __getattr__(self, name):
         return getattr(self.raster_difference, name)
@@ -69,6 +76,9 @@ class PlotBase(object):
     @staticmethod
     def output_defaults(**kwargs):
         return dict(bbox_inches='tight', dpi=PlotBase.DEFAULT_DPI, **kwargs)
+
+    def add_ortho_background(self, ax):
+        ax.imshow(self.ortho_image, zorder=0, extent=self.lidar.extent)
 
     @staticmethod
     def add_to_legend(axes, text):
