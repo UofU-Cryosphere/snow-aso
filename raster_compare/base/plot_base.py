@@ -94,5 +94,10 @@ class PlotBase(object):
         scale_bar = plt.colorbar(data, cax=cax)
         scale_bar.set_label(label=label, size=PlotBase.LABEL_FONT_SIZE)
 
-    def print_status(self, message):
-        print('Plotting ' + self.__class__.__name__ + ':\n   ' + message + '\n')
+    def print_status(self, message=''):
+        status = 'Plotting ' + self.__class__.__name__
+
+        if len(message) > 0:
+            status += ':\n   ' + message + '\n'
+
+        print(status)
