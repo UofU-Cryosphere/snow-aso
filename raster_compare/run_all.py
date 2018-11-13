@@ -54,11 +54,6 @@ parser.add_argument(
     help='Plots for elevation, slope, and aspect differences'
 )
 parser.add_argument(
-    '--save-difference',
-    action='store_true',
-    help='Store the elevation difference in GeoTiff file'
-)
-parser.add_argument(
     '--histograms',
     action='store_true',
     help='Create histograms for elevation, slope, and aspect'
@@ -83,8 +78,6 @@ if __name__ == '__main__':
     if arguments.differences:
         area_difference = AreaDifferences(**comparison.file_args())
         [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
-        if arguments.save_difference:
-            area_difference.raster_difference.save()
         del area_difference
 
         ortho_difference = OrthoDifference(
