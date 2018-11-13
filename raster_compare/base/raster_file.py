@@ -3,6 +3,8 @@ import numpy as np
 
 
 class RasterFile(object):
+    DEFAULT_BAND_NUMBER = 1
+
     def __init__(self, filename):
         self.file = filename
         self._extent = None
@@ -31,8 +33,9 @@ class RasterFile(object):
             self._extent = x_min, x_max, y_min, y_max
         return self._extent
 
-    @staticmethod
-    def get_values_for_raster(raster, band_number=1):
+    def values_for_band(self, band_number=1, **kwargs):
+        raster = kwargs.get('raster', self.file)
+
         band = raster.GetRasterBand(band_number)
         values = np.ma.masked_values(
             band.ReadAsArray(), band.GetNoDataValue() or 0., copy=False
@@ -42,7 +45,7 @@ class RasterFile(object):
 
     def get_raster_attribute(self, attribute):
         raster = gdal.DEMProcessing('', self.file, attribute, format='MEM')
-        raster_values = self.get_values_for_raster(raster)
+        raster_values = self.values_for_band(raster=raster)
         del raster
         return raster_values
 
@@ -67,7 +70,7 @@ class RasterFile(object):
     @property
     def elevation(self):
         if self._elevation is None:
-            self._elevation = self.get_values_for_raster(self.file)
+            self._elevation = self.values_for_band()
         return self._elevation
 
     def geo_transform(self):
