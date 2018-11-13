@@ -5,6 +5,7 @@ from area_plot import AreaPlot
 from base.raster_compare import RasterCompare
 from histograms import Histogram
 from regression import Regression
+from ortho_difference import OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -29,6 +30,12 @@ parser.add_argument(
     '--shape-file',
     type=str,
     help='Shapefile for sfm and lidar relative from base path',
+)
+parser.add_argument(
+    '--ortho-image',
+    type=str,
+    help='Path to ortho photo used as background in plots',
+    required=True
 )
 parser.add_argument(
     '--output-path',
@@ -79,6 +86,13 @@ if __name__ == '__main__':
         if arguments.save_difference:
             area_difference.raster_difference.save()
         del area_difference
+
+        ortho_difference = OrthoDifference(
+            ortho_image=comparison.check_path(arguments.ortho_image),
+            **comparison.file_args()
+        )
+        ortho_difference.plot()
+        del ortho_difference
 
     if arguments.histograms:
         histogram = Histogram(**comparison.file_args())

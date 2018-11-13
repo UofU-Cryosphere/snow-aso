@@ -1,91 +1,82 @@
-import argparse
 import os
 
 import matplotlib as mpl
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
-import numpy as np
 
-from base import RasterFile, PlotBase, MedianAbsoluteDeviation
+from base import PlotBase
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--ortho-image',
-    type=str,
-    help='Path to ortho photo used as background',
-    required=True
-)
-parser.add_argument(
-    '--difference-dem',
-    type=str,
-    help='Path to raster file with differences in elevation',
-    required=True
-)
 
-if __name__ == '__main__':
-    arguments = parser.parse_args()
+class OrthoDifference(PlotBase):
+    COLOR_MAP = ['dodgerblue', 'cyan', 'yellow', 'orange']
+    COLOR_OVER = 'darkred'
+    COLOR_UNDER = 'darkblue'
 
-    ortho_img = plt.imread(arguments.ortho_image)
+    OUTPUT_FILE_NAME = 'elevation_difference_overlay.png'
 
-    diff = RasterFile(arguments.difference_dem)
-    mad = MedianAbsoluteDeviation(diff.elevation.compressed())
+    def __init__(self, **kwargs):
+        super().__init__(
+            kwargs['lidar'], kwargs['sfm'],
+            ortho_image=kwargs['ortho_image'],
+            output_path=kwargs['output_path'],
+        )
+        self._cmap = self.setup_color_map()
+        self._bounds = self.set_bounds()
 
-    inside = np.ma.mask_or(
-        diff.elevation.mask,
-        np.ma.masked_outside(
-            diff.elevation,
-            mad.data_median - mad.standard_deviation(2),
-            mad.data_median + mad.standard_deviation(2)
-        ).mask
-    )
-    outside = np.ma.mask_or(
-        diff.elevation.mask,
-        np.ma.masked_inside(
-            diff.elevation,
-            mad.data_median + mad.standard_deviation(2),
-            mad.data_median - mad.standard_deviation(2)
-        ).mask
-    )
+    @property
+    def cmap(self):
+        return self._cmap
 
-    cmap = mpl.colors.ListedColormap(['dodgerblue', 'cyan', 'yellow', 'orange'])
-    cmap.set_over('darkred')
-    cmap.set_under('darkblue')
+    @property
+    def bounds(self):
+        return self._bounds
 
-    bounds = [
-        mad.data_median - mad.standard_deviation(2),
-        mad.data_median - mad.standard_deviation(1),
-        mad.data_median,
-        mad.data_median + mad.standard_deviation(1),
-        mad.data_median + mad.standard_deviation(2)
-    ]
-    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+    def setup_color_map(self):
+        cmap = mpl.colors.ListedColormap(self.COLOR_MAP)
+        cmap.set_over(self.COLOR_OVER)
+        cmap.set_under(self.COLOR_UNDER)
+        return cmap
 
-    fig, (ax1, ax2, cax) = plt.subplots(
-        nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3 }
-    )
+    def set_bounds(self):
+        return [
+            self.elevation_unfiltered.min(),
+            self.mad.data_median - self.mad.standard_deviation(2),
+            self.mad.data_median - self.mad.standard_deviation(1),
+            self.mad.data_median,
+            self.mad.data_median + self.mad.standard_deviation(1),
+            self.mad.data_median + self.mad.standard_deviation(2),
+            self.elevation_unfiltered.max()
+        ]
 
-    diff_options = dict(
-        zorder=1, norm=norm, cmap=cmap, extent=diff.extent, alpha=0.5,
-    )
+    def plot(self):
+        self.print_status()
 
-    ax1.imshow(ortho_img, zorder=0, extent=diff.extent)
-    diff.elevation.mask = inside
-    ax1.imshow(diff.elevation, **diff_options)
-    ax1.set_title('95th percentile deviation', size=PlotBase.TITLE_FONT_SIZE)
+        norm = mpl.colors.BoundaryNorm(self.bounds[1:-1], self.cmap.N)
 
-    ax2.imshow(ortho_img, zorder=0, extent=diff.extent)
-    diff.elevation.mask = outside
-    img = ax2.imshow(diff.elevation, **diff_options)
-    ax2.set_title('Outliers', size=PlotBase.TITLE_FONT_SIZE)
+        fig, (ax1, ax2, cax) = plt.subplots(
+            nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3}
+        )
 
-    fig.colorbar(
-        img, cax=cax, orientation='horizontal', extend='both',
-        extendfrac='auto', spacing='uniform', boundaries=[-20.] + bounds + [20.]
-    )
+        diff_options = dict(
+            extent=self.lidar.extent,
+            zorder=1, norm=norm, cmap=self.cmap, alpha=0.5,
+        )
 
-    fig.set_size_inches(6, 10)
-    base_path = os.path.dirname(arguments.ortho_image)
-    plt.savefig(
-        os.path.join(base_path, 'elevation_difference_overlay.png'),
-        **PlotBase.output_defaults()
-    )
+        self.add_ortho_background(ax1)
+        ax1.imshow(self.elevation, **diff_options)
+        ax1.set_title('95th percentile deviation', size=self.TITLE_FONT_SIZE)
+
+        self.add_ortho_background(ax2)
+        img = ax2.imshow(self.elevation_filtered, **diff_options)
+        ax2.set_title('Outliers', size=self.TITLE_FONT_SIZE)
+
+        fig.colorbar(
+            img, cax=cax, orientation='horizontal', extend='both',
+            extendfrac='auto', spacing='uniform', boundaries=self.bounds
+        )
+
+        fig.set_size_inches(6, 10)
+        plt.savefig(
+            os.path.join(self.output_path, self.OUTPUT_FILE_NAME),
+            **self.output_defaults()
+        )
