@@ -113,23 +113,3 @@ class RasterDifference(object):
     @staticmethod
     def round_to_tenth(elevation):
         return elevation - (elevation % 10)
-
-    def save(self):
-        file_name = self.sfm.file.GetDescription()
-        file_name = file_name.replace('.tif', '_difference.tif')
-        output_file = self.GDAL_DRIVER.CreateCopy(
-            file_name,
-            self.sfm.file,
-            strict=0,
-            options=self.GDAL_OPTIONS
-        )
-
-        band = output_file.GetRasterBand(1)
-        no_data_value = band.GetNoDataValue()
-        band.SetNoDataValue(no_data_value)
-        gdalnumeric.BandWriteArray(band, self.elevation_values)
-
-        print('Saving difference raster:\n   ' + file_name)
-
-        del band
-        del output_file

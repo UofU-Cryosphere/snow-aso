@@ -5,6 +5,7 @@ from area_plot import AreaPlot
 from base.raster_compare import RasterCompare
 from histograms import Histogram
 from regression import Regression
+from ortho_difference import OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -31,6 +32,12 @@ parser.add_argument(
     help='Shapefile for sfm and lidar relative from base path',
 )
 parser.add_argument(
+    '--ortho-image',
+    type=str,
+    help='Path to ortho photo used as background in plots',
+    required=True
+)
+parser.add_argument(
     '--output-path',
     type=str,
     help='Directory where plots should be saved to',
@@ -45,11 +52,6 @@ parser.add_argument(
     '--differences',
     action='store_true',
     help='Plots for elevation, slope, and aspect differences'
-)
-parser.add_argument(
-    '--save-difference',
-    action='store_true',
-    help='Store the elevation difference in GeoTiff file'
 )
 parser.add_argument(
     '--histograms',
@@ -76,9 +78,14 @@ if __name__ == '__main__':
     if arguments.differences:
         area_difference = AreaDifferences(**comparison.file_args())
         [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
-        if arguments.save_difference:
-            area_difference.raster_difference.save()
         del area_difference
+
+        ortho_difference = OrthoDifference(
+            ortho_image=comparison.check_path(arguments.ortho_image),
+            **comparison.file_args()
+        )
+        ortho_difference.plot()
+        del ortho_difference
 
     if arguments.histograms:
         histogram = Histogram(**comparison.file_args())
