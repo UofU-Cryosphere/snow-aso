@@ -14,7 +14,10 @@ class Regression(PlotBase):
     ]
 
     def __init__(self, **kwargs):
-        super().__init__(kwargs['lidar'], kwargs['sfm'], kwargs['output_path'])
+        super().__init__(
+            kwargs['lidar'], kwargs['sfm'],
+            output_path=kwargs['output_path']
+        )
         self.df = self.load_data_frame()
 
     @property
