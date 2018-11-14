@@ -127,15 +127,14 @@ class Regression(PlotBase):
 
     def qqplot(self):
         fig = plt.figure(figsize=(12,8))
-        stats.probplot(
-            self.raster_difference.elevation.compressed(),
-            dist="norm",
-            plot=fig.gca()
-        )
-        plt.savefig(
-            self.output_path + '/qq_plot.png',
-            **self.output_defaults()
-        )
+        probplot = sm.ProbPlot(self.raster_difference.elevation.compressed())
+        ax = fig.gca()
+        probplot.qqplot(ax=ax, line='s')
+        ax.get_lines()[0].set(markersize=1)
+        ax.get_lines()[1].set(color='black', dashes=[4, 1])
+        ax.set_title('Normal Q-Q Plot', **self.title_opts())
+        fig.tight_layout()
+        plt.savefig(self.output_path + '/qq_plot.png', **self.output_defaults())
 
     def plot_all(self):
         self.plot_lidar_vs_sfm()
@@ -169,6 +168,6 @@ class Regression(PlotBase):
         self.fit_difference_vs_source(self.sfm, 'SfM')
 
     def run(self):
-        self.plot_all()
+        # self.plot_all()
         self.qqplot()
         # self.fit_all()
