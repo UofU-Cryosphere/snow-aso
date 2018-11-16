@@ -1,66 +1,10 @@
 import argparse
-import json
 import os
 
 import gdal
-import pdal
 
 from basin_data import BASINS_BOUNDARIES, BASIN_EPSG
-
-LAZ_MASK_PIPELINE_JSON = {
-    "pipeline": [
-        "__INFILE__",
-        {
-            "type": "filters.colorization",
-            "raster": "/Path/To/CASI_Mask.tif",
-            "dimensions": "Red:1"
-        },
-        {
-            "type": "filters.range",
-            "limits": "Red[0:2]"
-        },
-        {
-            "type": "filters.colorization",
-            "raster": "/Path/To/ENVI_Mask.tif",
-            "dimensions": "Red:1"
-        },
-        {
-            "type": "filters.range",
-            "limits": "Red(2:255]"
-        },
-        {
-            "filename": "__OUTFILE__",
-            "type": "writers.las",
-            "compression": "laszip",
-            "forward": "all",
-            "dataformat_id": 0,
-        }
-    ]
-}
-
-LAZ_DEM_PIPELINE_JSON = {
-    "pipeline": [
-        "__INFILE__",
-        {
-            "type": "filters.colorization",
-            "raster": "/Path/To/CASI_Mask.tif",
-            "dimensions": "Red:1"
-        },
-        {
-            "type": "filters.range",
-            "limits": "Red[0:1]"
-        },
-        {
-            "filename": "__OUTFILE__",
-            "type": "writers.gdal",
-            "bounds": "__BASIN_BOUNDARIES__",
-            "gdalopts": "__EPSG_CODE__",
-            "gdaldriver": "GTiff",
-            "resolution": "1.0",
-            "output_type": "all",
-        }
-    ]
-}
+from pdal_pipeline import PdalPipeline
 
 LAZ_MASKED_OUTFILE = '{0}_masked.laz'
 LAZ_TO_DEM_OUTFILE = '{0}_1m.tif'
@@ -95,13 +39,6 @@ parser.add_argument(
     choices=BASINS_BOUNDARIES.keys()
 )
 
-
-def execute_pdal(pipeline):
-    pdal_process = pdal.Pipeline(json.dumps(pipeline))
-    pdal_process.validate()
-    pdal_process.execute()
-
-
 if __name__ == '__main__':
     arguments = parser.parse_args()
 
@@ -112,30 +49,38 @@ if __name__ == '__main__':
         os.path.dirname(arguments.lidar_laz.name), output_file
     )
 
-    LAZ_MASK_PIPELINE_JSON['pipeline'][0] = arguments.lidar_laz.name
-    LAZ_MASK_PIPELINE_JSON['pipeline'][1]['raster'] = arguments.casi_mask.name
-    LAZ_MASK_PIPELINE_JSON['pipeline'][3]['raster'] = arguments.envi_mask.name
-    LAZ_MASK_PIPELINE_JSON['pipeline'][5]['filename'] = \
-        LAZ_MASKED_OUTFILE.format(output_file)
+    mask_pipeline = PdalPipeline()
 
-    execute_pdal(LAZ_MASK_PIPELINE_JSON)
+    mask_pipeline.add(arguments.lidar_laz.name)
+    mask_pipeline.add(PdalPipeline.filter_smrf())
+    mask_pipeline.add(PdalPipeline.mask_casi(
+        arguments.casi_mask.name, surfaces='snow_rock'
+    ))
+    mask_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
+    mask_pipeline.add(
+        PdalPipeline.create_las(LAZ_MASKED_OUTFILE.format(output_file))
+    )
+
+    mask_pipeline.execute()
     print(SAVE_MESSAGE.format(LAZ_MASKED_OUTFILE.format(output_file)))
+    del mask_pipeline
 
     print('Creating DEM')
 
-    LAZ_DEM_PIPELINE_JSON['pipeline'][0] = LAZ_MASKED_OUTFILE.format(
-        output_file)
-    LAZ_DEM_PIPELINE_JSON['pipeline'][1]['raster'] = arguments.casi_mask.name
-    LAZ_DEM_PIPELINE_JSON['pipeline'][3]['filename'] = \
-        LAZ_TO_DEM_OUTFILE.format(output_file)
-    LAZ_DEM_PIPELINE_JSON['pipeline'][3]['gdalopts'] = \
-        't_srs=' + BASIN_EPSG[arguments.basin]
-    LAZ_DEM_PIPELINE_JSON['pipeline'][3]['bounds'] = BASINS_BOUNDARIES[
-        arguments.basin
-    ]
+    dem_pipeline = PdalPipeline()
 
-    execute_pdal(LAZ_DEM_PIPELINE_JSON)
+    dem_pipeline.add(LAZ_MASKED_OUTFILE.format(output_file))
+    dem_pipeline.add(PdalPipeline.mask_casi(arguments.casi_mask.name))
+    dem_pipeline.add(PdalPipeline.create_dem(
+        outfile=LAZ_TO_DEM_OUTFILE.format(output_file),
+        bounds=BASINS_BOUNDARIES[arguments.basin],
+        epsg=BASIN_EPSG[arguments.basin]
+    ))
+
     print(SAVE_MESSAGE.format(LAZ_TO_DEM_OUTFILE.format(output_file)))
+
+    dem_pipeline.execute()
+    del dem_pipeline
 
     print('\nCompressing tif')
 
