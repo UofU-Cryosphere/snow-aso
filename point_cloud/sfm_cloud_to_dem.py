@@ -1,29 +1,13 @@
 import argparse
-import json
 import os
 
 import gdal
-import pdal
 
 from basin_data import BASINS_BOUNDARIES, BASIN_EPSG
+from pdal_pipeline import PdalPipeline
 
-LAZ_DEM_PIPELINE_JSON = {
-    "pipeline": [
-        "__INFILE__",
-        {
-            "filename": "__OUTFILE__",
-            "type": "writers.gdal",
-            "bounds": "__BASIN_BOUNDARIES__",
-            "gdalopts": "__EPSG_CODE__",
-            "gdaldriver": "GTiff",
-            "resolution": "1.0",
-            "output_type": "all",
-        }
-    ]
-}
-
-LAZ_TO_DEM_OUTFILE = '{0}_1m.tif'
-DEM_COMPRESSED_OUTFILE = '{0}_1m_c.tif'
+LAZ_TO_DEM_OUTFILE = '{0}_masked_1m.tif'
+DEM_COMPRESSED_OUTFILE = '{0}_masked_1m_c.tif'
 
 SAVE_MESSAGE = 'Saved output to:\n  {0}\n'
 
@@ -32,6 +16,18 @@ parser.add_argument(
     '--sfm-laz',
     type=argparse.FileType('r'),
     help='Path to lidar point cloud',
+    required=True
+)
+parser.add_argument(
+    '--casi-mask',
+    type=argparse.FileType('r'),
+    help='Path to CASI mask',
+    required=True
+)
+parser.add_argument(
+    '--envi-mask',
+    type=argparse.FileType('r'),
+    help='Path to ENVI mask',
     required=True
 )
 parser.add_argument(
@@ -52,18 +48,19 @@ if __name__ == '__main__':
 
     print('Creating DEM')
 
-    LAZ_DEM_PIPELINE_JSON['pipeline'][0] = arguments.sfm_laz.name
-    LAZ_DEM_PIPELINE_JSON['pipeline'][1]['filename'] = \
-        LAZ_TO_DEM_OUTFILE.format(output_file)
-    LAZ_DEM_PIPELINE_JSON['pipeline'][1]['gdalopts'] = \
-        't_srs=' + BASIN_EPSG[arguments.basin]
-    LAZ_DEM_PIPELINE_JSON['pipeline'][1]['bounds'] = BASINS_BOUNDARIES[
-        arguments.basin
-    ]
+    dem_pipeline = PdalPipeline()
 
-    pdal_process = pdal.Pipeline(json.dumps(LAZ_DEM_PIPELINE_JSON))
-    pdal_process.validate()
-    pdal_process.execute()
+    dem_pipeline.add(arguments.sfm_laz.name)
+    dem_pipeline.add(PdalPipeline.mask_casi(arguments.casi_mask.name))
+    dem_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
+    dem_pipeline.add(PdalPipeline.create_dem(
+        outfile=LAZ_TO_DEM_OUTFILE.format(output_file),
+        bounds=BASINS_BOUNDARIES[arguments.basin],
+        epsg=BASIN_EPSG[arguments.basin]
+    ))
+
+    dem_pipeline.execute()
+    del dem_pipeline
 
     print(SAVE_MESSAGE.format(LAZ_TO_DEM_OUTFILE.format(output_file)))
 
