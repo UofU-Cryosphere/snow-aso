@@ -64,7 +64,7 @@ class OrthoDifference(PlotBase):
 
         self.add_ortho_background(ax1)
         ax1.imshow(self.elevation, **diff_options)
-        ax1.set_title('95th percentile deviation', size=self.TITLE_FONT_SIZE)
+        ax1.set_title('95th percentile', size=self.TITLE_FONT_SIZE)
 
         self.add_ortho_background(ax2)
         img = ax2.imshow(self.elevation_filtered, **diff_options)
