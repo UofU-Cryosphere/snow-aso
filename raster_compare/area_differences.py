@@ -11,7 +11,6 @@ from base.plot_base import PlotBase
 # Plot differences between rasters and show histogram of the differences
 class AreaDifferences(PlotBase):
     TITLE = '{0} differences'
-    TITLE_HIST = '{0} difference distribution'
 
     HIST_TEXT = '50%:   {:5.2f}\n' \
                 'NMAD:  {:5.2f}\n' \
@@ -96,10 +95,6 @@ class AreaDifferences(PlotBase):
 
         ax2 = fig.add_subplot(grid_spec[1, :1])
         ax2.hist(difference.compressed(), bins=bins, label='Count')
-        ax2.set_title(
-            self.TITLE_HIST.format(raster_attr.capitalize()),
-            **PlotBase.title_opts()
-        )
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
