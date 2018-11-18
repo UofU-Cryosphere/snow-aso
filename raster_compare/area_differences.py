@@ -51,7 +51,9 @@ class AreaDifferences(PlotBase):
                 box_plot_data['caps'][0].get_ydata()[0]
             ),
         ]
-        PlotBase.add_to_legend(ax, '\n'.join(text))
+        PlotBase.add_to_legend(
+            ax, '\n'.join(text), handlelength=0, handletextpad=0
+        )
 
     @staticmethod
     def elevation_bounds(difference):
