@@ -81,11 +81,11 @@ class PlotBase(object):
         ax.imshow(self.ortho_image, zorder=0, extent=self.lidar.extent)
 
     @staticmethod
-    def add_to_legend(axes, text):
+    def add_to_legend(axes, text, **kwargs):
         mean = mpatches.Patch(color='none', label=text)
         handles, labels = axes.get_legend_handles_labels()
         handles.append(mean)
-        axes.legend(handles=handles, prop={'family':'monospace'})
+        axes.legend(handles=handles, prop={'family':'monospace'}, **kwargs)
 
     @staticmethod
     def insert_colorbar(plt, ax, data, label):
