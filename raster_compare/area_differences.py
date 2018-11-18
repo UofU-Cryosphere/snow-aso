@@ -1,7 +1,7 @@
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
-
+import statsmodels.api as sm
 from matplotlib import cm
 from matplotlib.gridspec import GridSpec
 
@@ -64,12 +64,16 @@ class AreaDifferences(PlotBase):
         self.print_status(str(raster_attr))
 
         fig = plt.figure(constrained_layout=False)
-        fig.set_size_inches(12, 10)
-        grid_spec = GridSpec(2, 2, figure=fig)
+        fig.set_size_inches(14, 12)
+        heights = [2, 1]
+        grid_opts=dict(figure=fig, height_ratios=heights)
 
         difference = getattr(self.raster_difference, raster_attr)
 
         if raster_attr is 'elevation':
+            grid_spec = GridSpec(
+                nrows=2, ncols=3, width_ratios=[3,2,3], **grid_opts
+            )
             bounds = self.elevation_bounds(difference)
             bins = np.arange(
                 difference.min(),
@@ -77,6 +81,9 @@ class AreaDifferences(PlotBase):
                 self.HIST_BIN_WIDTH
             )
         else:
+            grid_spec = GridSpec(
+                nrows=2, ncols=2, width_ratios=[3,2], **grid_opts
+            )
             bounds = dict()
             bins = 'auto'
 
@@ -95,16 +102,16 @@ class AreaDifferences(PlotBase):
             plt, ax1, diff_plot, self.SCALE_BAR_LABEL[raster_attr]
         )
 
-        ax2 = fig.add_subplot(grid_spec[1, :1])
+        ax2 = fig.add_subplot(grid_spec[1, 0])
         ax2.hist(difference.compressed(), bins=bins, label='Count')
         ax2.set_xlabel(
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
-        ax2.set_ylabel('Frequency', **PlotBase.label_opts())
+        ax2.set_ylabel('Count', **PlotBase.label_opts())
         if raster_attr is 'elevation':
             self.add_hist_stats(ax2)
 
-        ax3 = fig.add_subplot(grid_spec[1:, -1])
+        ax3 = fig.add_subplot(grid_spec[1, 1])
         box = ax3.boxplot(
             difference.compressed(),
             sym='k+',
@@ -119,6 +126,14 @@ class AreaDifferences(PlotBase):
             self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
         )
         self.add_box_plot_stats(ax3, box)
+
+        if raster_attr is 'elevation':
+            ax4 = fig.add_subplot(grid_spec[1, 2])
+            probplot = sm.ProbPlot(self.raster_difference.elevation.compressed())
+            probplot.qqplot(ax=ax4, line='s')
+            ax4.get_lines()[0].set(markersize=1)
+            ax4.get_lines()[1].set(color='black', dashes=[4, 1])
+            ax4.set_title('Normal Q-Q Plot', **self.title_opts())
 
         plt.tight_layout()
         plt.savefig(
