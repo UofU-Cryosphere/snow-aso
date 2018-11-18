@@ -109,7 +109,9 @@ class AreaDifferences(PlotBase):
             difference.compressed(),
             sym='k+',
             whis=self.BOX_PLOT_WHISKERS,
+            positions=[0.1]
         )
+        ax3.set_xlim([0, .35])
         ax3.tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
