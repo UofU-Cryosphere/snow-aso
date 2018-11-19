@@ -16,11 +16,13 @@ class AreaDifferences(PlotBase):
                 'NMAD:  {:5.2f}\n' \
                 '68.3%: {:5.2f}\n' \
                 '95%:   {:5.2f}'
-    HIST_BIN_WIDTH = 0.05
+    HIST_BIN_WIDTH = 0.01
     BOX_PLOT_TEXT = '{0:8}: {1:6.3f}'
     BOX_PLOT_WHISKERS = [5, 95]
 
     OUTPUT_FILE = '{0}{1}_differences.png'
+
+    COLORMAP = cm.get_cmap('PuOr')
 
     def add_hist_stats(self, ax):
         box_text = AreaDifferences.HIST_TEXT.format(
@@ -55,11 +57,6 @@ class AreaDifferences(PlotBase):
             ax, '\n'.join(text), handlelength=0, handletextpad=0
         )
 
-    @staticmethod
-    def elevation_bounds(difference):
-        bins = np.arange(difference.min(), difference.max() + 0.1, 0.1)
-        return dict(norm=colors.BoundaryNorm(boundaries=bins, ncolors=256))
-
     def plot(self, raster_attr):
         self.print_status(str(raster_attr))
 
@@ -74,11 +71,15 @@ class AreaDifferences(PlotBase):
             grid_spec = GridSpec(
                 nrows=2, ncols=3, width_ratios=[3,2,3], **grid_opts
             )
-            bounds = self.elevation_bounds(difference)
             bins = np.arange(
                 difference.min(),
                 difference.max() + self.HIST_BIN_WIDTH,
                 self.HIST_BIN_WIDTH
+            )
+            bounds = dict(
+                norm=colors.BoundaryNorm(
+                    boundaries=bins, ncolors=self.COLORMAP.N
+                )
             )
         else:
             grid_spec = GridSpec(
@@ -90,7 +91,7 @@ class AreaDifferences(PlotBase):
         ax1 = fig.add_subplot(grid_spec[0, :])
         diff_plot = ax1.imshow(
             difference,
-            cmap=cm.get_cmap('PuOr'),
+            cmap=self.COLORMAP,
             alpha=0.8,
             extent=self.sfm.extent,
             **bounds
