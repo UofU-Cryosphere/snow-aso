@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from base import RgbAverage
+from base import RgbAverage, PlotBase, RasterFile
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -13,6 +13,11 @@ parser.add_argument(
     type=str,
     help='Path to ortho photo used as background',
     required=True
+)
+parser.add_argument(
+    '--raster-dem',
+    type=str,
+    help='Optional raster for axes labels'
 )
 
 COLOR_LIST = ['gold', 'darkorange', 'red', 'brown']
@@ -23,6 +28,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     average = RgbAverage(arguments.ortho_image)
+    raster = RasterFile(arguments.raster_dem)
 
     cmap = LinearSegmentedColormap.from_list('gdrb', COLOR_LIST, N=NUM_COLORS)
 
@@ -33,13 +39,20 @@ if __name__ == '__main__':
 
     average.values[average.values < LOWER_BOUND] = np.NaN
 
-    plt.figure(figsize=(12, 8))
-    plt.imshow(plt.imread(arguments.ortho_image), zorder=0)
-    plt.imshow(
+    fig, (ax1, cax) = plt.subplots(
+        nrows=2, figsize=(6, 5), gridspec_kw={'height_ratios': [1, 0.07]}
+    )
+    ax1.imshow(plt.imread(
+        arguments.ortho_image), zorder=0, extent=raster.extent
+    )
+    img = ax1.imshow(
         average.values,
+        extent=raster.extent,
         cmap=cmap, norm=norm,
         vmin=LOWER_BOUND, vmax=RgbAverage.MAX_PIXEL_VALUE,
         zorder=1, alpha=0.7
     )
-    plt.colorbar()
-    plt.show()
+    ax1.set_title('RGB overlay', **PlotBase.title_opts())
+    fig.colorbar(img, cax=cax, orientation='horizontal')
+    # plt.tight_layout()
+    plt.show(**PlotBase.output_defaults())
