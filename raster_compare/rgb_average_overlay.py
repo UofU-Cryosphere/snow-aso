@@ -52,7 +52,7 @@ if __name__ == '__main__':
         vmin=LOWER_BOUND, vmax=RgbAverage.MAX_PIXEL_VALUE,
         zorder=1, alpha=0.7
     )
-    ax1.set_title('RGB overlay', **PlotBase.title_opts())
+    ax1.set_title('Pixel Brightness', **PlotBase.title_opts())
     fig.colorbar(img, cax=cax, orientation='horizontal')
     # plt.tight_layout()
     plt.show(**PlotBase.output_defaults())
