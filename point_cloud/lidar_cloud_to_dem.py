@@ -52,11 +52,11 @@ if __name__ == '__main__':
     mask_pipeline = PdalPipeline()
 
     mask_pipeline.add(arguments.lidar_laz.name)
-    mask_pipeline.add(PdalPipeline.filter_smrf())
     mask_pipeline.add(PdalPipeline.mask_casi(
         arguments.casi_mask.name, surfaces='snow_rock'
     ))
     mask_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
+    mask_pipeline.add(PdalPipeline.filter_smrf())
     mask_pipeline.add(
         PdalPipeline.create_las(LAZ_MASKED_OUTFILE.format(output_file))
     )
