@@ -42,8 +42,6 @@ parser.add_argument(
 if __name__ == '__main__':
     arguments = parser.parse_args()
 
-    print('Masking out vegetation')
-
     output_file = os.path.splitext(arguments.lidar_laz.name)[0]
     output_file = os.path.join(
         os.path.dirname(arguments.lidar_laz.name), output_file
@@ -51,12 +49,16 @@ if __name__ == '__main__':
 
     mask_pipeline = PdalPipeline()
 
+    print('Masking out vegetation')
     mask_pipeline.add(arguments.lidar_laz.name)
     mask_pipeline.add(PdalPipeline.mask_casi(
         arguments.casi_mask.name, surfaces='snow_rock'
     ))
     mask_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
+
+    print('Filter to ground return only')
     mask_pipeline.add(PdalPipeline.filter_smrf())
+
     mask_pipeline.add(
         PdalPipeline.create_las(LAZ_MASKED_OUTFILE.format(output_file))
     )
