@@ -59,3 +59,10 @@ if __name__ == '__main__':
     fig.colorbar(img, cax=cax, orientation='horizontal')
     # plt.tight_layout()
     plt.show(**PlotBase.output_defaults())
+
+    a = plt.hist(
+        average_masked.compressed(),
+        bins=np.arange(LOWER_BOUND, RgbAverage.MAX_PIXEL_VALUE + 1, 1)
+    )
+    plt.yscale('log')
+    plt.show()
