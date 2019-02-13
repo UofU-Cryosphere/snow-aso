@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
-from base.plot_base import PlotBase
-from base.raster_difference import RasterDifference
+from .plot_base import PlotBase
+from raster_compare.base import RasterDifference
 
 
 class Histogram(PlotBase):

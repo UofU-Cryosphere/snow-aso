@@ -3,7 +3,7 @@ import sys
 
 import gdal
 
-from base.raster_file import RasterFile
+from .raster_file import RasterFile
 
 
 class RasterCompare(object):

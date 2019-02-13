@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from base import RgbAverage, PlotBase, RasterFile
+from raster_compare.base import RgbAverage, RasterFile
+from raster_compare.plots import PlotBase
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

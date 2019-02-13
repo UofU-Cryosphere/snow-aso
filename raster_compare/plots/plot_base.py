@@ -2,7 +2,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from base.raster_difference import RasterDifference
+from raster_compare.base import RasterDifference
 
 
 class PlotBase(object):

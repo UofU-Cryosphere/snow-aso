@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-from base.plot_base import PlotBase
+from .plot_base import PlotBase
 
 
 # Plot DEMs side by side

@@ -1,11 +1,8 @@
 import argparse
 
-from area_differences import AreaDifferences
-from area_plot import AreaPlot
-from base.raster_compare import RasterCompare
-from histograms import Histogram
-from regression import Regression
-from ortho_difference import OrthoDifference
+from raster_compare.base import RasterCompare
+from raster_compare.plots import AreaDifferences, AreaPlot, Histogram, \
+    Regression, OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

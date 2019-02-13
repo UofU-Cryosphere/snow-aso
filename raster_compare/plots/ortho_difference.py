@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 
-from base import PlotBase
+from .plot_base import PlotBase
 
 
 class OrthoDifference(PlotBase):
