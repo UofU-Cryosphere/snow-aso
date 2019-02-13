@@ -1,8 +1,8 @@
 import numpy as np
-from osgeo import gdal, gdalnumeric
+from osgeo import gdal
 
-from base.raster_file import RasterFile
-from base.median_absolute_deviation import MedianAbsoluteDeviation
+from .raster_file import RasterFile
+from .median_absolute_deviation import MedianAbsoluteDeviation
 
 
 class RasterDifference(object):

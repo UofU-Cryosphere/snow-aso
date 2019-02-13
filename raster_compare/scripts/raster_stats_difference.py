@@ -1,7 +1,7 @@
 import argparse
 
-from base import RasterFile
-from raster_stats import RasterStats
+from raster_compare.base import RasterFile
+from raster_compare.plots import RasterStats
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

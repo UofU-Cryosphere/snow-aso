@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from base import PlotBase
+from .plot_base import PlotBase
 
 
 class Regression(PlotBase):

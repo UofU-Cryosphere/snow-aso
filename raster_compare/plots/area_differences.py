@@ -5,7 +5,7 @@ import statsmodels.api as sm
 from matplotlib import cm
 from matplotlib.gridspec import GridSpec
 
-from base.plot_base import PlotBase
+from .plot_base import PlotBase
 
 
 # Plot differences between rasters and show histogram of the differences
