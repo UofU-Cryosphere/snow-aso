@@ -22,5 +22,4 @@ class RgbAverage(object):
     def values(self):
         if self._values is None:
             self._values = np.mean(self.image_bgr, axis=2)
-            self._values[self._values == self.MAX_PIXEL_VALUE] = np.NaN
         return self._values
