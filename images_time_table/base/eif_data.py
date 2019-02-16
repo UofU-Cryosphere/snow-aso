@@ -4,8 +4,7 @@ import os
 
 import pandas
 
-from images_meta_csv import ImagesMetaCsv
-from converters import DecimalConverter
+from images_time_table.base import DecimalConverter, ImagesMetaCsv
 
 
 class EifData(object):

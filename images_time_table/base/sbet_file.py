@@ -4,7 +4,7 @@ import os
 
 import pandas
 
-from images_meta_csv import ImagesMetaCsv
+from images_time_table.base import ImagesMetaCsv
 
 
 class SbetFile(object):
