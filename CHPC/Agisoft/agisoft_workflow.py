@@ -36,6 +36,9 @@ class Agisoft:
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
+    CAMERA_LOCATION_ACCURACY = PhotoScan.Vector([1, 1, 1])
+    CAMERA_ROTATION_ACCURACY = PhotoScan.Vector([1, 1, 1])
+
     IMAGE_ACCURACY_MATCHING = PhotoScan.HighestAccuracy
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
@@ -109,9 +112,9 @@ class Agisoft:
         # Imported camera coordinates projection
         self.chunk.crs = self.WGS_84
         # Accuracy for camera position in m
-        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
+        self.chunk.camera_location_accuracy = self.CAMERA_LOCATION_ACCURACY
         # Accuracy for camera orientations in degree
-        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
+        self.chunk.camera_rotation_accuracy = self.CAMERA_ROTATION_ACCURACY
 
     def save_and_exit(self):
         self.project.save()
