@@ -101,18 +101,21 @@ class SbetFile(object):
     def set_imu_data_for_row(self, row):
         sbet_record, gps_week_time = self.imu_data_for_row(row)
 
-        result = [
-            row.get(ImagesMetaCsv.FILE_COLUMN),
-            sbet_record.X,
-            sbet_record.Y,
-            sbet_record.Z,
-            self.yaw_to_360(sbet_record.Heading),
-            sbet_record.Pitch,
-            sbet_record.Roll,
-            gps_week_time - sbet_record[self.GPS_COLUMN],
-            row.get(ImagesMetaCsv.TIME_COLUMN),
-            row.get(ImagesMetaCsv.TIME_OF_DAY)
-        ]
+        if len(sbet_record) > 0:
+            result = [
+                row.get(ImagesMetaCsv.FILE_COLUMN),
+                sbet_record.X,
+                sbet_record.Y,
+                sbet_record.Z,
+                self.yaw_to_360(sbet_record.Heading),
+                sbet_record.Pitch,
+                sbet_record.Roll,
+                gps_week_time - sbet_record[self.GPS_COLUMN],
+                row.get(ImagesMetaCsv.TIME_COLUMN),
+                row.get(ImagesMetaCsv.TIME_OF_DAY)
+            ]
+        else:
+            result = []
 
         return self.update_row(row, result)
 
