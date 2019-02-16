@@ -57,13 +57,16 @@ class EifData(object):
 
         return file_name
 
-    @staticmethod
-    def yaw_to_360(row):
+    def yaw_to_360(self, row):
         """
         Yaw value from .eif file need transformation to a 0 to 360 degree range
         for Agisoft PhotoScan.
         """
-        return (360 - row.get('yaw[deg]', 0)) % 360
+        yaw = row.get('yaw[deg]', None)
+        if yaw is not None and self.new_eif_type:
+            return (360 - yaw) % 360
+        else:
+            return yaw
 
     @staticmethod
     def transform_roll(row):
@@ -73,13 +76,16 @@ class EifData(object):
         """
         return row.get('pitch[deg]')
 
-    @staticmethod
-    def transform_pitch(row):
+    def transform_pitch(self, row):
         """
         Seems that provided value of pitch in the .eif file is flipped with
         the roll value and has a different reference plane.
         """
-        return row.get('roll[deg]', 0) + 180
+        pitch = row.get('roll[deg]', None)
+        if pitch is not None and self.new_eif_type:
+            return row.get('roll[deg]', 0) + 180
+        else:
+            return pitch
 
     def add_to_table(self, row):
         data = [
