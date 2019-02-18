@@ -38,10 +38,17 @@ class PlotBase(object):
         if 'ortho_image' in kwargs:
             self._ortho_image = plt.imread(kwargs['ortho_image'])
         self.raster_difference = RasterDifference(lidar, sfm)
+        self.configure_matplotlib()
 
+    @staticmethod
+    def configure_matplotlib():
         # Enable running on headless devices
         if sys.stdout.isatty():
             matplotlib.use('Agg')
+
+        # Save figure text editable
+        matplotlib.rcParams['pdf.fonttype'] = 42
+        matplotlib.rcParams['ps.fonttype'] = 42
 
     @property
     def output_path(self):
