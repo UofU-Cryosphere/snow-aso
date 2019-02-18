@@ -5,7 +5,7 @@ from .plot_base import PlotBase
 
 
 # Plot DEMs side by side
-class AreaPlot(PlotBase):
+class SideBySide(PlotBase):
     OUTPUT_FILE = '{0}{1}_comparison.png'
 
     def plot(self, raster_attr):

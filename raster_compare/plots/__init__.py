@@ -1,5 +1,5 @@
 from .area_differences import AreaDifferences
-from .area_plot import AreaPlot
+from .side_by_side import SideBySide
 from .histograms import Histogram
 from .ortho_difference import OrthoDifference
 from .plot_base import PlotBase
@@ -8,7 +8,7 @@ from .regression import Regression
 
 __all__ = [
     'AreaDifferences',
-    'AreaPlot',
+    'SideBySide',
     'Histogram',
     'OrthoDifference',
     'PlotBase',

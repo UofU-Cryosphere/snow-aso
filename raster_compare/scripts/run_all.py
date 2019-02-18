@@ -1,7 +1,7 @@
 import argparse
 
 from raster_compare.base import RasterCompare
-from raster_compare.plots import AreaDifferences, AreaPlot, Histogram, \
+from raster_compare.plots import AreaDifferences, SideBySide, Histogram, \
     Regression, OrthoDifference
 
 parser = argparse.ArgumentParser()
@@ -41,7 +41,7 @@ parser.add_argument(
     default='comparison'
 )
 parser.add_argument(
-    '--area-plots',
+    '--side-by-side',
     action='store_true',
     help='Side by side comparison plots for elevation, slope, and aspect'
 )
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     comparison = RasterCompare(**vars(arguments))
     comparison.prepare()
 
-    if arguments.area_plots:
-        area_plot = AreaPlot(**comparison.file_args())
-        [area_plot.plot(attr) for attr in AreaPlot.TYPES]
+    if arguments.side_by_side:
+        area_plot = SideBySide(**comparison.file_args())
+        [area_plot.plot(attr) for attr in SideBySide.TYPES]
         del area_plot
 
     if arguments.differences:
