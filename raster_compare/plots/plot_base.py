@@ -1,6 +1,8 @@
+import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import sys
 
 from raster_compare.base import RasterDifference
 
@@ -36,6 +38,10 @@ class PlotBase(object):
         if 'ortho_image' in kwargs:
             self._ortho_image = plt.imread(kwargs['ortho_image'])
         self.raster_difference = RasterDifference(lidar, sfm)
+
+        # Enable running on headless devices
+        if sys.stdout.isatty():
+            matplotlib.use('Agg')
 
     @property
     def output_path(self):
