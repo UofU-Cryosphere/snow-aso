@@ -9,8 +9,6 @@ class RasterDifference(object):
     BIN_WIDTH = 10  # 10m
 
     GDAL_DRIVER = gdal.GetDriverByName('GTiff')
-    GDAL_OPTIONS = ["COMPRESS=LZW", "TILED=YES",
-                    "BIGTIFF=IF_SAFER", "NUM_THREADS=ALL_CPUS"]
 
     def __init__(self, lidar, sfm):
         self.lidar = lidar if type(lidar) is RasterFile else RasterFile(lidar)
