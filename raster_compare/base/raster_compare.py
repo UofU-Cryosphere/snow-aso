@@ -72,22 +72,15 @@ class RasterCompare(object):
 
     @staticmethod
     def crop_to_shape(raster_file, shape_file):
-        output_file = raster_file.replace('.tif', '_cropped.tif')
+        output_file = raster_file.replace('.tif', '_cropped.vrt')
 
         if not os.path.exists(output_file):
             print('Cropping raster:\n   ' + raster_file +
                   '\nto shape:\n   ' + shape_file + '\n')
-            warped = gdal.Warp(
-                '', raster_file,
-                format='MEM', dstAlpha=True, cropToCutline=True,
-                cutlineDSName=shape_file
+            gdal.Warp(
+                output_file, raster_file, format='VRT',
+                dstAlpha=True, cropToCutline=True, cutlineDSName=shape_file
             )
-            gdal.Translate(
-                output_file, warped,
-                creationOptions=["COMPRESS=LZW", "TILED=YES",
-                                 "BIGTIFF=IF_SAFER", "NUM_THREADS=ALL_CPUS"]
-            )
-            del warped
 
         return output_file
 
