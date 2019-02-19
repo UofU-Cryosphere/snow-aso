@@ -1,6 +1,6 @@
 import argparse
 
-from raster_compare.base import RasterCompare
+from raster_compare.base import PdalMapper, RasterCompare
 from raster_compare.plots import AreaDifferences, SideBySide, Histogram, \
     Regression, OrthoDifference
 
@@ -22,6 +22,12 @@ parser.add_argument(
     type=str,
     help='Relative path to SfM DEM relative from base path',
     required=True
+)
+parser.add_argument(
+    '--band-number',
+    type=int,
+    help='Optional - Specific band number to compare of rasters',
+    default=PdalMapper.RASTER_BANDS['mean'],
 )
 parser.add_argument(
     '--shape-file',

@@ -10,9 +10,9 @@ class RasterDifference(object):
 
     GDAL_DRIVER = gdal.GetDriverByName('GTiff')
 
-    def __init__(self, lidar, sfm):
-        self.lidar = lidar if type(lidar) is RasterFile else RasterFile(lidar)
-        self.sfm = sfm if type(sfm) is RasterFile else RasterFile(sfm)
+    def __init__(self, lidar, sfm, band_number):
+        self.lidar = RasterFile(lidar, band_number)
+        self.sfm = RasterFile(sfm, band_number)
         self._aspect = None
         self.elevation_values = self.sfm.elevation - self.lidar.elevation
         self.elevation_mask = self.elevation_values.mask

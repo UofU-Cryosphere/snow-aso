@@ -19,6 +19,7 @@ class OrthoDifference(PlotBase):
             kwargs['lidar'], kwargs['sfm'],
             ortho_image=kwargs['ortho_image'],
             output_path=kwargs['output_path'],
+            band_number=kwargs['band_number'],
         )
         self._cmap = self.setup_color_map()
         self._bounds = self.set_bounds()

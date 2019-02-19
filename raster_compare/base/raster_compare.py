@@ -10,6 +10,7 @@ class RasterCompare(object):
         self.output_path = kwargs['output_path']
         self.lidar_dem = kwargs['lidar_dem']
         self.sfm_dem = kwargs['sfm_dem']
+        self.band_number = kwargs['band_number']
         self.shape_file = kwargs['shape_file']
 
     @property
@@ -35,6 +36,14 @@ class RasterCompare(object):
     @sfm_dem.setter
     def sfm_dem(self, path):
         self._sfm_dem = self.check_path(path)
+
+    @property
+    def band_number(self):
+        return self._band_number
+
+    @band_number.setter
+    def band_number(self, band_number):
+        self._band_number = band_number
 
     @property
     def output_path(self):
@@ -91,5 +100,6 @@ class RasterCompare(object):
         return dict(
             lidar=self.lidar_dem,
             sfm=self.sfm_dem,
+            band_number = self.band_number,
             output_path=self.output_path
         )

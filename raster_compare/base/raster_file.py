@@ -3,12 +3,10 @@ import numpy as np
 
 
 class RasterFile(object):
-    DEFAULT_BAND_NUMBER = 1
-
-    def __init__(self, filename):
+    def __init__(self, filename, band_number):
         self.file = filename
+        self._band_number = band_number
         self._extent = None
-        self._elevation = None
         self._hillshade = None
         self._slope = None
         self._aspect = None
@@ -20,6 +18,14 @@ class RasterFile(object):
     @file.setter
     def file(self, filename):
         self._file = gdal.Open(filename)
+
+    @property
+    def band_number(self):
+        return self._band_number
+
+    @band_number.setter
+    def band_number(self, band_number):
+        self._band_number = band_number
 
     @property
     def extent(self):
@@ -69,9 +75,7 @@ class RasterFile(object):
 
     @property
     def elevation(self):
-        if self._elevation is None:
-            self._elevation = self.values_for_band()
-        return self._elevation
+        return self.values_for_band(self.band_number)
 
     def geo_transform(self):
         return self.file.GetGeoTransform()

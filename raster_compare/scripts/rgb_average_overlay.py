@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-from raster_compare.base import RgbAverage, RasterFile
+from raster_compare.base import PdalMapper, RgbAverage, RasterFile
 from raster_compare.plots import PlotBase
 
 parser = argparse.ArgumentParser()
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     average = RgbAverage(arguments.ortho_image)
-    raster = RasterFile(arguments.raster_dem)
+    raster = RasterFile(arguments.raster_dem, PdalMapper.RASTER_BANDS['mean'])
 
     cmap = LinearSegmentedColormap.from_list('gdrb', COLOR_LIST, N=NUM_COLORS)
 

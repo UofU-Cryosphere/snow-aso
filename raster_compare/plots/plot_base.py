@@ -37,7 +37,9 @@ class PlotBase(object):
         self._output_path = kwargs['output_path']
         if 'ortho_image' in kwargs:
             self._ortho_image = plt.imread(kwargs['ortho_image'])
-        self.raster_difference = RasterDifference(lidar, sfm)
+        self.raster_difference = RasterDifference(
+            lidar, sfm, kwargs['band_number']
+        )
         self.configure_matplotlib()
 
     @staticmethod
