@@ -3,8 +3,6 @@ import sys
 
 import gdal
 
-from .raster_file import RasterFile
-
 
 class RasterCompare(object):
     def __init__(self, **kwargs):
@@ -91,7 +89,7 @@ class RasterCompare(object):
 
     def file_args(self):
         return dict(
-            lidar=RasterFile(self.lidar_dem),
-            sfm=RasterFile(self.sfm_dem),
+            lidar=self.lidar_dem,
+            sfm=self.sfm_dem,
             output_path=self.output_path
         )
