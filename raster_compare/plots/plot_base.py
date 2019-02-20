@@ -96,6 +96,14 @@ class PlotBase(object):
         ax.imshow(self.ortho_image, zorder=0, extent=self.lidar.extent)
 
     @staticmethod
+    def add_hillshade_background(ax, raster_file):
+        ax.imshow(
+            raster_file.hill_shade,
+            extent=raster_file.extent,
+            cmap='gray', clim=(1, 255)
+        )
+
+    @staticmethod
     def add_to_legend(axes, text, **kwargs):
         mean = mpatches.Patch(color='none', label=text)
         handles, labels = axes.get_legend_handles_labels()
