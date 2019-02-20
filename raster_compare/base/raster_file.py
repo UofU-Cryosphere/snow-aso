@@ -49,8 +49,10 @@ class RasterFile(object):
         del band
         return values
 
-    def get_raster_attribute(self, attribute):
-        raster = gdal.DEMProcessing('', self.file, attribute, format='MEM')
+    def get_raster_attribute(self, attribute, **kwargs):
+        raster = gdal.DEMProcessing(
+            '', self.file, attribute, format='MEM', **kwargs
+        )
         raster_values = self.values_for_band(raster=raster)
         del raster
         return raster_values
