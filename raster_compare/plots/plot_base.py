@@ -108,6 +108,7 @@ class PlotBase(object):
         cax = legend.append_axes("right", size="5%", pad=0.05)
         scale_bar = plot.colorbar(data, cax=cax)
         scale_bar.set_label(label=label, size=PlotBase.LABEL_FONT_SIZE)
+        return scale_bar
 
     def print_status(self, message=''):
         status = 'Plotting ' + self.__class__.__name__
