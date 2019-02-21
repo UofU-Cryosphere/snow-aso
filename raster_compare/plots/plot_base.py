@@ -3,6 +3,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import sys
+import os
 
 from raster_compare.base import RasterDifference
 
@@ -55,6 +56,15 @@ class PlotBase(object):
     @property
     def output_path(self):
         return self._output_path
+
+    @property
+    def output_file(self):
+        try:
+            return os.path.join(self.output_path, self.OUTPUT_FILE_NAME)
+        except NameError:
+            print('*** OUTPUT_FILE_NAME not defined ***')
+            print('*** Figure NOT saved ***')
+            return
 
     @property
     def lidar(self):
@@ -115,7 +125,7 @@ class PlotBase(object):
         legend = make_axes_locatable(ax)
         cax = legend.append_axes("right", size="5%", pad=0.05)
         scale_bar = plot.colorbar(data, cax=cax)
-        scale_bar.set_label(label=label, size=PlotBase.LABEL_FONT_SIZE)
+        scale_bar.set_label(label=label)
         return scale_bar
 
     def print_status(self, message=''):
