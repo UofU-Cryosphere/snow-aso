@@ -3,7 +3,7 @@ from .side_by_side import SideBySide
 from .histograms import Histogram
 from .ortho_difference import OrthoDifference
 from .plot_base import PlotBase
-from .raster_stats import RasterStats
+from .raster_point_spread import RasterPointSpread
 from .regression import Regression
 
 __all__ = [
@@ -12,6 +12,6 @@ __all__ = [
     'Histogram',
     'OrthoDifference',
     'PlotBase',
-    'RasterStats',
+    'RasterPointSpread',
     'Regression',
 ]
