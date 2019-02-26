@@ -33,6 +33,9 @@ class RasterPointSpread(PlotBase):
         self.raster.band_number = PdalMapper.RASTER_BANDS['max']
         return self.raster.elevation
 
+    def diff_per_cell(self):
+        return self.max_values() - self.min_values()
+
     def bounds(self, diff):
         # Get maximum value from values, which also can be the absolute value
         # of the minimum
@@ -46,7 +49,7 @@ class RasterPointSpread(PlotBase):
         return bounds
 
     def plot(self):
-        diff_per_cell = self.max_values() - self.min_values()
+        diff_per_cell = self.diff_per_cell()
 
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(8, 10))
 
