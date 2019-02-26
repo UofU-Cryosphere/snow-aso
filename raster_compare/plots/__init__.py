@@ -4,6 +4,7 @@ from .histograms import Histogram
 from .ortho_difference import OrthoDifference
 from .plot_base import PlotBase
 from .raster_point_spread import RasterPointSpread
+from .raster_point_spread_difference import RasterPointSpreadDifference
 from .regression import Regression
 
 __all__ = [
@@ -13,5 +14,6 @@ __all__ = [
     'OrthoDifference',
     'PlotBase',
     'RasterPointSpread',
+    'RasterPointSpreadDifference',
     'Regression',
 ]
