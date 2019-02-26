@@ -68,6 +68,14 @@ class RasterPointSpread(PlotBase):
         ax2.hist(diff_per_cell.compressed(), bins=bins)
         ax2.set_xticks(bins[10::20])
         ax2.set_xlim(bins[0], bins[-1])
+        ax2.set_xlabel('Spread [m]')
         ax2.set_yscale('log')
+        ax2.set_ylabel('Count')
+        ax2.axvline(
+            diff_per_cell.mean(),
+            color='orange', linewidth=2,
+            label='Mean: {:.2f}'.format(diff_per_cell.mean())
+        )
+        ax2.legend()
 
         plt.savefig(self.output_file)
