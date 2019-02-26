@@ -11,8 +11,10 @@ from .plot_base import PlotBase
 class RasterPointSpread(PlotBase):
     PLOT_TITLE = 'Point elevation spread difference per cell'
     OUTPUT_FILE_NAME = 'raster_point_spread.png'
+
     HIST_BIN_WIDTH = 0.1
-    MIN_OUTLIER_VALUE = None    # Adjust with histogram
+    MIN_OUTLIER_VALUE = 18    # Adjust with histogram
+    COLOR_MAP = 'seismic_r'
 
     def __init__(self, raster, **kwargs):
         self._output_path = kwargs['output_path']
@@ -32,11 +34,15 @@ class RasterPointSpread(PlotBase):
         return self.raster.elevation
 
     def bounds(self, diff):
-        max_val = math.ceil(diff.max())
-        min_val = math.floor(diff.min())
+        # Get maximum value from values, which also can be the absolute value
+        # of the minimum
+        max_val = max(math.ceil(diff.max()), math.fabs(math.floor(diff.min())))
 
-        bounds = np.arange(min_val, self.MIN_OUTLIER_VALUE, 1)
+        # Create a symmetric range for bounds
+        bounds = np.arange(-self.MIN_OUTLIER_VALUE, self.MIN_OUTLIER_VALUE + 1, 1)
+        # Collect outliers into one bin
         bounds = np.append(bounds, [max_val])
+        bounds = np.insert(bounds,0, -max_val)
         return bounds
 
     def plot(self):
@@ -52,7 +58,7 @@ class RasterPointSpread(PlotBase):
             diff_per_cell,
             # vmin=, vmax=, # Limit displayed value range
             extent=self.raster.extent,
-            cmap=cm.get_cmap('magma_r'),
+            cmap=cm.get_cmap(self.COLOR_MAP),
             norm=norm,
         )
         ax1.set_title(self.PLOT_TITLE)
@@ -66,8 +72,8 @@ class RasterPointSpread(PlotBase):
         bins = np.arange(bounds[0], bounds[-1] + 1, self.HIST_BIN_WIDTH)
 
         ax2.hist(diff_per_cell.compressed(), bins=bins)
-        ax2.set_xticks(bins[10::20])
-        ax2.set_xlim(bins[0], bins[-1])
+        ax2.set_xticks(bins[10::20])        # Adjust to start with 0
+        ax2.set_xlim(bins[0], bins[-1])     # Remove white space on x-Axis
         ax2.set_xlabel('Spread [m]')
         ax2.set_yscale('log')
         ax2.set_ylabel('Count')
