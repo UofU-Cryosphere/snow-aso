@@ -21,14 +21,9 @@ class SideBySide(PlotBase):
         for n, ax in enumerate(axes):
             ax.set_facecolor('0.9')
 
-        hillshade_opts = dict(cmap='gray', clim=(1, 255))
-        ax1.imshow(
-            self.lidar.hill_shade, extent=self.lidar.extent, **hillshade_opts
-        )
+        self.add_hillshade_background(ax1, self.lidar)
         self.sfm.join_masks('hill_shade', getattr(self.lidar, raster_attr))
-        ax2.imshow(
-            self.sfm.hill_shade, extent=self.sfm.extent, **hillshade_opts
-        )
+        self.add_hillshade_background(ax2, self.sfm)
 
         im_opts = dict(
             cmap=cm.get_cmap('jet'),
