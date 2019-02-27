@@ -121,10 +121,10 @@ class PlotBase(object):
         axes.legend(handles=handles, prop={'family':'monospace'}, **kwargs)
 
     @staticmethod
-    def insert_colorbar(plot, ax, data, label):
+    def insert_colorbar(plot, ax, data, label, **kwargs):
         legend = make_axes_locatable(ax)
         cax = legend.append_axes("right", size="5%", pad=0.05)
-        scale_bar = plot.colorbar(data, cax=cax)
+        scale_bar = plot.colorbar(data, cax=cax, **kwargs)
         scale_bar.set_label(label=label)
         return scale_bar
 
