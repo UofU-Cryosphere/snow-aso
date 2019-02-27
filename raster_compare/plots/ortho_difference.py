@@ -77,7 +77,4 @@ class OrthoDifference(PlotBase):
         )
 
         fig.set_size_inches(6, 10)
-        plt.savefig(
-            os.path.join(self.output_path, self.OUTPUT_FILE_NAME),
-            **self.output_defaults()
-        )
+        plt.savefig(os.path.join(self.output_path, self.OUTPUT_FILE_NAME))

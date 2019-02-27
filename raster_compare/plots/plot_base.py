@@ -49,6 +49,17 @@ class PlotBase(object):
         if sys.stdout.isatty():
             matplotlib.use('Agg')
 
+        # Font sizes
+        matplotlib.rcParams['axes.titlesize'] = PlotBase.TITLE_FONT_SIZE
+        matplotlib.rcParams['axes.labelsize'] = PlotBase.LABEL_FONT_SIZE
+
+        # Figure settings
+        matplotlib.rcParams['figure.titlesize'] = PlotBase.TITLE_FONT_SIZE
+        matplotlib.rcParams['figure.dpi'] = PlotBase.DEFAULT_DPI
+
+        # Save settings
+        matplotlib.rcParams['savefig.bbox'] = 'tight'
+
         # Save figure text editable
         matplotlib.rcParams['pdf.fonttype'] = 42
         matplotlib.rcParams['ps.fonttype'] = 42
@@ -89,18 +100,6 @@ class PlotBase(object):
             s=text,
             ha='left', va='top', bbox=PlotBase.BOUNDING_BOX, **kwargs
         )
-
-    @staticmethod
-    def title_opts(**kwargs):
-        return dict(fontdict={'fontsize': PlotBase.TITLE_FONT_SIZE}, **kwargs)
-
-    @staticmethod
-    def label_opts(**kwargs):
-        return dict(fontsize=PlotBase.LABEL_FONT_SIZE, **kwargs)
-
-    @staticmethod
-    def output_defaults(**kwargs):
-        return dict(bbox_inches='tight', dpi=PlotBase.DEFAULT_DPI, **kwargs)
 
     def add_ortho_background(self, ax):
         ax.imshow(self.ortho_image, zorder=0, extent=self.lidar.extent)

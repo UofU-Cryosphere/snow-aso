@@ -6,7 +6,6 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 from raster_compare.base import PdalMapper, RgbAverage, RasterFile
-from raster_compare.plots import PlotBase
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -56,10 +55,9 @@ if __name__ == '__main__':
         vmin=LOWER_BOUND, vmax=RgbAverage.MAX_PIXEL_VALUE,
         zorder=1, alpha=0.7
     )
-    ax1.set_title('Pixel Brightness', **PlotBase.title_opts())
+    ax1.set_title('Pixel Brightness')
     fig.colorbar(img, cax=cax, orientation='horizontal')
-    # plt.tight_layout()
-    plt.show(**PlotBase.output_defaults())
+    plt.show()
 
     a = plt.hist(
         average_masked.compressed(),

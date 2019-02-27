@@ -31,54 +31,45 @@ class Histogram(PlotBase):
         plt.legend(loc='upper right')
 
     def render_elevation(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Elevation distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Count', **PlotBase.label_opts())
+        ax1.set_title('Elevation distribution')
+        ax1.set_ylabel('Count')
         Histogram.show_mean(ax1, self.lidar.elevation.mean())
 
-        ax2.set_title('Elevation distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
+        ax2.set_title('Elevation distribution')
+        ax2.set_ylabel('Count')
         Histogram.show_mean(ax2, self.sfm.elevation.mean())
 
-        ax3.set_title(
-            'Differences per elevation in 10 m intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Elevation', **PlotBase.label_opts())
+        ax3.set_title('Differences per elevation in 10 m intervals')
+        ax3.set_ylabel('Percent')
+        ax3.set_xlabel('Elevation')
         PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(4)))
 
     def render_slope(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Slope distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Degree', **PlotBase.label_opts())
+        ax1.set_title('Slope distribution')
+        ax1.set_ylabel('Degree')
         Histogram.show_mean(ax1, self.lidar.slope.mean())
 
-        ax2.set_title('Slope distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
+        ax2.set_title('Slope distribution')
+        ax2.set_ylabel('Count')
         Histogram.show_mean(ax2, self.sfm.slope.mean())
 
-        ax3.set_title(
-            'Differences per slope angle in 10 degree intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Count', **PlotBase.label_opts())
+        ax3.set_title('Differences per slope angle in 10 degree intervals')
+        ax3.set_ylabel('Percent')
+        ax3.set_xlabel('Count')
         PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(2)))
 
     def render_aspect(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Aspect distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Count', **PlotBase.label_opts())
+        ax1.set_title('Aspect distribution')
+        ax1.set_ylabel('Count')
         Histogram.show_mean(ax1, self.lidar.aspect.mean())
 
-        ax2.set_title('Aspect distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
+        ax2.set_title('Aspect distribution')
+        ax2.set_ylabel('Count')
         Histogram.show_mean(ax2, self.sfm.aspect.mean())
 
-        ax3.set_title(
-            'Differences per aspect angle in 10 degree intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Degree', **PlotBase.label_opts())
+        ax3.set_title('Differences per aspect angle in 10 degree intervals')
+        ax3.set_ylabel('Percent')
+        ax3.set_xlabel('Degree')
         PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(2)))
 
     # Plot histogram for given raster attribute and
@@ -137,7 +128,4 @@ class Histogram(PlotBase):
             self.print_status(style)
             self.render_side_by_side()
 
-        plt.savefig(
-            self.OUTPUT_FILE.format(self.output_path, style),
-            **PlotBase.output_defaults()
-        )
+        plt.savefig(self.OUTPUT_FILE.format(self.output_path, style))

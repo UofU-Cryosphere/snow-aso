@@ -40,10 +40,8 @@ class Regression(PlotBase):
         })
 
     def save_plot(self, **kwargs):
-        plt.tight_layout()
         plt.savefig(
-            self.output_path + '/{0}_scatter_plot.png'.format(kwargs['name']),
-            **self.output_defaults()
+            self.output_path + '/{0}_scatter_plot.png'.format(kwargs['name'])
         )
 
     def plot_lidar_vs_sfm(self):
@@ -132,9 +130,8 @@ class Regression(PlotBase):
         probplot.qqplot(ax=ax, line='s')
         ax.get_lines()[0].set(markersize=1)
         ax.get_lines()[1].set(color='black', dashes=[4, 1])
-        ax.set_title('Normal Q-Q Plot', **self.title_opts())
-        fig.tight_layout()
-        plt.savefig(self.output_path + '/qq_plot.png', **self.output_defaults())
+        ax.set_title('Normal Q-Q Plot')
+        plt.savefig(self.output_path + '/qq_plot.png')
 
     def plot_all(self):
         self.plot_lidar_vs_sfm()

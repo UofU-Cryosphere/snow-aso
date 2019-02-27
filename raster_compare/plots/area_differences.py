@@ -96,19 +96,15 @@ class AreaDifferences(PlotBase):
             extent=self.sfm.extent,
             **bounds
         )
-        ax1.set_title(
-            self.TITLE.format(raster_attr.capitalize()), **PlotBase.title_opts()
-        )
+        ax1.set_title(self.TITLE.format(raster_attr.capitalize()))
         self.insert_colorbar(
             plt, ax1, diff_plot, self.SCALE_BAR_LABEL[raster_attr]
         )
 
         ax2 = fig.add_subplot(grid_spec[1, 0])
         ax2.hist(difference.compressed(), bins=bins, label='Count')
-        ax2.set_xlabel(
-            self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
-        )
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
+        ax2.set_xlabel(self.SCALE_BAR_LABEL[raster_attr])
+        ax2.set_ylabel('Count')
         if raster_attr is 'elevation':
             self.add_hist_stats(ax2)
 
@@ -123,9 +119,7 @@ class AreaDifferences(PlotBase):
         ax3.tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
-        ax3.set_ylabel(
-            self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
-        )
+        ax3.set_ylabel(self.SCALE_BAR_LABEL[raster_attr])
         self.add_box_plot_stats(ax3, box)
 
         if raster_attr is 'elevation':
@@ -134,10 +128,6 @@ class AreaDifferences(PlotBase):
             probplot.qqplot(ax=ax4, line='s')
             ax4.get_lines()[0].set(markersize=1)
             ax4.get_lines()[1].set(color='black', dashes=[4, 1])
-            ax4.set_title('Normal Q-Q Plot', **self.title_opts())
+            ax4.set_title('Normal Q-Q Plot')
 
-        plt.tight_layout()
-        plt.savefig(
-            self.OUTPUT_FILE.format(self.output_path, raster_attr),
-            dpi=PlotBase.DEFAULT_DPI
-        )
+        plt.savefig(self.OUTPUT_FILE.format(self.output_path, raster_attr))
