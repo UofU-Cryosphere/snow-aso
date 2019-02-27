@@ -27,6 +27,7 @@ parser.add_argument(
     '--band-number',
     type=int,
     help='Optional - Specific band number to compare of rasters',
+    choices=PdalMapper.RASTER_BANDS.values(),
     default=PdalMapper.RASTER_BANDS['mean'],
 )
 parser.add_argument(
