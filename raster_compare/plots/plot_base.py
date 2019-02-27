@@ -78,14 +78,6 @@ class PlotBase(object):
             return
 
     @property
-    def lidar(self):
-        return self.raster_difference.lidar
-
-    @property
-    def sfm(self):
-        return self.raster_difference.sfm
-
-    @property
     def ortho_image(self):
         return self._ortho_image
 
