@@ -67,7 +67,7 @@ class AreaDifferences(PlotBase):
 
         difference = self.raster_difference.band_filtered
 
-        if self.band_data_description is 'Elevation':
+        if self.data_description is 'Elevation':
             grid_spec = GridSpec(
                 nrows=2, ncols=3, width_ratios=[3,2,3], **grid_opts
             )
@@ -96,16 +96,16 @@ class AreaDifferences(PlotBase):
             extent=self.sfm.extent,
             **bounds
         )
-        ax1.set_title(self.TITLE.format(self.band_data_description))
+        ax1.set_title(self.TITLE.format(self.data_description))
         self.insert_colorbar(
-            plt, ax1, diff_plot, self.SCALE_BAR_LABEL[self.band_data_description]
+            plt, ax1, diff_plot, self.SCALE_BAR_LABEL[self.data_description]
         )
 
         ax2 = fig.add_subplot(grid_spec[1, 0])
         ax2.hist(difference.compressed(), bins=bins, label='Count')
-        ax2.set_xlabel(self.SCALE_BAR_LABEL[self.band_data_description])
+        ax2.set_xlabel(self.SCALE_BAR_LABEL[self.data_description])
         ax2.set_ylabel('Count')
-        if self.band_data_description is 'Elevation':
+        if self.data_description is 'Elevation':
             self.add_hist_stats(ax2)
 
         ax3 = fig.add_subplot(grid_spec[1, 1])
@@ -119,10 +119,10 @@ class AreaDifferences(PlotBase):
         ax3.tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
-        ax3.set_ylabel(self.SCALE_BAR_LABEL[self.band_data_description])
+        ax3.set_ylabel(self.SCALE_BAR_LABEL[self.data_description])
         self.add_box_plot_stats(ax3, box)
 
-        if self.band_data_description is 'Elevation':
+        if self.data_description is 'Elevation':
             ax4 = fig.add_subplot(grid_spec[1, 2])
             probplot = sm.ProbPlot(difference.compressed())
             probplot.qqplot(ax=ax4, line='s')

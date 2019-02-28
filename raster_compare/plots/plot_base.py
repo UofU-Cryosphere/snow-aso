@@ -42,17 +42,17 @@ class PlotBase(object):
             lidar, sfm, kwargs['band_number']
         )
         self.configure_matplotlib()
-        self.band_data_description = kwargs.get(
-            'band_data_description', 'Elevation'
+        self.data_description = kwargs.get(
+            'data_description', 'Elevation'
         )
 
     @property
-    def band_data_description(self):
-        return self._band_data_description
+    def data_description(self):
+        return self._data_description
 
-    @band_data_description.setter
-    def band_data_description(self, value):
-        self._band_data_description = value
+    @data_description.setter
+    def data_description(self, value):
+        self._data_description = value
 
     @staticmethod
     def configure_matplotlib():
