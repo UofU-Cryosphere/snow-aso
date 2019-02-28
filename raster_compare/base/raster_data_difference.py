@@ -5,7 +5,7 @@ from .median_absolute_deviation import MedianAbsoluteDeviation
 from .raster_file import RasterFile
 
 
-class RasterDifference(object):
+class RasterDataDifference(object):
     GDAL_DRIVER = gdal.GetDriverByName('GTiff')
 
     def __init__(self, lidar, sfm, band_number):
