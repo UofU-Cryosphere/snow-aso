@@ -1,23 +1,72 @@
 import numpy as np
 from osgeo import gdal
 
-from .raster_file import RasterFile
 from .median_absolute_deviation import MedianAbsoluteDeviation
+from .raster_file import RasterFile
 
 
 class RasterDifference(object):
-    BIN_WIDTH = 10  # 10m
-
     GDAL_DRIVER = gdal.GetDriverByName('GTiff')
 
     def __init__(self, lidar, sfm, band_number):
         self.lidar = RasterFile(lidar, band_number)
         self.sfm = RasterFile(sfm, band_number)
         self._aspect = None
-        self.elevation_values = self.sfm.elevation - self.lidar.elevation
-        self.elevation_mask = self.elevation_values.mask
-        self.mad = MedianAbsoluteDeviation(self.elevation_values.compressed())
+        self.band_values = self.sfm.band_values() - self.lidar.band_values()
+        self.band_mask = self.band_values.mask
+        self.mad = MedianAbsoluteDeviation(self.band_values.compressed())
         self._slope = None
+
+    @property
+    def band_values(self):
+        return self._band_values
+
+    @band_values.setter
+    def band_values(self, value):
+        self._band_values = value
+
+    @property
+    def band_mask(self):
+        return self._band_mask
+
+    @band_mask.setter
+    def band_mask(self, value):
+        self._band_mask = np.copy(value)
+
+    def band_outlier_max(self):
+        return self.mad.data_median + self.mad.standard_deviation(2)
+
+    def band_outlier_min(self):
+        return self.mad.data_median - self.mad.standard_deviation(2)
+
+    @property
+    def band_filtered(self):
+        self.band_values.mask = np.ma.mask_or(
+            self.band_mask,
+            np.ma.masked_outside(
+                self.band_unfiltered,
+                self.band_outlier_min(),
+                self.band_outlier_max()
+            ).mask
+        )
+        return self.band_values
+
+    @property
+    def band_unfiltered(self):
+        self.band_values.mask = self.band_mask
+        return self.band_values
+
+    @property
+    def band_outliers(self):
+        self.band_values.mask = np.ma.mask_or(
+            self.band_mask,
+            np.ma.masked_inside(
+                self.band_unfiltered,
+                self.band_outlier_min(),
+                self.band_outlier_max()
+            ).mask
+        )
+        return self.band_values
 
     @property
     def aspect(self):
@@ -26,88 +75,7 @@ class RasterDifference(object):
         return self._aspect
 
     @property
-    def elevation_values(self):
-        return self._elevation_values
-
-    @elevation_values.setter
-    def elevation_values(self, value):
-        self._elevation_values = value
-
-    @property
-    def elevation_mask(self):
-        return self._elevation_mask
-
-    @elevation_mask.setter
-    def elevation_mask(self, value):
-        self._elevation_mask = np.copy(value)
-
-    def elevation_upper_filter(self):
-        return self.mad.data_median + self.mad.standard_deviation(2)
-
-    def elevation_lower_filter(self):
-        return self.mad.data_median - self.mad.standard_deviation(2)
-
-    @property
-    def elevation(self):
-        self.elevation_values.mask = np.ma.mask_or(
-            self.elevation_mask,
-            np.ma.masked_outside(
-                self.elevation_unfiltered,
-                self.elevation_lower_filter(),
-                self.elevation_upper_filter()
-            ).mask
-        )
-        return self.elevation_values
-
-    @property
-    def elevation_unfiltered(self):
-        self.elevation_values.mask = self.elevation_mask
-        return self.elevation_values
-
-    @property
-    def elevation_filtered(self):
-        self.elevation_values.mask = np.ma.mask_or(
-            self.elevation_mask,
-            np.ma.masked_inside(
-                self.elevation_unfiltered,
-                self.elevation_lower_filter(),
-                self.elevation_upper_filter()
-            ).mask
-        )
-        return self.elevation_values
-
-    @property
     def slope(self):
         if self._slope is None:
             self._slope = self.sfm.slope - self.lidar.slope
         return self._slope
-
-    def min_for_attr(self, attr):
-        return min(
-            getattr(self.lidar, attr).min(),
-            getattr(self.sfm, attr).min()
-        )
-
-    def max_for_attr(self, attr):
-        return max(
-            getattr(self.lidar, attr).max(),
-            getattr(self.sfm, attr).max()
-        )
-
-    def bin_range(self, attr):
-        return np.arange(
-            self.min_for_attr(attr),
-            self.max_for_attr(attr) + RasterDifference.BIN_WIDTH,
-            RasterDifference.BIN_WIDTH
-        )
-
-    def percentile(self, percent, attribute='elevation'):
-        return np.percentile(getattr(self, attribute).compressed(), percent)
-
-    @staticmethod
-    def percentage_mean(diff, count):
-        return (np.absolute(diff).sum() / count) * 100
-
-    @staticmethod
-    def round_to_tenth(elevation):
-        return elevation - (elevation % 10)

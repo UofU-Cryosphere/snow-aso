@@ -13,11 +13,11 @@ class RasterPointSpreadDifference(RasterPointSpread):
 
     def min_values(self, raster):
         raster.band_number = PdalMapper.RASTER_BANDS['min']
-        return raster.elevation
+        return raster.band_values()
 
     def max_values(self, raster):
         raster.band_number = PdalMapper.RASTER_BANDS['max']
-        return raster.elevation
+        return raster.band_values()
 
     def diff_per_cell(self):
         diff_per_cell = self.max_values(self.raster) - \

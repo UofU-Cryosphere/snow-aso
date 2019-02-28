@@ -1,7 +1,8 @@
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import numpy as np
 import math
+
+import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import cm
 
 from raster_compare.base import PdalMapper
@@ -27,11 +28,11 @@ class RasterPointSpread(PlotBase):
 
     def min_values(self):
         self.raster.band_number = PdalMapper.RASTER_BANDS['min']
-        return self.raster.elevation
+        return self.raster.band_values()
 
     def max_values(self):
         self.raster.band_number = PdalMapper.RASTER_BANDS['max']
-        return self.raster.elevation
+        return self.raster.band_values()
 
     def diff_per_cell(self):
         return self.max_values() - self.min_values()
@@ -66,7 +67,7 @@ class RasterPointSpread(PlotBase):
         )
         ax1.set_title(self.PLOT_TITLE)
         self.insert_colorbar(
-            plt, ax1, diff, self.SCALE_BAR_LABEL['elevation'],
+            plt, ax1, diff, self.SCALE_BAR_LABEL['Elevation'],
             # boundaries=bounds[7::], # Limit displayed value range
             # ticks=bounds[1::2], # Adapt tick marks
         )

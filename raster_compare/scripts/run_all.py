@@ -1,8 +1,8 @@
 import argparse
 
 from raster_compare.base import PdalMapper, RasterCompare
-from raster_compare.plots import AreaDifferences, SideBySide, Histogram, \
-    Regression, OrthoDifference
+from raster_compare.plots import AreaDifferences, Histogram, Regression, \
+    SideBySide, OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -75,13 +75,13 @@ if __name__ == '__main__':
     comparison.prepare()
 
     if arguments.side_by_side:
-        area_plot = SideBySide(**comparison.file_args())
-        [area_plot.plot(attr) for attr in SideBySide.TYPES]
-        del area_plot
+        side_by_side = SideBySide(**comparison.file_args())
+        side_by_side.plot()
+        del side_by_side
 
     if arguments.differences:
         area_difference = AreaDifferences(**comparison.file_args())
-        [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
+        area_difference.plot()
         del area_difference
 
         ortho_difference = OrthoDifference(
@@ -93,7 +93,7 @@ if __name__ == '__main__':
 
     if arguments.histograms:
         histogram = Histogram(**comparison.file_args())
-        [histogram.plot(attr) for attr in Histogram.TYPES]
+        histogram.plot()
         del histogram
 
     if arguments.regression:

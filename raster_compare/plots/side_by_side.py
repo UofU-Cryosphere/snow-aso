@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import cm
 
 from .plot_base import PlotBase
@@ -6,7 +7,7 @@ from .plot_base import PlotBase
 
 # Plot DEMs side by side
 class SideBySide(PlotBase):
-    OUTPUT_FILE = '{0}{1}_comparison.png'
+    OUTPUT_FILE_NAME = 'elevation_comparison.png'
 
     COLOR_MAP = 'jet'
 
@@ -24,46 +25,45 @@ class SideBySide(PlotBase):
 
         return axes
 
-    def im_opts(self, raster_attr):
+    def im_opts(self, lidar, sfm):
         return dict(
             cmap=cm.get_cmap(self.COLOR_MAP),
             alpha=0.3,
-            vmin=self.min_for_attr(raster_attr),
-            vmax=self.max_for_attr(raster_attr),
+            vmin=min(lidar.min(), sfm.min()),
+            vmax=max(lidar.max(), lidar.min()),
         )
 
     @staticmethod
     def add_colorbar(cax, data):
         return plt.colorbar(data, cax=cax)
 
-    def plot(self, raster_attr):
-        self.print_status(str(raster_attr))
+    def plot(self):
+        self.print_status()
+
+        lidar = self.lidar.band_values()
+        sfm = self.sfm.band_values()
 
         (ax1, ax2, cax) = self.setup_plot()
 
         self.add_hillshade_background(ax1, self.lidar)
-        self.sfm.join_masks('hill_shade', getattr(self.lidar, raster_attr))
+        self.sfm.join_masks('hill_shade', lidar)
         self.add_hillshade_background(ax2, self.sfm)
 
+        im_opts = self.im_opts(lidar, sfm)
+
         ax1.imshow(
-            getattr(self.lidar, raster_attr),
-            extent=self.lidar.extent,
-            **self.im_opts(raster_attr)
+            lidar, extent=self.lidar.extent, **im_opts
         )
         ax1.set_title(PlotBase.LIDAR_LABEL)
 
-        self.sfm.join_masks(raster_attr, getattr(self.lidar, raster_attr))
+        sfm.mask = np.ma.mask_or(sfm.mask, lidar.mask)
         image = ax2.imshow(
-            getattr(self.sfm, raster_attr),
-            extent=self.sfm.extent,
-            **self.im_opts(raster_attr)
+            sfm, extent=self.sfm.extent, **im_opts
         )
         ax2.set_yticklabels([])
         ax2.set_title(PlotBase.SFM_LABEL)
 
         cbar = self.add_colorbar(cax, image)
-        cbar.set_label(self.SCALE_BAR_LABEL[raster_attr])
+        cbar.set_label(self.SCALE_BAR_LABEL['Elevation'])
 
-        plt.savefig(
-            self.OUTPUT_FILE.format(self.output_path, raster_attr),
-        )
+        plt.savefig(self.output_file)

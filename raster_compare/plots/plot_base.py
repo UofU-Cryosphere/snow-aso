@@ -1,19 +1,19 @@
+import os
+import sys
+
 import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import sys
-import os
 
 from raster_compare.base import RasterDifference
 
 
 class PlotBase(object):
-    TYPES = ['elevation', 'slope', 'aspect']
     SCALE_BAR_LABEL = {
-        'aspect': 'Degree',
-        'elevation': '∆h [m]',
-        'slope': 'Angle',
+        'Aspect': 'Degree',
+        'Elevation': '∆h [m]',
+        'Slope': 'Angle',
     }
 
     NUM_BINS = 50
@@ -42,6 +42,17 @@ class PlotBase(object):
             lidar, sfm, kwargs['band_number']
         )
         self.configure_matplotlib()
+        self.band_data_description = kwargs.get(
+            'band_data_description', 'Elevation'
+        )
+
+    @property
+    def band_data_description(self):
+        return self._band_data_description
+
+    @band_data_description.setter
+    def band_data_description(self, value):
+        self._band_data_description = value
 
     @staticmethod
     def configure_matplotlib():

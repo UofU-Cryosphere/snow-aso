@@ -23,17 +23,17 @@ class SideBySideBounds(SideBySide):
     def bounds(self):
         return self._bounds
 
-    def bounds_from_data(self, raster_attr):
-        min_value = math.floor(self.min_for_attr(raster_attr))
-        max_value = math.ceil(self.max_for_attr(raster_attr))
+    def bounds_from_data(self, lidar, sfm):
+        min_value = math.floor(min(lidar.min(), sfm.min()))
+        max_value = math.ceil(max(lidar.max(), sfm.max()))
 
         bounds = numpy.arange(
             min_value, self.MIN_OUTLIER_VALUE, self.BOUNDS_INTERVAL
         )
         self._bounds = numpy.append(bounds, [max_value])
 
-    def im_opts(self, raster_attr):
-        self.bounds_from_data(raster_attr)
+    def im_opts(self, lidar, sfm):
+        self.bounds_from_data(lidar, sfm)
 
         norm = colors.BoundaryNorm(boundaries=self.bounds, ncolors=256)
 
