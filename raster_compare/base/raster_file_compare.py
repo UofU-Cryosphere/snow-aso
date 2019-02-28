@@ -4,7 +4,11 @@ import sys
 import gdal
 
 
-class RasterCompare(object):
+class RasterFileCompare(object):
+    """
+    Class that checks file existence, output path preparation and optional step
+    to crop both rasters according to a shape file.
+    """
     def __init__(self, **kwargs):
         self.base_path = kwargs['base_path']
         self.output_path = kwargs['output_path']
