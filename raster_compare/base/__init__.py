@@ -3,7 +3,6 @@ from .pdal_mapper import PdalMapper
 from .raster_data_difference import RasterDataDifference
 from .raster_file import RasterFile
 from .raster_file_compare import RasterFileCompare
-from .rgb_average import RgbAverage
 
 __all__ = [
     'MedianAbsoluteDeviation',
@@ -11,5 +10,4 @@ __all__ = [
     'RasterDataDifference',
     'RasterFileCompare',
     'RasterFile',
-    'RgbAverage',
 ]

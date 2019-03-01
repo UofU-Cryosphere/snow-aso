@@ -1,6 +1,7 @@
 from .area_differences import AreaDifferences
 from .histograms import Histogram
 from .ortho_difference import OrthoDifference
+from .ortho_rgb_average import OrthoRgbAverage
 from .plot_base import PlotBase
 from .raster_point_spread import RasterPointSpread
 from .raster_point_spread_difference import RasterPointSpreadDifference
@@ -14,6 +15,7 @@ __all__ = [
     'SideBySideBounds',
     'Histogram',
     'OrthoDifference',
+    'OrthoRgbAverage',
     'PlotBase',
     'RasterPointSpread',
     'RasterPointSpreadDifference',
