@@ -19,6 +19,7 @@ class RasterFileCompare(object):
         self.sfm_dem = kwargs['sfm_dem']
         self.band_number = kwargs['band_number']
         self.shape_file = kwargs['shape_file']
+        self._file_args = None
 
     @property
     def base_path(self):
@@ -84,6 +85,19 @@ class RasterFileCompare(object):
             sys.exit()
         return _path
 
+    @property
+    def file_args(self):
+        if self._file_args is None:
+            self._file_args = dict(
+                data=RasterDataDifference(
+                    lidar=self.lidar_dem,
+                    sfm=self.sfm_dem,
+                    band_number=self.band_number
+                ),
+                output_path=self.output_path
+            )
+        return self._file_args
+
     @staticmethod
     def crop_to_shape(raster_file, shape_file):
         output_file = raster_file.replace('.tif', '_cropped.vrt')
@@ -103,12 +117,3 @@ class RasterFileCompare(object):
             self.lidar_dem = self.crop_to_shape(self.lidar_dem, self.shape_file)
             self.sfm_dem = self.crop_to_shape(self.sfm_dem, self.shape_file)
 
-    def file_args(self):
-        return dict(
-            data=RasterDataDifference(
-                lidar=self.lidar_dem,
-                sfm=self.sfm_dem,
-                band_number=self.band_number
-            ),
-            output_path=self.output_path
-        )

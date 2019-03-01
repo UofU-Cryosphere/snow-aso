@@ -75,27 +75,27 @@ if __name__ == '__main__':
     comparison.prepare()
 
     if arguments.side_by_side:
-        side_by_side = SideBySide(**comparison.file_args())
+        side_by_side = SideBySide(**comparison.file_args)
         side_by_side.plot()
         del side_by_side
 
     if arguments.differences:
-        area_difference = AreaDifferences(**comparison.file_args())
+        area_difference = AreaDifferences(**comparison.file_args)
         area_difference.plot()
         del area_difference
 
         ortho_difference = OrthoDifference(
             ortho_image=comparison.check_path(arguments.ortho_image),
-            **comparison.file_args()
+            **comparison.file_args
         )
         ortho_difference.plot()
         del ortho_difference
 
     if arguments.histograms:
-        histogram = Histogram(**comparison.file_args())
+        histogram = Histogram(**comparison.file_args)
         histogram.plot()
         del histogram
 
     if arguments.regression:
-        regression = Regression(**comparison.file_args())
+        regression = Regression(**comparison.file_args)
         regression.run()
