@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
     raster = RasterFile(arguments.raster, PdalMapper.RASTER_BANDS['max'])
     raster_2 = RasterFile(arguments.raster_2, PdalMapper.RASTER_BANDS['max'])
+
     rps = RasterPointSpreadDifference(
         raster, raster_2, output_path=arguments.output_path
     )

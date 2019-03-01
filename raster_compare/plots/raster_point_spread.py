@@ -17,25 +17,12 @@ class RasterPointSpread(PlotBase):
     MIN_OUTLIER_VALUE = 18    # Adjust with histogram
     COLOR_MAP = 'seismic_r'
 
-    def __init__(self, raster, **kwargs):
-        self._output_path = kwargs['output_path']
-        self._raster = raster
-        self.configure_matplotlib()
-
-    @property
-    def raster(self):
-        return self._raster
-
-    def min_values(self):
-        self.raster.band_number = PdalMapper.RASTER_BANDS['min']
-        return self.raster.band_values()
-
-    def max_values(self):
-        self.raster.band_number = PdalMapper.RASTER_BANDS['max']
-        return self.raster.band_values()
-
     def diff_per_cell(self):
-        return self.max_values() - self.min_values()
+        return self.data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['max']
+        ) - self.data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['min']
+        )
 
     def bounds(self, diff):
         # Get maximum value from values, which also can be the absolute value
@@ -61,7 +48,7 @@ class RasterPointSpread(PlotBase):
         diff = ax1.imshow(
             diff_per_cell,
             # vmin=, vmax=, # Limit displayed value range
-            extent=self.raster.extent,
+            extent=self.data.extent,
             cmap=cm.get_cmap(self.COLOR_MAP),
             norm=norm,
         )

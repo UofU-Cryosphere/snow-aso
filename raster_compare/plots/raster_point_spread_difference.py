@@ -3,26 +3,29 @@ from .raster_point_spread import RasterPointSpread
 
 
 class RasterPointSpreadDifference(RasterPointSpread):
-    def __init__(self, raster, raster_2, **kwargs):
-        super().__init__(raster, **kwargs)
-        self._raster_2 = raster_2
+    """
+        data - reference raster
+        compare_data - raster that is compared 
+    """
+
+    def __init__(self, data, compare_data, **kwargs):
+        super().__init__(data, **kwargs)
+        self._compare_data = compare_data
 
     @property
-    def raster_2(self):
-        return self._raster_2
-
-    def min_values(self, raster):
-        raster.band_number = PdalMapper.RASTER_BANDS['min']
-        return raster.band_values()
-
-    def max_values(self, raster):
-        raster.band_number = PdalMapper.RASTER_BANDS['max']
-        return raster.band_values()
+    def compare_data(self):
+        return self._compare_data
 
     def diff_per_cell(self):
-        diff_per_cell = self.max_values(self.raster) - \
-                        self.min_values(self.raster)
-        diff_per_cell_2 = self.max_values(self.raster_2) - \
-                          self.min_values(self.raster_2)
+        diff_per_cell = self.data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['max']
+        ) - self.data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['min']
+        )
+        diff_per_cell_2 = self.compare_data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['max']
+        ) - self.compare_data.band_values(
+            band_number=PdalMapper.RASTER_BANDS['min']
+        )
 
         return diff_per_cell_2 - diff_per_cell
