@@ -12,13 +12,8 @@ class OrthoDifference(PlotBase):
 
     OUTPUT_FILE_NAME = 'elevation_difference_overlay.png'
 
-    def __init__(self, **kwargs):
-        super().__init__(
-            kwargs['lidar'], kwargs['sfm'],
-            ortho_image=kwargs['ortho_image'],
-            output_path=kwargs['output_path'],
-            band_number=kwargs['band_number'],
-        )
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
         self._cmap = self.setup_color_map()
         self._bounds = self.set_bounds()
 

@@ -15,8 +15,8 @@ class SideBySideBounds(SideBySide):
     COLOR_MAP = 'CMRmap_r'
     BOUNDS_INTERVAL = 10
 
-    def __init__(self, lidar, sfm, **kwargs):
-        super().__init__(lidar, sfm, **kwargs)
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
         self._bounds = None
 
     @property

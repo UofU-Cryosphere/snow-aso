@@ -12,12 +12,8 @@ class Regression(PlotBase):
         'sfm_elevation', 'sfm_slope', 'sfm_aspect',
     ]
 
-    def __init__(self, **kwargs):
-        super().__init__(
-            kwargs['lidar'], kwargs['sfm'],
-            output_path=kwargs['output_path'],
-            band_number=kwargs['band_number'],
-        )
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
         self.df = self.load_data_frame()
 
     @property
@@ -30,7 +26,7 @@ class Regression(PlotBase):
 
     def load_data_frame(self):
         return pd.DataFrame({
-            'diff': self.raster_difference.band_filtered.filled(np.NaN).ravel(),
+            'diff': self.data.band_filtered.filled(np.NaN).ravel(),
             'lidar_elevation': self.lidar.band_values().filled(np.NaN).ravel(),
             'sfm_elevation': self.sfm.band_values().filled(np.NaN).ravel(),
             'lidar_slope': self.lidar.slope.filled(np.NaN).ravel(),
@@ -125,7 +121,7 @@ class Regression(PlotBase):
 
     def qqplot(self):
         fig = plt.figure(figsize=(12,8))
-        probplot = sm.ProbPlot(self.raster_difference.band_filtered.compressed())
+        probplot = sm.ProbPlot(self.data.band_filtered.compressed())
         ax = fig.gca()
         probplot.qqplot(ax=ax, line='s')
         ax.get_lines()[0].set(markersize=1)

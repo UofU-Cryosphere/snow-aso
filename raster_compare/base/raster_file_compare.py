@@ -3,12 +3,15 @@ import sys
 
 import gdal
 
+from raster_compare.base import RasterDataDifference
+
 
 class RasterFileCompare(object):
     """
     Class that checks file existence, output path preparation and optional step
     to crop both rasters according to a shape file.
     """
+
     def __init__(self, **kwargs):
         self.base_path = kwargs['base_path']
         self.output_path = kwargs['output_path']
@@ -102,8 +105,10 @@ class RasterFileCompare(object):
 
     def file_args(self):
         return dict(
-            lidar=self.lidar_dem,
-            sfm=self.sfm_dem,
-            band_number = self.band_number,
+            data=RasterDataDifference(
+                lidar=self.lidar_dem,
+                sfm=self.sfm_dem,
+                band_number=self.band_number
+            ),
             output_path=self.output_path
         )

@@ -25,13 +25,13 @@ class AreaDifferences(PlotBase):
     COLORMAP = cm.get_cmap('PuOr')
 
     def add_hist_stats(self, ax):
-        box_text = AreaDifferences.HIST_TEXT.format(
-            self.raster_difference.mad.median,
-            self.raster_difference.mad.normalized(),
-            self.raster_difference.mad.standard_deviation(),
-            self.raster_difference.mad.standard_deviation(2),
+        box_text = self.HIST_TEXT.format(
+            self.data.mad.median,
+            self.data.mad.normalized(),
+            self.data.mad.standard_deviation(),
+            self.data.mad.standard_deviation(2),
         )
-        PlotBase.add_to_legend(ax, box_text)
+        self.add_to_legend(ax, box_text)
 
     def add_box_plot_stats(self, ax, box_plot_data):
         text = [
@@ -53,7 +53,7 @@ class AreaDifferences(PlotBase):
                 box_plot_data['caps'][0].get_ydata()[0]
             ),
         ]
-        PlotBase.add_to_legend(
+        self.add_to_legend(
             ax, '\n'.join(text), handlelength=0, handletextpad=0
         )
 
@@ -65,7 +65,7 @@ class AreaDifferences(PlotBase):
         heights = [2, 1]
         grid_opts=dict(figure=fig, height_ratios=heights)
 
-        difference = self.raster_difference.band_filtered
+        difference = self.data.band_filtered
 
         if self.data_description is 'Elevation':
             grid_spec = GridSpec(

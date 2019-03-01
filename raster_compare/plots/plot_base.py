@@ -6,8 +6,6 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from raster_compare.base import RasterDataDifference
-
 
 class PlotBase(object):
     SCALE_BAR_LABEL = {
@@ -34,13 +32,11 @@ class PlotBase(object):
         pad=0.6
     )
 
-    def __init__(self, lidar, sfm, **kwargs):
+    def __init__(self, data, **kwargs):
         self._output_path = kwargs['output_path']
         if 'ortho_image' in kwargs:
             self._ortho_image = plt.imread(kwargs['ortho_image'])
-        self.raster_difference = RasterDataDifference(
-            lidar, sfm, kwargs['band_number']
-        )
+        self.data = data
         self.configure_matplotlib()
         self.data_description = kwargs.get(
             'data_description', 'Elevation'
@@ -93,7 +89,7 @@ class PlotBase(object):
         return self._ortho_image
 
     def __getattr__(self, name):
-        return getattr(self.raster_difference, name)
+        return getattr(self.data, name)
 
     @staticmethod
     def text_box_args(x, y, text, **kwargs):
