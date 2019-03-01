@@ -100,8 +100,8 @@ class PlotBase(object):
             ha='left', va='top', bbox=PlotBase.BOUNDING_BOX, **kwargs
         )
 
-    def add_ortho_background(self, ax):
-        ax.imshow(self.ortho_image, zorder=0, extent=self.lidar.extent)
+    def add_ortho_background(self, ax, raster):
+        ax.imshow(self.ortho_image, zorder=0, extent=raster.extent)
 
     @staticmethod
     def add_hillshade_background(ax, raster_file):

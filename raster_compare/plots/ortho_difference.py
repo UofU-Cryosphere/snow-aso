@@ -56,11 +56,11 @@ class OrthoDifference(PlotBase):
             zorder=1, norm=norm, cmap=self.cmap, alpha=0.5,
         )
 
-        self.add_ortho_background(ax1)
+        self.add_ortho_background(ax1, self.lidar)
         ax1.imshow(self.band_filtered, **diff_options)
         ax1.set_title('95th percentile', size=self.TITLE_FONT_SIZE)
 
-        self.add_ortho_background(ax2)
+        self.add_ortho_background(ax2, self.lidar)
         img = ax2.imshow(self.band_outliers, **diff_options)
         ax2.set_title('Outliers', size=self.TITLE_FONT_SIZE)
 
