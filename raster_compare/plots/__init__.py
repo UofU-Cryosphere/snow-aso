@@ -3,6 +3,7 @@ from .histograms import Histogram
 from .ortho_difference import OrthoDifference
 from .ortho_rgb_average import OrthoRgbAverage
 from .plot_base import PlotBase
+from .plot_layout import PlotLayout
 from .raster_point_spread import RasterPointSpread
 from .raster_point_spread_difference import RasterPointSpreadDifference
 from .regression import Regression
@@ -17,6 +18,7 @@ __all__ = [
     'OrthoDifference',
     'OrthoRgbAverage',
     'PlotBase',
+    'PlotLayout',
     'RasterPointSpread',
     'RasterPointSpreadDifference',
     'Regression',
