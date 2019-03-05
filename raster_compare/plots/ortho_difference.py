@@ -3,6 +3,7 @@ import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 
 from .plot_base import PlotBase
+from .plot_layout import PlotLayout
 
 
 class OrthoDifference(PlotBase):
@@ -47,9 +48,7 @@ class OrthoDifference(PlotBase):
 
         norm = mpl.colors.BoundaryNorm(self.bounds[1:-1], self.cmap.N)
 
-        fig, (ax1, ax2, cax) = plt.subplots(
-            nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3}
-        )
+        fig, (ax1, ax2, cax) = PlotLayout.two_row()
 
         diff_options = dict(
             extent=self.lidar.extent,
@@ -69,5 +68,4 @@ class OrthoDifference(PlotBase):
             extendfrac='auto', spacing='uniform', boundaries=self.bounds
         )
 
-        fig.set_size_inches(6, 10)
         plt.savefig(self.output_file)

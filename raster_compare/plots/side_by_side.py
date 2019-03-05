@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import cm
 
 from .plot_base import PlotBase
+from .plot_layout import PlotLayout
 
 
 # Plot DEMs side by side
@@ -13,10 +14,7 @@ class SideBySide(PlotBase):
 
     @staticmethod
     def setup_plot():
-        figure, axes = plt.subplots(
-            figsize=(12, 4), ncols=3,
-            gridspec_kw={'width_ratios': [1, 1, 0.05], 'wspace': 0.05}
-        )
+        figure, axes = PlotLayout.two_col()
 
         axes[0].get_shared_y_axes().join(*axes[:2])
 
