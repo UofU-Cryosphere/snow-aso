@@ -4,10 +4,10 @@ import glob
 import os
 import sys
 
-import PhotoScan
+import Metashape
 
 
-# Class to automate Agisoft Photoscan processing
+# Class to automate Agisoft Metashape processing
 #
 # This automates the processing with the following assumed project structure:
 # _base_path_:
@@ -28,15 +28,18 @@ class Agisoft:
     PROJECT_REPORT = '.pdf'
     REFERENCE_FILE = 'images_metadata.csv'
 
-    WGS_84 = PhotoScan.CoordinateSystem("EPSG::4326")
-    UTM_CA = PhotoScan.CoordinateSystem("EPSG::32611")
-    UTM_CO = PhotoScan.CoordinateSystem("EPSG::32613")
+    WGS_84 = Metashape.CoordinateSystem("EPSG::4326")
+    UTM_CA = Metashape.CoordinateSystem("EPSG::32611")
+    UTM_CO = Metashape.CoordinateSystem("EPSG::32613")
     X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
     Y_1M_IN_DEG = 9.0094e-06   #
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
-    IMAGE_ACCURACY_MATCHING = PhotoScan.HighestAccuracy
+    CAMERA_LOCATION_ACCURACY = Metashape.Vector([1, 1, 1])
+    CAMERA_ROTATION_ACCURACY = Metashape.Vector([1, 1, 1])
+
+    IMAGE_ACCURACY_MATCHING = Metashape.HighestAccuracy
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
@@ -44,12 +47,12 @@ class Agisoft:
     REPROJECTION_ACCURACY_THRESHOLD = 10
 
     DENSE_POINT_QUALITY = dict(
-        high=PhotoScan.HighQuality,
-        medium=PhotoScan.MediumQuality,
+        high=Metashape.HighQuality,
+        medium=Metashape.MediumQuality,
     )
 
     EXPORT_DEFAULTS = dict(
-        image_format=PhotoScan.ImageFormat.ImageFormatTIFF,
+        image_format=Metashape.ImageFormat.ImageFormatTIFF,
         projection=WGS_84,
         dx=X_1M_IN_DEG,
         dy=Y_1M_IN_DEG,
@@ -63,7 +66,7 @@ class Agisoft:
         self.setup_application()
 
         self.create_new_project()
-        self.project = PhotoScan.app.document
+        self.project = Metashape.app.document
         self.project.open(self.project_file_name + self.PROJECT_TYPE)
         self.chunk = self.project.chunk
 
@@ -76,7 +79,7 @@ class Agisoft:
 
     def create_new_project(self):
         if not os.path.exists(path=self.project_file_name + self.PROJECT_TYPE):
-            new_project = PhotoScan.Document()
+            new_project = Metashape.Document()
             chunk = new_project.addChunk()
             new_project.save(
                 path=self.project_file_name + self.PROJECT_TYPE,
@@ -91,15 +94,15 @@ class Agisoft:
         )
 
     def setup_application(self):
-        app = PhotoScan.Application()
+        app = Metashape.Application()
         # Use all available GPUs, needs a bit mask
-        number_of_gpus = len(PhotoScan.app.enumGPUDevices())
+        number_of_gpus = len(Metashape.app.enumGPUDevices())
         mask = int(str('1' * number_of_gpus).rjust(8, '0'), 2)
         app.gpu_mask = mask
         # Allow usage of CPU and GPU
         app.cpu_enable = True
 
-        settings = PhotoScan.Application.Settings()
+        settings = Metashape.Application.Settings()
         # Logging
         settings.log_enable = True
         settings.log_path = self.project_file_name + '_agisoft.log'
@@ -109,9 +112,9 @@ class Agisoft:
         # Imported camera coordinates projection
         self.chunk.crs = self.WGS_84
         # Accuracy for camera position in m
-        self.chunk.camera_location_accuracy = PhotoScan.Vector([1, 1, 1])
+        self.chunk.camera_location_accuracy = self.CAMERA_LOCATION_ACCURACY
         # Accuracy for camera orientations in degree
-        self.chunk.camera_rotation_accuracy = PhotoScan.Vector([1, 1, 1])
+        self.chunk.camera_rotation_accuracy = self.CAMERA_ROTATION_ACCURACY
 
     def save_and_exit(self):
         self.project.save()
@@ -154,7 +157,7 @@ class Agisoft:
         self.chunk.loadReference(
             path=reference_file,
             delimiter=',',
-            format=PhotoScan.ReferenceFormatCSV,
+            format=Metashape.ReferenceFormatCSV,
         )
 
     def align_images(self):
@@ -171,27 +174,27 @@ class Agisoft:
         self.project.save()
 
     def remove_by_criteria(self, criteria, threshold):
-        point_cloud_filter = PhotoScan.PointCloud.Filter()
+        point_cloud_filter = Metashape.PointCloud.Filter()
         point_cloud_filter.init(self.chunk, criterion=criteria)
         point_cloud_filter.removePoints(threshold)
 
     def filter_sparse_cloud(self):
         # Points that statistical error in point placement exceed threshold
         self.remove_by_criteria(
-            PhotoScan.PointCloud.Filter.ReprojectionError,
+            Metashape.PointCloud.Filter.ReprojectionError,
             self.REPROJECTION_ERROR_THRESHOLD,
         )
         # Points that accuracy of point placement from local neighbor points
         # exceed threshold
         self.remove_by_criteria(
-            PhotoScan.PointCloud.Filter.ProjectionAccuracy,
+            Metashape.PointCloud.Filter.ProjectionAccuracy,
             self.REPROJECTION_ACCURACY_THRESHOLD,
         )
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
             quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality, 'high'),
-            filter=PhotoScan.AggressiveFiltering,
+            filter=Metashape.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
         self.project.save()
@@ -247,13 +250,13 @@ parser.add_argument(
 
 # Example command line execution:
 # Mac OS:
-# ./PhotoScanPro -r agisoft_workflow.py --base-path /path/to/root/project/directory --project-name test
+# ./MetashapePro -r agisoft_workflow.py --base-path /path/to/root/project/directory --project-name test
 #
 # Windows:
-# .\photoscan.exe -r agisoft_workflow.py --base-path D:\path/to/root/project/direcotry --project-name test
+# .\Metashape.exe -r agisoft_workflow.py --base-path D:\path/to/root/project/direcotry --project-name test
 #
 # Linux (headless):
-# photoscan.sh -platform offscreen -r agisoft_workflow.py --base_path /path/to/root/project/directory -- project-name test
+# metashape.sh -platform offscreen -r agisoft_workflow.py --base_path /path/to/root/project/directory -- project-name test
 # Optional arguments are:
 # _image_folder_: Name and relative location where images are
 # _image_type_: TYpe of images (i.e. .jpg, .iiq)
