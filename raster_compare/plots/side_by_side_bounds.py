@@ -46,7 +46,13 @@ class SideBySideBounds(SideBySide):
         )
 
     def add_colorbar(self, cax, data):
-        cbar = plt.colorbar(data, cax=cax)
+        if self.plot_vertical:
+            plt.suptitle("Elevation value per cell", y=1.05)
+        elif self.plot_horizontal:
+            plt.suptitle("Elevation value per cell", y=0.95)
+            pos = cax.get_position()
+            pos.x0 = pos.x0 - 0.1
+        cbar = plt.colorbar(data, cax=cax, orientation=self.orientation)
         ticks = self.bounds[::2]
         ticks = numpy.append(ticks, self.bounds[-1])
         cbar.set_ticks(ticks)

@@ -10,11 +10,32 @@ from .plot_layout import PlotLayout
 class SideBySide(PlotBase):
     OUTPUT_FILE_NAME = 'elevation_comparison.png'
 
+    ORIENTATIONS = ['vertical', 'horizontal']
     COLOR_MAP = 'jet'
 
-    @staticmethod
-    def setup_plot():
-        figure, axes = PlotLayout.two_col()
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
+        self._orientation = kwargs.get('orientation', self.ORIENTATIONS[0])
+
+    @property
+    def orientation(self):
+        return self._orientation
+
+    @property
+    def plot_vertical(self):
+        return self.orientation == self.ORIENTATIONS[0]
+
+    @property
+    def plot_horizontal(self):
+        return self.orientation == self.ORIENTATIONS[1]
+
+    def setup_plot(self):
+        if self.plot_vertical:
+            figure, axes = PlotLayout.two_col()
+        elif self.plot_horizontal:
+            figure, axes = PlotLayout.two_row()
+        else:
+            raise ValueError('Unknown orientation for SideBySide plot')
 
         axes[0].get_shared_y_axes().join(*axes[:2])
 
@@ -58,7 +79,8 @@ class SideBySide(PlotBase):
         image = ax2.imshow(
             sfm, extent=self.sfm.extent, **im_opts
         )
-        ax2.set_yticklabels([])
+        if self.plot_vertical:
+            ax2.set_yticklabels([])
         ax2.set_title(PlotBase.SFM_LABEL)
 
         cbar = self.add_colorbar(cax, image)
