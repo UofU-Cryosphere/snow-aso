@@ -36,8 +36,8 @@ class Agisoft:
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
     Y_5M_IN_DEG = 4.50396e-05  #
 
-    CAMERA_LOCATION_ACCURACY = Metashape.Vector([1, 1, 1])
-    CAMERA_ROTATION_ACCURACY = Metashape.Vector([1, 1, 1])
+    CAMERA_LOCATION_ACCURACY = Metashape.Vector([1., 1., 1.])
+    CAMERA_ROTATION_ACCURACY = Metashape.Vector([1., 1., 1.])
 
     IMAGE_ACCURACY_MATCHING = Metashape.HighestAccuracy
     KEYPOINT_LIMIT = 40000
