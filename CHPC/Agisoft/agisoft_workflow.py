@@ -93,7 +93,8 @@ class Agisoft:
             self.project_base_path, project_name
         )
 
-    def setup_application(self):
+    @staticmethod
+    def setup_application():
         app = Metashape.Application()
         # Use all available GPUs, needs a bit mask
         number_of_gpus = len(Metashape.app.enumGPUDevices())
@@ -103,9 +104,9 @@ class Agisoft:
         app.cpu_enable = True
 
         settings = Metashape.Application.Settings()
-        # Logging
-        settings.log_enable = True
-        settings.log_path = self.project_file_name + '_agisoft.log'
+        # Logging - Disabled for now
+        settings.log_enable = False
+        # settings.log_path = self.project_file_name + '_agisoft.log'
         settings.save()
 
     def setup_camera(self):
