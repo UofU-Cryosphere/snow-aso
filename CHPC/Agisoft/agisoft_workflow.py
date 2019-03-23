@@ -264,7 +264,7 @@ parser.add_argument(
 # .\Metashape.exe -r agisoft_workflow.py --base-path D:\path/to/root/project/direcotry --project-name test
 #
 # Linux (headless):
-# metashape.sh -platform offscreen -r agisoft_workflow.py --base_path /path/to/root/project/directory -- project-name test
+# metashape.sh -platform offscreen -r agisoft_workflow.py --base_path /path/to/root/project/directory --project-name test
 # Optional arguments are:
 # _image_folder_: Name and relative location where images are
 # _image_type_: TYpe of images (i.e. .jpg, .iiq)
