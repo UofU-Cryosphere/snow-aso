@@ -172,7 +172,6 @@ class Agisoft:
             tiepoint_limit=self.TIEPOINT_LIMIT,
         )
         self.chunk.alignCameras()
-        self.project.save()
 
     def remove_by_criteria(self, criteria, threshold):
         point_cloud_filter = Metashape.PointCloud.Filter()
@@ -198,7 +197,6 @@ class Agisoft:
             filter=Metashape.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
-        self.project.save()
 
     def export_results(self):
         self.chunk.exportDem(
@@ -215,9 +213,14 @@ class Agisoft:
     def process(self, options):
         self.align_images()
         self.filter_sparse_cloud()
+        self.project.save()
+
         self.build_dense_cloud(options.dense_cloud_quality)
+        self.project.save()
 
         self.chunk.buildDem()
+        self.project.save()
+
         self.chunk.buildOrthomosaic()
         self.project.save()
 
