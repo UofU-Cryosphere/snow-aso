@@ -67,7 +67,7 @@ class Agisoft:
 
         self.create_new_project()
         self.project = Metashape.app.document
-        self.project.open(self.project_file_name + self.PROJECT_TYPE)
+        self.project.open(self.project_name)
         self.chunk = self.project.chunk
 
         self.setup_camera()
@@ -77,12 +77,16 @@ class Agisoft:
         )
         self.image_type = options.image_type
 
+    @property
+    def project_name(self):
+        return self.project_file_name + self.PROJECT_TYPE
+
     def create_new_project(self):
-        if not os.path.exists(path=self.project_file_name + self.PROJECT_TYPE):
+        if not os.path.exists(path=self.project_name):
             new_project = Metashape.Document()
             chunk = new_project.addChunk()
             new_project.save(
-                path=self.project_file_name + self.PROJECT_TYPE,
+                path=self.project_name,
                 chunks=[chunk]
             )
 
