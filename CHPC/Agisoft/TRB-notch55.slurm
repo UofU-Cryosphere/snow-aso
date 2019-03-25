@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=u1135435_agisoft
+#SBATCH --job-name=agisoft
 #SBATCH --account=owner-gpu-guest
 #SBATCH --partition=notchpeak-gpu-guest
 #SBATCH --qos=photoscan
