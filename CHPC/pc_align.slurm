@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=u1135435_pdal
+#SBATCH --job-name=pc_align
 #SBATCH --account=kingspeak-gpu
 #SBATCH --partition=kingspeak-gpu
 
