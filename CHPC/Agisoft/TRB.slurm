@@ -29,7 +29,7 @@ export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 PROJECT_NAME='TE_20180528'
 
 module load photoscan
-photoscan.sh -platform offscreen \
+metashape.sh -platform offscreen \
              -r $HOME/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
              --base-path $HOME/scratch/$PROJECT_NAME \
              --project-name $PROJECT_NAME \
