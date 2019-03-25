@@ -3,16 +3,23 @@ import sys
 
 import gdal
 
-from .raster_file import RasterFile
+from raster_compare.base import RasterDataDifference
 
 
-class RasterCompare(object):
+class RasterFileCompare(object):
+    """
+    Class that checks file existence, output path preparation and optional step
+    to crop both rasters according to a shape file.
+    """
+
     def __init__(self, **kwargs):
         self.base_path = kwargs['base_path']
         self.output_path = kwargs['output_path']
         self.lidar_dem = kwargs['lidar_dem']
         self.sfm_dem = kwargs['sfm_dem']
+        self.band_number = kwargs['band_number']
         self.shape_file = kwargs['shape_file']
+        self._file_args = None
 
     @property
     def base_path(self):
@@ -37,6 +44,14 @@ class RasterCompare(object):
     @sfm_dem.setter
     def sfm_dem(self, path):
         self._sfm_dem = self.check_path(path)
+
+    @property
+    def band_number(self):
+        return self._band_number
+
+    @band_number.setter
+    def band_number(self, band_number):
+        self._band_number = band_number
 
     @property
     def output_path(self):
@@ -70,24 +85,30 @@ class RasterCompare(object):
             sys.exit()
         return _path
 
+    @property
+    def file_args(self):
+        if self._file_args is None:
+            self._file_args = dict(
+                data=RasterDataDifference(
+                    lidar=self.lidar_dem,
+                    sfm=self.sfm_dem,
+                    band_number=self.band_number
+                ),
+                output_path=self.output_path
+            )
+        return self._file_args
+
     @staticmethod
     def crop_to_shape(raster_file, shape_file):
-        output_file = raster_file.replace('.tif', '_cropped.tif')
+        output_file = raster_file.replace('.tif', '_cropped.vrt')
 
         if not os.path.exists(output_file):
             print('Cropping raster:\n   ' + raster_file +
                   '\nto shape:\n   ' + shape_file + '\n')
-            warped = gdal.Warp(
-                '', raster_file,
-                format='MEM', dstAlpha=True, cropToCutline=True,
-                cutlineDSName=shape_file
+            gdal.Warp(
+                output_file, raster_file, format='VRT',
+                dstAlpha=True, cropToCutline=True, cutlineDSName=shape_file
             )
-            gdal.Translate(
-                output_file, warped,
-                creationOptions=["COMPRESS=LZW", "TILED=YES",
-                                 "BIGTIFF=IF_SAFER", "NUM_THREADS=ALL_CPUS"]
-            )
-            del warped
 
         return output_file
 
@@ -96,9 +117,3 @@ class RasterCompare(object):
             self.lidar_dem = self.crop_to_shape(self.lidar_dem, self.shape_file)
             self.sfm_dem = self.crop_to_shape(self.sfm_dem, self.shape_file)
 
-    def file_args(self):
-        return dict(
-            lidar=RasterFile(self.lidar_dem),
-            sfm=RasterFile(self.sfm_dem),
-            output_path=self.output_path
-        )

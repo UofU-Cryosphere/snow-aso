@@ -1,8 +1,8 @@
 import argparse
 
-from raster_compare.base import RasterCompare
-from raster_compare.plots import AreaDifferences, AreaPlot, Histogram, \
-    Regression, OrthoDifference
+from raster_compare.base import PdalMapper, RasterFileCompare
+from raster_compare.plots import AreaDifferences, Histogram, Regression, \
+    SideBySideBounds, OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -24,6 +24,13 @@ parser.add_argument(
     required=True
 )
 parser.add_argument(
+    '--band-number',
+    type=int,
+    help='Optional - Specific band number to compare of rasters',
+    choices=PdalMapper.RASTER_BANDS.values(),
+    default=PdalMapper.RASTER_BANDS['mean'],
+)
+parser.add_argument(
     '--shape-file',
     type=str,
     help='Shapefile for sfm and lidar relative from base path',
@@ -41,7 +48,7 @@ parser.add_argument(
     default='comparison'
 )
 parser.add_argument(
-    '--area-plots',
+    '--side-by-side',
     action='store_true',
     help='Side by side comparison plots for elevation, slope, and aspect'
 )
@@ -64,31 +71,31 @@ parser.add_argument(
 if __name__ == '__main__':
     arguments = parser.parse_args()
 
-    comparison = RasterCompare(**vars(arguments))
+    comparison = RasterFileCompare(**vars(arguments))
     comparison.prepare()
 
-    if arguments.area_plots:
-        area_plot = AreaPlot(**comparison.file_args())
-        [area_plot.plot(attr) for attr in AreaPlot.TYPES]
-        del area_plot
+    if arguments.side_by_side:
+        side_by_side = SideBySideBounds(**comparison.file_args)
+        side_by_side.plot()
+        del side_by_side
 
     if arguments.differences:
-        area_difference = AreaDifferences(**comparison.file_args())
-        [area_difference.plot(attr) for attr in AreaDifferences.TYPES]
+        area_difference = AreaDifferences(**comparison.file_args)
+        area_difference.plot()
         del area_difference
 
         ortho_difference = OrthoDifference(
             ortho_image=comparison.check_path(arguments.ortho_image),
-            **comparison.file_args()
+            **comparison.file_args
         )
         ortho_difference.plot()
         del ortho_difference
 
     if arguments.histograms:
-        histogram = Histogram(**comparison.file_args())
-        [histogram.plot(attr) for attr in Histogram.TYPES]
+        histogram = Histogram(**comparison.file_args)
+        histogram.plot()
         del histogram
 
     if arguments.regression:
-        regression = Regression(**comparison.file_args())
+        regression = Regression(**comparison.file_args)
         regression.run()

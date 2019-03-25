@@ -1,10 +1,9 @@
-import os
-
 import matplotlib as mpl
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 
 from .plot_base import PlotBase
+from .plot_layout import PlotLayout
 
 
 class OrthoDifference(PlotBase):
@@ -14,12 +13,8 @@ class OrthoDifference(PlotBase):
 
     OUTPUT_FILE_NAME = 'elevation_difference_overlay.png'
 
-    def __init__(self, **kwargs):
-        super().__init__(
-            kwargs['lidar'], kwargs['sfm'],
-            ortho_image=kwargs['ortho_image'],
-            output_path=kwargs['output_path'],
-        )
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
         self._cmap = self.setup_color_map()
         self._bounds = self.set_bounds()
 
@@ -39,13 +34,13 @@ class OrthoDifference(PlotBase):
 
     def set_bounds(self):
         return [
-            self.elevation_unfiltered.min(),
+            self.band_unfiltered.min(),
             self.mad.data_median - self.mad.standard_deviation(2),
             self.mad.data_median - self.mad.standard_deviation(1),
             self.mad.data_median,
             self.mad.data_median + self.mad.standard_deviation(1),
             self.mad.data_median + self.mad.standard_deviation(2),
-            self.elevation_unfiltered.max()
+            self.band_unfiltered.max()
         ]
 
     def plot(self):
@@ -53,21 +48,19 @@ class OrthoDifference(PlotBase):
 
         norm = mpl.colors.BoundaryNorm(self.bounds[1:-1], self.cmap.N)
 
-        fig, (ax1, ax2, cax) = plt.subplots(
-            nrows=3, gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3}
-        )
+        fig, (ax1, ax2, cax) = PlotLayout.two_row()
 
         diff_options = dict(
             extent=self.lidar.extent,
             zorder=1, norm=norm, cmap=self.cmap, alpha=0.5,
         )
 
-        self.add_ortho_background(ax1)
-        ax1.imshow(self.elevation, **diff_options)
+        self.add_ortho_background(ax1, self.lidar)
+        ax1.imshow(self.band_filtered, **diff_options)
         ax1.set_title('95th percentile', size=self.TITLE_FONT_SIZE)
 
-        self.add_ortho_background(ax2)
-        img = ax2.imshow(self.elevation_filtered, **diff_options)
+        self.add_ortho_background(ax2, self.lidar)
+        img = ax2.imshow(self.band_outliers, **diff_options)
         ax2.set_title('Outliers', size=self.TITLE_FONT_SIZE)
 
         fig.colorbar(
@@ -75,8 +68,4 @@ class OrthoDifference(PlotBase):
             extendfrac='auto', spacing='uniform', boundaries=self.bounds
         )
 
-        fig.set_size_inches(6, 10)
-        plt.savefig(
-            os.path.join(self.output_path, self.OUTPUT_FILE_NAME),
-            **self.output_defaults()
-        )
+        plt.savefig(self.output_file)

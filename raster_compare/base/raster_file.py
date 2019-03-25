@@ -3,12 +3,10 @@ import numpy as np
 
 
 class RasterFile(object):
-    DEFAULT_BAND_NUMBER = 1
-
-    def __init__(self, filename):
+    def __init__(self, filename, band_number):
         self.file = filename
+        self._band_number = band_number
         self._extent = None
-        self._elevation = None
         self._hillshade = None
         self._slope = None
         self._aspect = None
@@ -22,6 +20,14 @@ class RasterFile(object):
         self._file = gdal.Open(filename)
 
     @property
+    def band_number(self):
+        return self._band_number
+
+    @band_number.setter
+    def band_number(self, band_number):
+        self._band_number = band_number
+
+    @property
     def extent(self):
         if self._extent is None:
             gt = self.geo_transform()
@@ -33,8 +39,9 @@ class RasterFile(object):
             self._extent = x_min, x_max, y_min, y_max
         return self._extent
 
-    def values_for_band(self, band_number=1, **kwargs):
+    def band_values(self, **kwargs):
         raster = kwargs.get('raster', self.file)
+        band_number = kwargs.get('band_number', self.band_number)
 
         band = raster.GetRasterBand(band_number)
         values = np.ma.masked_values(
@@ -43,9 +50,11 @@ class RasterFile(object):
         del band
         return values
 
-    def get_raster_attribute(self, attribute):
-        raster = gdal.DEMProcessing('', self.file, attribute, format='MEM')
-        raster_values = self.values_for_band(raster=raster)
+    def get_raster_attribute(self, attribute, **kwargs):
+        raster = gdal.DEMProcessing(
+            '', self.file, attribute, format='MEM', **kwargs
+        )
+        raster_values = self.band_values(raster=raster, band_number=1)
         del raster
         return raster_values
 
@@ -66,12 +75,6 @@ class RasterFile(object):
         if self._aspect is None:
             self._aspect = self.get_raster_attribute('aspect')
         return self._aspect
-
-    @property
-    def elevation(self):
-        if self._elevation is None:
-            self._elevation = self.values_for_band()
-        return self._elevation
 
     def geo_transform(self):
         return self.file.GetGeoTransform()

@@ -1,14 +1,16 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.pyplot import figure
 
 from .plot_base import PlotBase
-from raster_compare.base import RasterDifference
 
 
 class Histogram(PlotBase):
     BOX_TEXT = 'Mean: {0}'
 
-    OUTPUT_FILE = '{0}{1}_histogram.png'
+    BIN_WIDTH = 10  # 10m
+
+    OUTPUT_FILE_NAME = 'elevation_histogram.png'
 
     @staticmethod
     def show_mean(ax, value):
@@ -20,8 +22,8 @@ class Histogram(PlotBase):
         plt.subplot(1, 1, 1)
         plt.hist(
             [
-                self.lidar.elevation.compressed(),
-                self.sfm.elevation.compressed()
+                self.lidar.band_values().compressed(),
+                self.sfm.band_values().compressed()
             ],
             label=['lidar', 'sfm'],
             color=['g', 'b'],
@@ -30,85 +32,39 @@ class Histogram(PlotBase):
         )
         plt.legend(loc='upper right')
 
-    def render_elevation(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Elevation distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax1, self.lidar.elevation.mean())
+    def bin_range(self, lidar, sfm):
+        min_value = min(lidar.min(), sfm.min())
+        max_value = max(lidar.max(), sfm.max())
 
-        ax2.set_title('Elevation distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax2, self.sfm.elevation.mean())
+        return np.arange(min_value, max_value + self.BIN_WIDTH, self.BIN_WIDTH)
 
-        ax3.set_title(
-            'Differences per elevation in 10 m intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Elevation', **PlotBase.label_opts())
-        PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(4)))
-
-    def render_slope(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Slope distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Degree', **PlotBase.label_opts())
-        Histogram.show_mean(ax1, self.lidar.slope.mean())
-
-        ax2.set_title('Slope distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax2, self.sfm.slope.mean())
-
-        ax3.set_title(
-            'Differences per slope angle in 10 degree intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Count', **PlotBase.label_opts())
-        PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(2)))
-
-    def render_aspect(self, ax1, ax2, ax3, mean):
-        ax1.set_title('Aspect distribution', **PlotBase.title_opts())
-        ax1.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax1, self.lidar.aspect.mean())
-
-        ax2.set_title('Aspect distribution', **PlotBase.title_opts())
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
-        Histogram.show_mean(ax2, self.sfm.aspect.mean())
-
-        ax3.set_title(
-            'Differences per aspect angle in 10 degree intervals',
-            **PlotBase.title_opts()
-        )
-        ax3.set_ylabel('Percent', **PlotBase.label_opts())
-        ax3.set_xlabel('Degree', **PlotBase.label_opts())
-        PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(2)))
-
-    # Plot histogram for given raster attribute and
-    # one difference histogram per bin width of 10
-    def render_stacked(self, raster_attr):
+    def render_stacked(self):
         figure(figsize=(14, 16))
-        bins = self.raster_difference.bin_range(raster_attr)
-        min_value = getattr(self.lidar, raster_attr).min()
-        max_value = getattr(self.lidar, raster_attr).max()
 
+        lidar = self.lidar.band_values()
+        sfm = self.sfm.band_values()
+
+        bins = self.bin_range(lidar, sfm)
         hist_opts = dict(bins=bins, alpha=0.5)
 
         ax1 = plt.subplot(3, 1, 1)
         h1 = plt.hist(
-            getattr(self.lidar, raster_attr).compressed(),
+            lidar.compressed(),
             label=PlotBase.LIDAR_LABEL,
             color='b',
             **hist_opts
         )
-        ax1.set_xlim(min_value, max_value + 1)
+        ax1.set_xlim(bins[0], bins[-1] + 1)
 
         ax2 = plt.subplot(3, 1, 2)
-        self.sfm.join_masks(raster_attr, getattr(self.lidar, raster_attr))
+        sfm.mask = np.ma.mask_or(sfm.mask, lidar.mask)
         h2 = plt.hist(
-            getattr(self.sfm, raster_attr).compressed(),
+            sfm.compressed(),
             label=PlotBase.SFM_LABEL,
             color='g',
             **hist_opts
         )
-        ax2.set_xlim(min_value, max_value + 1)
+        ax2.set_xlim(bins[0], bins[-1] + 1)
         ax2.legend()
 
         diff = h2[0] - h1[0]
@@ -119,25 +75,33 @@ class Histogram(PlotBase):
                 height=percent,
                 edgecolor='black',
                 label='Percent',
-                width=RasterDifference.BIN_WIDTH,
+                width=self.BIN_WIDTH,
                 color='red',
                 align='edge')
-        ax3.set_xlim(min_value, max_value + 1)
+        ax3.set_xlim(bins[0], bins[-1] + 1)
 
-        mean = RasterDifference.percentage_mean(
-            diff, getattr(self.sfm, raster_attr).count()
-        )
-        getattr(self, 'render_{0}'.format(raster_attr))(ax1, ax2, ax3, mean)
+        mean = (np.absolute(diff).sum() / sfm.count()) * 100
 
-    def plot(self, style):
-        if style in self.TYPES:
-            self.print_status(str(style))
-            self.render_stacked(style)
+        # Add labels
+        ax1.set_title('Elevation distribution')
+        ax1.set_ylabel('Count')
+        Histogram.show_mean(ax1, lidar.mean())
+
+        ax2.set_title('Elevation distribution')
+        ax2.set_ylabel('Count')
+        Histogram.show_mean(ax2, sfm.mean())
+
+        ax3.set_title('Differences per elevation in 10 m intervals')
+        ax3.set_ylabel('Percent')
+        ax3.set_xlabel('Elevation')
+        PlotBase.add_to_legend(ax3, self.BOX_TEXT.format(mean.round(4)))
+
+    def plot(self, style=None):
+        if style is None:
+            self.print_status()
+            self.render_stacked()
         elif style == 'side-by-side':
             self.print_status(style)
             self.render_side_by_side()
 
-        plt.savefig(
-            self.OUTPUT_FILE.format(self.output_path, style),
-            **PlotBase.output_defaults()
-        )
+        plt.savefig(self.output_file)

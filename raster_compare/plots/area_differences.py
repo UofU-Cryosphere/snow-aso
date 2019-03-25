@@ -20,18 +20,18 @@ class AreaDifferences(PlotBase):
     BOX_PLOT_TEXT = '{0:8}: {1:6.3f}'
     BOX_PLOT_WHISKERS = [5, 95]
 
-    OUTPUT_FILE = '{0}{1}_differences.png'
+    OUTPUT_FILE_NAME = 'elevation_differences.png'
 
     COLORMAP = cm.get_cmap('PuOr')
 
     def add_hist_stats(self, ax):
-        box_text = AreaDifferences.HIST_TEXT.format(
-            self.raster_difference.mad.median,
-            self.raster_difference.mad.normalized(),
-            self.raster_difference.mad.standard_deviation(),
-            self.raster_difference.mad.standard_deviation(2),
+        box_text = self.HIST_TEXT.format(
+            self.data.mad.median,
+            self.data.mad.normalized(),
+            self.data.mad.standard_deviation(),
+            self.data.mad.standard_deviation(2),
         )
-        PlotBase.add_to_legend(ax, box_text)
+        self.add_to_legend(ax, box_text)
 
     def add_box_plot_stats(self, ax, box_plot_data):
         text = [
@@ -53,21 +53,21 @@ class AreaDifferences(PlotBase):
                 box_plot_data['caps'][0].get_ydata()[0]
             ),
         ]
-        PlotBase.add_to_legend(
+        self.add_to_legend(
             ax, '\n'.join(text), handlelength=0, handletextpad=0
         )
 
-    def plot(self, raster_attr):
-        self.print_status(str(raster_attr))
+    def plot(self):
+        self.print_status()
 
         fig = plt.figure(constrained_layout=False)
         fig.set_size_inches(14, 12)
         heights = [2, 1]
         grid_opts=dict(figure=fig, height_ratios=heights)
 
-        difference = getattr(self.raster_difference, raster_attr)
+        difference = self.data.band_filtered
 
-        if raster_attr is 'elevation':
+        if self.data_description is 'Elevation':
             grid_spec = GridSpec(
                 nrows=2, ncols=3, width_ratios=[3,2,3], **grid_opts
             )
@@ -96,20 +96,16 @@ class AreaDifferences(PlotBase):
             extent=self.sfm.extent,
             **bounds
         )
-        ax1.set_title(
-            self.TITLE.format(raster_attr.capitalize()), **PlotBase.title_opts()
-        )
+        ax1.set_title(self.TITLE.format(self.data_description))
         self.insert_colorbar(
-            plt, ax1, diff_plot, self.SCALE_BAR_LABEL[raster_attr]
+            plt, ax1, diff_plot, self.SCALE_BAR_LABEL[self.data_description]
         )
 
         ax2 = fig.add_subplot(grid_spec[1, 0])
         ax2.hist(difference.compressed(), bins=bins, label='Count')
-        ax2.set_xlabel(
-            self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
-        )
-        ax2.set_ylabel('Count', **PlotBase.label_opts())
-        if raster_attr is 'elevation':
+        ax2.set_xlabel(self.SCALE_BAR_LABEL[self.data_description])
+        ax2.set_ylabel('Count')
+        if self.data_description is 'Elevation':
             self.add_hist_stats(ax2)
 
         ax3 = fig.add_subplot(grid_spec[1, 1])
@@ -123,21 +119,15 @@ class AreaDifferences(PlotBase):
         ax3.tick_params(
             axis='x', which='both', bottom=False, top=False, labelbottom=False
         )
-        ax3.set_ylabel(
-            self.SCALE_BAR_LABEL[raster_attr], **PlotBase.label_opts()
-        )
+        ax3.set_ylabel(self.SCALE_BAR_LABEL[self.data_description])
         self.add_box_plot_stats(ax3, box)
 
-        if raster_attr is 'elevation':
+        if self.data_description is 'Elevation':
             ax4 = fig.add_subplot(grid_spec[1, 2])
-            probplot = sm.ProbPlot(self.raster_difference.elevation.compressed())
+            probplot = sm.ProbPlot(difference.compressed())
             probplot.qqplot(ax=ax4, line='s')
             ax4.get_lines()[0].set(markersize=1)
             ax4.get_lines()[1].set(color='black', dashes=[4, 1])
-            ax4.set_title('Normal Q-Q Plot', **self.title_opts())
+            ax4.set_title('Normal Q-Q Plot')
 
-        plt.tight_layout()
-        plt.savefig(
-            self.OUTPUT_FILE.format(self.output_path, raster_attr),
-            dpi=PlotBase.DEFAULT_DPI
-        )
+        plt.savefig(self.output_file)

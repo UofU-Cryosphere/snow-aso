@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 
 from base.raster_file import RasterFile
 
@@ -18,16 +16,16 @@ def get_mesh_grid(gt, shape):
 
 
 def render_3d(source):
-    x, y = get_mesh_grid(source.geo_transform(), source.elevation.shape)
+    x, y = get_mesh_grid(source.geo_transform(), source.band_values().shape)
 
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
 
     surface = ax.plot_surface(
-        x, y, source.elevation.filled(np.nan),
+        x, y, source.band_values().filled(np.nan),
         cmap=cm.get_cmap('jet'),
         linewidth=0,
-        vmin=source.elevation.min(),
-        vmax=source.elevation.max(),
+        vmin=source.band_values().min(),
+        vmax=source.band_values().max(),
         alpha=0.7,
     )
 
@@ -38,5 +36,5 @@ def render_3d(source):
 
 
 if __name__ == '__main__':
-    lidar = RasterFile('')
+    lidar = RasterFile('', 1)
     render_3d(lidar)

@@ -12,11 +12,8 @@ class Regression(PlotBase):
         'sfm_elevation', 'sfm_slope', 'sfm_aspect',
     ]
 
-    def __init__(self, **kwargs):
-        super().__init__(
-            kwargs['lidar'], kwargs['sfm'],
-            output_path=kwargs['output_path']
-        )
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
         self.df = self.load_data_frame()
 
     @property
@@ -29,9 +26,9 @@ class Regression(PlotBase):
 
     def load_data_frame(self):
         return pd.DataFrame({
-            'diff': self.raster_difference.elevation.filled(np.NaN).ravel(),
-            'lidar_elevation': self.lidar.elevation.filled(np.NaN).ravel(),
-            'sfm_elevation': self.sfm.elevation.filled(np.NaN).ravel(),
+            'diff': self.data.band_filtered.filled(np.NaN).ravel(),
+            'lidar_elevation': self.lidar.band_values().filled(np.NaN).ravel(),
+            'sfm_elevation': self.sfm.band_values().filled(np.NaN).ravel(),
             'lidar_slope': self.lidar.slope.filled(np.NaN).ravel(),
             'sfm_slope': self.sfm.slope.filled(np.NaN).ravel(),
             'lidar_aspect': self.lidar.aspect.filled(np.NaN).ravel(),
@@ -39,16 +36,14 @@ class Regression(PlotBase):
         })
 
     def save_plot(self, **kwargs):
-        plt.tight_layout()
         plt.savefig(
-            self.output_path + '/{0}_scatter_plot.png'.format(kwargs['name']),
-            **self.output_defaults()
+            self.output_path + '/{0}_scatter_plot.png'.format(kwargs['name'])
         )
 
     def plot_lidar_vs_sfm(self):
         self.print_status('Lidar vs. SfM elevations')
         plt.figure()
-        plt.scatter(self.sfm.elevation, self.lidar.elevation, s=0.5)
+        plt.scatter(self.sfm.band_filtered, self.lidar.band_filtered, s=0.5)
         plt.xlabel('Lidar')
         plt.ylabel('SfM')
         self.save_plot(name='Lidar_vs_sfm')
@@ -126,14 +121,13 @@ class Regression(PlotBase):
 
     def qqplot(self):
         fig = plt.figure(figsize=(12,8))
-        probplot = sm.ProbPlot(self.raster_difference.elevation.compressed())
+        probplot = sm.ProbPlot(self.data.band_filtered.compressed())
         ax = fig.gca()
         probplot.qqplot(ax=ax, line='s')
         ax.get_lines()[0].set(markersize=1)
         ax.get_lines()[1].set(color='black', dashes=[4, 1])
-        ax.set_title('Normal Q-Q Plot', **self.title_opts())
-        fig.tight_layout()
-        plt.savefig(self.output_path + '/qq_plot.png', **self.output_defaults())
+        ax.set_title('Normal Q-Q Plot')
+        plt.savefig(self.output_path + '/qq_plot.png')
 
     def plot_all(self):
         self.plot_lidar_vs_sfm()
@@ -156,8 +150,8 @@ class Regression(PlotBase):
 
     def fit_lidar_vs_sfm(self):
         self.fit_model(
-            self.lidar.elevation.ravel(),
-            self.sfm.elevation.ravel(),
+            self.lidar.band_filtered.ravel(),
+            self.sfm.band_filtered.ravel(),
             'Lidar vs. SfM',
         )
 
