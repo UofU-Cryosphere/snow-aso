@@ -2,7 +2,7 @@ import argparse
 
 from raster_compare.base import PdalMapper, RasterFileCompare
 from raster_compare.plots import AreaDifferences, Histogram, Regression, \
-    SideBySideBounds, OrthoDifference
+    SideBySide, OrthoDifference
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     comparison.prepare()
 
     if arguments.side_by_side:
-        side_by_side = SideBySideBounds(**comparison.file_args)
+        side_by_side = SideBySide(**comparison.file_args)
         side_by_side.plot()
         del side_by_side
 
