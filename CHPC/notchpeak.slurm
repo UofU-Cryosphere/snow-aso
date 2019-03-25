@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=u1135435_agisoft
+#SBATCH --job-name=agisoft
 #SBATCH --account=notchpeak-gpu                 # account - abbreviated by -A
 #SBATCH --partition=notchpeak-gpu               # partition, abbreviated by -p
 

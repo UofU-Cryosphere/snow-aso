@@ -1,18 +1,17 @@
 #!/bin/bash
 
 #SBATCH --job-name=agisoft
-#SBATCH --account=notchpeak-gpu
-#SBATCH --partition=notchpeak-gpu
+#SBATCH --account=owner-gpu-guest
+#SBATCH --partition=notchpeak-gpu-guest
 #SBATCH --qos=photoscan
 
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
 #SBATCH --mem=0
-#SBATCH --constraint="v100"
-#SBATCH --gres=gpu:v100:3
-
 #SBATCH --exclusive
+#SBATCH --constraint="2080ti"                   # notch083 and 084 have four RTX 2080 Ti GPU's
+#SBATCH --gres=gpu:2080ti:4
 
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=u1135435@utah.edu

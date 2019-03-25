@@ -1,23 +1,23 @@
 #!/bin/bash
 
-#SBATCH --job-name=u1135435_agisoft
+#SBATCH --job-name=agisoft
 #SBATCH --account=owner-gpu-guest
 #SBATCH --partition=notchpeak-gpu-guest
 #SBATCH --qos=photoscan
 
-#SBATCH --time=24:00:00                         # wall time
-#SBATCH --nodes=1                               # number of cluster nodes
-#SBATCH --ntasks=32                             # number of requested CPU cores
-#SBATCH --mem=0                                 
-#SBATCH --constraint="titanv"                   # notch055 has four Titan V GPUs
-#SBATCH --gres=gpu:titanv:4                     
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --mem=0
+#SBATCH --constraint="titanv"
+#SBATCH --gres=gpu:titanv:4
 #SBATCH --exclusive
 
 #SBATCH --mail-type=FAIL,END
-#SBATCH --mail-user=u1135435@utah.edu           # Email address for events
+#SBATCH --mail-user=u1135435@utah.edu
 
-#SBATCH -o slurm-%j.out-%N                      # stdout, using job ID (%j) and the first node (%N)
-#SBATCH -e slurm-%j.err-%N                      # stderr, using job and first node
+#SBATCH -o slurm-%j.out-%N
+#SBATCH -e slurm-%j.err-%N
 
 # Enable CPU Hyper-threading
 export OMP_NUM_THREADS=$SLURM_NTASKS
@@ -28,7 +28,7 @@ export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 PROJECT_NAME='SB_20170221'
 
 module load photoscan
-photoscan.sh -platform offscreen \
+metashape.sh -platform offscreen \
              -r $HOME/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
              --base-path $HOME/scratch/$PROJECT_NAME \
              --project-name $PROJECT_NAME \
