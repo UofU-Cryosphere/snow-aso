@@ -107,7 +107,10 @@ class RasterFileCompare(object):
                   '\nto shape:\n   ' + shape_file + '\n')
             gdal.Warp(
                 output_file, raster_file, format='VRT',
-                dstAlpha=True, cropToCutline=True, cutlineDSName=shape_file
+                cutlineDSName=shape_file, cropToCutline=True,
+                # Ths should not be needed.
+                # File issue: https://github.com/OSGeo/gdal/issues/1406
+                srcNodata=-9999., dstNodata=-9999.
             )
 
         return output_file
