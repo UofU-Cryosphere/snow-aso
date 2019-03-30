@@ -108,9 +108,8 @@ class RasterFileCompare(object):
             gdal.Warp(
                 output_file, raster_file, format='VRT',
                 cutlineDSName=shape_file, cropToCutline=True,
-                # Ths should not be needed.
-                # File issue: https://github.com/OSGeo/gdal/issues/1406
-                srcNodata=-9999., dstNodata=-9999.
+                # Suggested in: https://github.com/OSGeo/gdal/issues/1406
+                warpOptions=['UNIFIED_SRC_NODATA=YES']
             )
 
         return output_file
