@@ -1,5 +1,5 @@
-import gdal
 import numpy as np
+from osgeo import gdal, gdalnumeric
 
 
 class RasterFile(object):
@@ -45,7 +45,9 @@ class RasterFile(object):
 
         band = raster.GetRasterBand(band_number)
         values = np.ma.masked_values(
-            band.ReadAsArray(), band.GetNoDataValue() or 0., copy=False
+            gdalnumeric.BandReadAsArray(band),
+            band.GetNoDataValue() or 0.,
+            copy=False
         )
         del band
         return values
