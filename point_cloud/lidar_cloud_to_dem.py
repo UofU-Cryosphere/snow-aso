@@ -70,16 +70,18 @@ if __name__ == '__main__':
 
     dem_pipeline = PdalPipeline(LAZ_MASKED_OUTFILE.format(output_file))
 
+    print('Reducing points to snow only surfaces')
     dem_pipeline.add(PdalPipeline.mask_casi(arguments.casi_mask.name))
+
+    print('Writing Geo Tiff')
     dem_pipeline.add(PdalPipeline.create_dem(
         outfile=LAZ_TO_DEM_OUTFILE.format(output_file),
         bounds=BASINS_BOUNDARIES[arguments.basin],
         epsg=BASIN_EPSG[arguments.basin]
     ))
 
-    print(SAVE_MESSAGE.format(LAZ_TO_DEM_OUTFILE.format(output_file)))
-
     dem_pipeline.execute()
+    print(SAVE_MESSAGE.format(LAZ_TO_DEM_OUTFILE.format(output_file)))
     del dem_pipeline
 
     print('\nCompressing tif')
