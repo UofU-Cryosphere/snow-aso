@@ -48,6 +48,7 @@ class PdalPipeline(object):
             },
             {
                 "type": "filters.range",
+                # Select all values of 0 and 1
                 "limits": "Red[0:{0}]".format(upper_limit)
             },
         ]
@@ -62,6 +63,7 @@ class PdalPipeline(object):
             },
             {
                 "type": "filters.range",
+                # Select values less or equal to 1 and greater than 255
                 "limits": "Red(2:255]"
             },
         ]
