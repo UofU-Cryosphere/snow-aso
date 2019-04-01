@@ -4,8 +4,8 @@ import pdal
 
 
 class PdalPipeline(object):
-    def __init__(self):
-        self._workflow = {"pipeline": []}
+    def __init__(self, input_laz):
+        self._workflow = {"pipeline": [input_laz]}
 
     @property
     def workflow(self):
