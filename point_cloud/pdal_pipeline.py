@@ -1,4 +1,5 @@
 import json
+from subprocess import Popen, PIPE
 
 import pdal
 
@@ -23,7 +24,11 @@ class PdalPipeline(object):
     def execute(self):
         pdal_process = pdal.Pipeline(self.to_json())
         pdal_process.validate()
-        pdal_process.execute()
+        # Python bindings for pdal to execute broke with version 2.8.1
+        # pdal_process.execute()
+        with Popen(['pdal', 'pipeline', '-s'], stdin=PIPE) as process:
+            process.communicate(self.to_json().encode())
+            process.stdin.close()
 
     @staticmethod
     def filter_smrf():
