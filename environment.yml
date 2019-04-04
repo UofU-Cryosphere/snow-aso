@@ -3,12 +3,14 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - cython
   - gdal
+  - ipython
   - matplotlib
   - pandas
   - pillow
-  - pdal=1.7.2
+  - pdal
+  - python-pdal
   - statsmodels
   - pip:
       - opencv-python
-      - pdal

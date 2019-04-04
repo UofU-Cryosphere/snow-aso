@@ -1,11 +1,12 @@
 import json
+from subprocess import Popen, PIPE
 
 import pdal
 
 
 class PdalPipeline(object):
-    def __init__(self):
-        self._workflow = {"pipeline": []}
+    def __init__(self, input_laz):
+        self._workflow = {"pipeline": [input_laz]}
 
     @property
     def workflow(self):
@@ -23,7 +24,11 @@ class PdalPipeline(object):
     def execute(self):
         pdal_process = pdal.Pipeline(self.to_json())
         pdal_process.validate()
-        pdal_process.execute()
+        # Python bindings for pdal to execute broke with version 2.8.1
+        # pdal_process.execute()
+        with Popen(['pdal', 'pipeline', '-s'], stdin=PIPE) as process:
+            process.communicate(self.to_json().encode())
+            process.stdin.close()
 
     @staticmethod
     def filter_smrf():
@@ -48,6 +53,7 @@ class PdalPipeline(object):
             },
             {
                 "type": "filters.range",
+                # Select all values of 0 and 1
                 "limits": "Red[0:{0}]".format(upper_limit)
             },
         ]
@@ -62,6 +68,7 @@ class PdalPipeline(object):
             },
             {
                 "type": "filters.range",
+                # Select values less or equal to 1 and greater than 255
                 "limits": "Red(2:255]"
             },
         ]
