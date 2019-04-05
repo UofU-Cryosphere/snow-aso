@@ -9,7 +9,7 @@ class PlotLayout(object):
         :return:
         """
         return plt.subplots(
-            nrows=3, figsize=(6, 10),
+            nrows=3, figsize=(6, 12),
             gridspec_kw={'height_ratios': [1, 1, 0.07], 'hspace': 0.3}
         )
 
