@@ -47,12 +47,4 @@ is then used as input to query IMU data per image.
 
 ### Raster compare
 
-Set of scripts to plot difference between two DEMs. Also has PDAL and GDAL
-examples to transform raster data.
-
-Currently provides the following:
-* Areal comparison of elevation, slope and aspect difference.
-* Create histograms for elevation, slope and aspect difference.
-* Compare elevation, slope and aspect per pre-defined bin width.
-* Plot histogram for LAS file.
-* Plot 3D diagram of a DEM
+Set of scripts to plot difference between two DEMs.
