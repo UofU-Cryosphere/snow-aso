@@ -20,6 +20,6 @@ class PlotLayout(object):
         :return:
         """
         return plt.subplots(
-            ncols=3, figsize=(12, 4),
-            gridspec_kw={'width_ratios': [1, 1, 0.05], 'wspace': 0.05}
+            ncols=3, figsize=(12, 7),
+            gridspec_kw={'width_ratios': [1, 1, 0.05], 'wspace': 0.07}
         )
