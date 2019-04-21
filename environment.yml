@@ -4,12 +4,12 @@ channels:
   - defaults
 dependencies:
   - cython
-  - gdal
+  - gdal=2.4
   - ipython
   - matplotlib
   - pandas
   - pillow
-  - pdal
+  - pdal=1.9
   - pip
   - python-pdal
   - statsmodels
