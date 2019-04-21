@@ -48,6 +48,7 @@ class Agisoft:
     DENSE_POINT_QUALITY = dict(
         high=Metashape.HighQuality,
         medium=Metashape.MediumQuality,
+        low=Metashape.LowQuality,
     )
 
     EXPORT_DEFAULTS = dict(
@@ -196,7 +197,7 @@ class Agisoft:
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
-            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality, 'high'),
+            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality),
             filter=Metashape.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
@@ -247,7 +248,9 @@ parser.add_argument(
     default=Agisoft.IMPORT_IMAGE_TYPE,
 )
 parser.add_argument(
-    '--dense-cloud-quality', type=str, required=False, default='high',
+    '--dense-cloud-quality',
+    type=str, required=False,
+    default=Metashape.HighQuality, choices=Agisoft.DENSE_POINT_QUALITY.keys(),
     help='Overwrite default dense point cloud quality (High).'
 )
 parser.add_argument(
