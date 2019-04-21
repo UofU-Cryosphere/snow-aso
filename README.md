@@ -1,20 +1,9 @@
 ## ASO aerial imagery processing
 
 Collection of scripts to process aerial imagery from the Airborne Snow 
-Observatory (ASO) using Agisoft PhotoScan on CHPC. The generated DEMS, exported
-as GeoTiffs, are then statistically compared against an coincident DEM by lidar. 
+Observatory (ASO) using Agisoft PhotoScan on CHPC. 
 
-### CHPC
 
-* `agisoft_workflow.py`
-
-Script that processes the images with Agisoft PhotoScan using their Python API.
-Requires input information to the image folder location, plus a reference file 
-that contains geo location and flight orientation information per image as CSV.
-
-* `notchpeak.slurm`
-
-Slurm batch script to enqueue a job on CHPC.
 
 ### Images time table
 
