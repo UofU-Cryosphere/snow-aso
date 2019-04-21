@@ -15,3 +15,25 @@ Set of scripts to create a geo-location csv reference file for images.
 ### raster_compare
 
 Python package to compare two DEMs.
+
+## Setup
+
+Steps for local setup:
+* Clone repository
+* Create conda environment using the supplied `environment.yml`:
+```bash
+conda create env -f envirnoment.yml
+```
+* Install this repo to your conda environment:
+```bash
+conda activate snow_aso
+cd path/to/repository/snow-aso
+pip install -e .
+```
+* For Metashape development, [download their Python package](https://www.agisoft.com/downloads/installer/)
+and install into the conda environment. Replace `Metashape.whl` below with the actual .downloaded file name 
+```bash
+conda activate snow_aso
+cd path/to/repository/snow-aso
+pip install -e Metashape.whl
+```
