@@ -64,6 +64,9 @@ class PlotBase(object):
         matplotlib.rcParams['figure.titlesize'] = PlotBase.TITLE_FONT_SIZE
         matplotlib.rcParams['figure.dpi'] = PlotBase.DEFAULT_DPI
 
+        # Axes
+        matplotlib.rcParams['axes.formatter.useoffset'] = False
+
         # Save settings
         matplotlib.rcParams['savefig.bbox'] = 'tight'
 
@@ -116,7 +119,7 @@ class PlotBase(object):
         mean = mpatches.Patch(color='none', label=text)
         handles, labels = axes.get_legend_handles_labels()
         handles.append(mean)
-        axes.legend(handles=handles, prop={'family':'monospace'}, **kwargs)
+        axes.legend(handles=handles, prop={'family': 'monospace'}, **kwargs)
 
     @staticmethod
     def insert_colorbar(plot, ax, data, label, **kwargs):

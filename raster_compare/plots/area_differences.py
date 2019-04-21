@@ -61,7 +61,7 @@ class AreaDifferences(PlotBase):
         self.print_status()
 
         fig = plt.figure(constrained_layout=False)
-        fig.set_size_inches(14, 12)
+        fig.set_size_inches(17, 14)
         heights = [2, 1]
         grid_opts=dict(figure=fig, height_ratios=heights)
 

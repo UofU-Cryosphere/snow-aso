@@ -6,14 +6,15 @@ import re
 from multiprocessing import Pool
 
 import pdal
-from basin_data import BASINS_BOUNDARIES
+from basin_data import BASINS_BOUNDARIES, BASIN_EPSG
 
 PIPELINE_JSON_TEMPLATE = {
     'pipeline': [
         'infile',
         {
             'type': 'filters.crop',
-            'bounds': 'boundaries'
+            'bounds': 'boundaries',
+            'a_srs': 'epsg',
         },
         'outfile'
     ]
@@ -57,6 +58,8 @@ if __name__ == '__main__':
         pipeline_json['pipeline'][0] = input_file
         pipeline_json['pipeline'][1]['bounds'] = \
             BASINS_BOUNDARIES[arguments.basin]
+        pipeline_json['pipeline'][1]['a_srs'] = \
+            BASIN_EPSG[arguments.basin]
         pipeline_json['pipeline'][2] = output_file
 
         pipelines.append(pipeline_json)
