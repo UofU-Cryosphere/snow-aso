@@ -29,8 +29,7 @@ class Agisoft:
     REFERENCE_FILE = 'images_metadata.csv'
 
     WGS_84 = Metashape.CoordinateSystem("EPSG::4326")
-    UTM_CA = Metashape.CoordinateSystem("EPSG::32611")
-    UTM_CO = Metashape.CoordinateSystem("EPSG::32613")
+
     X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
     Y_1M_IN_DEG = 9.0094e-06   #
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
