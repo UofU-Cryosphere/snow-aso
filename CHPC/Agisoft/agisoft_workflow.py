@@ -251,7 +251,7 @@ parser.add_argument(
     help='Overwrite default dense point cloud quality (High).'
 )
 parser.add_argument(
-    '--with-export', type=bool, required=False, default=False,
+    '--with-export', action='store_true',
     help='Export DEM, Orthomosaic and PDF report after dense cloud'
 )
 
