@@ -6,6 +6,7 @@ import re
 from multiprocessing import Pool
 
 import pdal
+
 from basin_data import BASINS_BOUNDARIES, BASIN_EPSG
 
 PIPELINE_JSON_TEMPLATE = {
@@ -31,9 +32,8 @@ parser.add_argument(
 )
 parser.add_argument(
     '--basin',
-    type=str,
-    help='Basin boundaries - Options: SBB, TRW',
-    required=True
+    type=str, required=True, choices=BASINS_BOUNDARIES.keys(),
+    help='Basin short name to lookup bounding box',
 )
 
 
