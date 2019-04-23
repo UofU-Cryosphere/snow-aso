@@ -1,11 +1,10 @@
 #!/bin/bash
 
-#SBATCH --job-name=u1135435
+#SBATCH --job-name=my_job
 #SBATCH --account=kingspeak-gpu
 #SBATCH --partition=kingspeak-gpu
 
 #SBATCH --time=36:00:00
-#SBATCH --nodes=1
 #SBATCH --ntasks=12
 #SBATCH --mem=0
 #SBATCH -w kp297
