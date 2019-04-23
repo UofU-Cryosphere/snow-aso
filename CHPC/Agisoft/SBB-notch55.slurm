@@ -20,7 +20,7 @@
 #SBATCH -e slurm-%j.err-%N
 
 # Enable CPU Hyper-threading
-export OMP_NUM_THREADS=$SLURM_NTASKS
+export OMP_NUM_THREADS=${SLURM_NTASKS}
 
 # Needed for PDF export in Agisoft using QT
 export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
@@ -29,7 +29,7 @@ PROJECT_NAME='SB_20170221'
 
 module load photoscan
 metashape.sh -platform offscreen \
-             -r $HOME/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
-             --base-path $HOME/scratch/$PROJECT_NAME \
-             --project-name $PROJECT_NAME \
-             > $HOME/scratch/$PROJECT_NAME.log
+             -r ${HOME}/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
+             --base-path ${HOME}/scratch/${PROJECT_NAME} \
+             --project-name ${PROJECT_NAME} \
+             > ${HOME}/scratch/${PROJECT_NAME}.log
