@@ -48,9 +48,9 @@ if __name__ == '__main__':
 
     print('Creating DEM')
 
-    dem_pipeline = PdalPipeline()
+    dem_pipeline = PdalPipeline(arguments.sfm_laz.name)
 
-    dem_pipeline.add(arguments.sfm_laz.name)
+    print('Masking out vegetation')
     dem_pipeline.add(PdalPipeline.mask_casi(arguments.casi_mask.name))
     dem_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
     dem_pipeline.add(PdalPipeline.create_dem(
@@ -59,6 +59,7 @@ if __name__ == '__main__':
         epsg=BASIN_EPSG[arguments.basin]
     ))
 
+    print('Creating DEM')
     dem_pipeline.execute()
     del dem_pipeline
 
