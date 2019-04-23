@@ -12,6 +12,10 @@ Also has a script to run Agisoft's Metashape through their Python API.
 
 Set of scripts to create a geo-location csv reference file for images. 
 
+### point_cloud
+
+Python scripts that use PDAL to create GeoTiffs from point cloud files.
+
 ### raster_compare
 
 Python package to compare two DEMs.
@@ -31,7 +35,7 @@ cd path/to/repository/snow-aso
 pip install -e .
 ```
 * For Metashape development, [download their Python package](https://www.agisoft.com/downloads/installer/)
-and install into the conda environment. Replace `Metashape.whl` below with the actual .downloaded file name 
+and install into the conda environment. Replace `Metashape.whl` below with the actual downloaded file name 
 ```bash
 conda activate snow_aso
 cd path/to/repository/snow-aso
