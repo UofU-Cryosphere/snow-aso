@@ -5,7 +5,12 @@ is `scripts/create_csv.py`.
 
 The `bin/` folder contains a sbet converter from Applanix's binary format to a human-readable CSV.
 
-#### Required folder structure
+### Required inputs
+
+* EIF data files from ASO flight
+* SBET file from ASO flight
+
+### Required folder structure
 
 The `create_csv.py` expects the following root folder structure:
 ```
@@ -22,12 +27,25 @@ The SBET file should have the following sequence:
 GpsTime,X,Y,Z,Heading,Roll,Pitch
 ```
 
-### Required inputs:
+### Create SBET csv with `extract_cols_from_sbet`
 
-* EIF data files from ASO flight
-* SBET file from ASO flight
+The supplied `extract_cols_from_sbet.c` converter can be compiled on OS X using
+the gcc compiler:
+```bash
+    gcc -o extract_cols_from_sbet extract_cols_from_sbet.c
+```
 
-#### EIF data
+The created binary can then be used with:
+```bash
+extract_cols_from_sbet /path/to/sbet_file.sbet ./
+```
+
+The `./` will write the output csv file to the current directory, but any valid
+file path can be given.
+
+## Notes on EIF and SBET data
+
+### EIF
 
 There are two version of `.eif` files. Flights pre-dating May of 2018 only carry
 a timestamp (GPS time) and corresponding image name.
@@ -40,8 +58,7 @@ Currently the following is done:
 * Pitch: Flipped with Roll value + 180˚
 * Roll: Flipped with Pitch value and kept as is
 
-#### SBET data
+### SBET
 
-The SBET file is delivered in binary format and the provided 
-`extract_cols_from_sbet` executable can transform that into a `.csv` file. This
-is then used as input to query IMU data per image.
+The SBET file is delivered in binary format and, when converted into a `.csv` file, 
+is used as input to query IMU data per image.
