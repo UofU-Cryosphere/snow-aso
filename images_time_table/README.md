@@ -5,6 +5,23 @@ is `scripts/create_csv.py`.
 
 The `bin/` folder contains a sbet converter from Applanix's binary format to a human-readable CSV.
 
+#### Required folder structure
+
+The `create_csv.py` expects the following root folder structure:
+```
+ROOT
+-| Camera
+--| 01_EIF
+---| *.eif
+-| SBET
+--| sbet.csv
+```
+
+The SBET file should have the following sequence:
+```
+GpsTime,X,Y,Z,Heading,Roll,Pitch
+```
+
 ### Required inputs:
 
 * EIF data files from ASO flight
