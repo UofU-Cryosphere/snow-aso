@@ -11,7 +11,7 @@ and writes result as a GeoTIFF in 1m resolution.
 
 * `crop_point_cloud.py`
 
-Batch process multiple lidar files and crop each one to the boudning
+Batch process multiple lidar files and crop each one to the bounding
 box of the given basin name.
 
 * `pc_align.sh`
@@ -22,3 +22,9 @@ Sample bash script to run ASP `pc_align` tool.
 
 Process a lidar/SfM point cloud to a corresponding DEM, creating masked products
 for filtered vegetation and snow surfaces only along the way.
+
+### CASI mask
+The delivered CASI mask by ASO has the following mapping for band values:
+* 1: snow
+* 2: rock
+* 3: vegetation
