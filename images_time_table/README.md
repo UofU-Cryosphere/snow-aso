@@ -1,9 +1,13 @@
 ## Images time table
 
 Generates CSV required to process imagery with PhotoScan. Main execution file
-is `scripts/create_csv.py`.
+is `scripts/create_csv.py`. For usage of the script see:
+```bash
+python scripts/create_csv.py --help
+```
 
-The `bin/` folder contains a sbet converter from Applanix's binary format to a human-readable CSV.
+The `bin/` folder contains a SBET converter from Applanix's binary format to a 
+human-readable CSV.
 
 ### Required inputs
 
