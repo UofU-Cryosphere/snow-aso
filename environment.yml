@@ -6,5 +6,7 @@ dependencies:
   - cython
   - gdal=2.4
   - ipython
+  - numpy
+  - pandas
   - pdal=1.9
   - python-pdal
