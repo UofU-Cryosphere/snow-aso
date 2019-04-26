@@ -2,7 +2,7 @@
 
 * `basin_data.py`
 
-Contains dictionaries for study areas with their bounding box and EPSG codes
+Contains dictionaries for study areas with their bounding box and EPSG codes.
 
 * `create_dem_lidar.json`
 
@@ -16,12 +16,50 @@ box of the given basin name.
 
 * `pc_align.sh`
 
-Sample bash script to run ASP `pc_align` tool.
+Sample bash script to run ASP `pc_align` tool to co-register point clouds.
 
-* `sfm_cloud_to_dem.py` and `lidar_cloud_to_dem.py`
+### Lidar and SfM
 
-Process a lidar/SfM point cloud to a corresponding DEM, creating masked products
-for filtered vegetation and snow surfaces only along the way.
+Main two scripts needed for comparing points clouds are:
+* `sfm_cloud_to_dem.py`
+* `lidar_cloud_to_dem.py`
+
+For usage see:
+```bash
+python [lidar|sfm]_cloud_to_dem.py --help
+```
+
+#### Required input files
+
+* CASI vegetation mask as GeoTiff
+* ENVI vegetation mask as GeoTiff
+
+The vegetation removal is done in a two-step process. First the ASO spectrometer
+is used, for a first filter, and then an additional mask (created with ENVI) is 
+applied to extend the excluded areas around trees.
+
+#### Lidar script
+
+The lidar script will create the following:
+* `<input_file_name>_masked.laz`
+
+This file has all vegetation masked out and is used as a source point 
+cloud for `pc_align`.
+
+* `<input_file_name>_1m.tif`
+
+GeoTiff with only snow classified surfaces at 1m resolution. Can be used without
+further modification with `raster_compare`.
+
+#### SfM script
+
+The SfM script should be fed with the aligned point cloud by `pc_align` and will
+create the following:
+
+* `<input_file_name>_maseked_1m.tif`
+
+GeoTiff with only snow classified surfaces at 1m resolution. Can be used without
+further modification with `raster_compare`.
 
 ### CASI mask
 The delivered CASI mask by ASO has the following mapping for band values:
