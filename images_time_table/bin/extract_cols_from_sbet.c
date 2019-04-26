@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
 
   sz = sizeof(record_type);
 
+  // Check required inputs
   infile = fopen(argv[1], "rb");
   if (! infile) {
     fprintf(stderr, "Can't open %s for reading\n", argv[1]);
@@ -64,17 +65,18 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  outfile_path_length = strlen(outfile_name) + 1 + strlen(argv[2]);
+  // Ensure a trailing slash for the output path
+  outfile_path_length = strlen(argv[2]) + 1 + strlen(outfile_name);
   char outfile_path[outfile_path_length];
-  strcpy(outfile_path, argv[2]);
-
   char *last_from_path = &argv[2][strlen(argv[2]) - 1];
-  if (strncmp(last_from_path, SLASH, 1) > 1) {
+
+  strcpy(outfile_path, argv[2]);
+  if (strncmp(last_from_path, SLASH, 1) != 1) {
     strcat(outfile_path, SLASH);
   }
-
   strcat(outfile_path, outfile_name);
 
+  // Open the output path for writing
   outfile = fopen(outfile_path, "w");
   if (! outfile) {
     fprintf(stderr, "Can't open %s for reading\n", argv[2]);
@@ -85,6 +87,7 @@ int main(int argc, char **argv) {
 
   fprintf(outfile, "GpsTime,X,Y,Z,Heading,Roll,Pitch\n");
 
+  // Write the converted SBET file
   while (1) {
     num_items = fread(&rec, sz, 1, infile);
 

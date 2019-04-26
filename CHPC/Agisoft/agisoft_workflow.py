@@ -9,28 +9,31 @@ import Metashape
 
 # Class to automate Agisoft Metashape processing
 #
-# This automates the processing with the following assumed project structure:
+# The following project structure is assumed:
 # _base_path_:
-#  Root location for the project. This is where the image folder is assumed
-#  under 'images' unless given with a different relative path location.
+#  Root location for the project.
 #
-#  The Agisoft project file will be saved under this location along with the
-#  project report that is created at the end.
+# _base_path_/_image_folder_:
+#  Folder name with all the images. Name defaults to 'images' unless given
+#  with a different name relative to _base_path_ location.
 #
-#  For setting the reference a file with the name 'images_metadata.csv' is
-#  assumed under here as well. The sequence for the fields should be:
-#  file_name, lon, lat, elevation, yaw, pitch, roll
+#  A reference file with the name 'images_metadata.csv' is assumed
+#  under _base_path_ as well. The sequence for the fields has to be:
+#  image_file_name, lon, lat, elevation, yaw, pitch, roll
+#
+#  The Agisoft project file will be saved under _base_path_ along with the
+#  project report that can be optionally created at the end.
 #
 class Agisoft:
     EXPORT_IMAGE_TYPE = '.tif'
+    # Default image type for input images
     IMPORT_IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
     PROJECT_REPORT = '.pdf'
     REFERENCE_FILE = 'images_metadata.csv'
 
     WGS_84 = Metashape.CoordinateSystem("EPSG::4326")
-    UTM_CA = Metashape.CoordinateSystem("EPSG::32611")
-    UTM_CO = Metashape.CoordinateSystem("EPSG::32613")
+
     X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
     Y_1M_IN_DEG = 9.0094e-06   #
     X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
@@ -49,6 +52,7 @@ class Agisoft:
     DENSE_POINT_QUALITY = dict(
         high=Metashape.HighQuality,
         medium=Metashape.MediumQuality,
+        low=Metashape.LowQuality,
     )
 
     EXPORT_DEFAULTS = dict(
@@ -91,6 +95,13 @@ class Agisoft:
             )
 
     def project_file_path(self, project_name):
+        """
+        Return absolute Agisoft project file path. The project will be saved
+        under initialized  _base_path_.
+        Project name will be given _project_name_ parameter and a run date,
+        when the project was created and will be appended to the name.
+        Example: my_project_name_2019_01_01
+        """
         run_date = datetime.date.today().strftime('%Y_%m_%d')
         project_name = project_name + '_' + run_date
         return os.path.join(
@@ -126,6 +137,13 @@ class Agisoft:
         sys.exit(-1)
 
     def image_list(self):
+        """
+        Find all images recursively under the initialized image folder.
+        Only images with the specified file ending will be found.
+        Default image file ending is '.tif'.
+
+        The script will exit if there are no images found.
+        """
         images = glob.glob(
             self.image_folder + '**/*' + self.image_type, recursive=True
         )
@@ -157,6 +175,14 @@ class Agisoft:
             self.save_and_exit()
 
     def load_image_references(self):
+        """
+        Load reference information for each image.
+
+        The reference file is assumed under the given _base_path_
+        with a file name of: images_metadata.csv
+
+        The script will exit if the file can not be found.
+        """
         reference_file = self.project_base_path + self.REFERENCE_FILE
         self.check_reference_file(reference_file)
         self.chunk.loadReference(
@@ -197,7 +223,7 @@ class Agisoft:
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
-            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality, 'high'),
+            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality),
             filter=Metashape.AggressiveFiltering,
         )
         self.chunk.buildDenseCloud()
@@ -248,11 +274,13 @@ parser.add_argument(
     default=Agisoft.IMPORT_IMAGE_TYPE,
 )
 parser.add_argument(
-    '--dense-cloud-quality', type=str, required=False, default='high',
+    '--dense-cloud-quality',
+    type=str, required=False,
+    default=Metashape.HighQuality, choices=Agisoft.DENSE_POINT_QUALITY.keys(),
     help='Overwrite default dense point cloud quality (High).'
 )
 parser.add_argument(
-    '--with-export', type=bool, required=False, default=False,
+    '--with-export', action='store_true',
     help='Export DEM, Orthomosaic and PDF report after dense cloud'
 )
 

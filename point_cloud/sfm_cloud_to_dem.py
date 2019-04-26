@@ -33,9 +33,9 @@ parser.add_argument(
 parser.add_argument(
     '--basin',
     type=str,
-    help='Basin boundaries',
-    required=True,
-    choices=BASINS_BOUNDARIES.keys()
+    choices=BASINS_BOUNDARIES.keys(),
+    help='String to indicate basin. Will select boundary info and EPSG codes',
+    required=True
 )
 
 if __name__ == '__main__':
@@ -48,9 +48,9 @@ if __name__ == '__main__':
 
     print('Creating DEM')
 
-    dem_pipeline = PdalPipeline()
+    dem_pipeline = PdalPipeline(arguments.sfm_laz.name)
 
-    dem_pipeline.add(arguments.sfm_laz.name)
+    print('Masking out vegetation')
     dem_pipeline.add(PdalPipeline.mask_casi(arguments.casi_mask.name))
     dem_pipeline.add(PdalPipeline.mask_envi(arguments.envi_mask.name))
     dem_pipeline.add(PdalPipeline.create_dem(
@@ -59,6 +59,7 @@ if __name__ == '__main__':
         epsg=BASIN_EPSG[arguments.basin]
     ))
 
+    print('Creating DEM')
     dem_pipeline.execute()
     del dem_pipeline
 

@@ -1,9 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=agisoft
+#SBATCH --job-name=my_job
 #SBATCH --account=owner-gpu-guest
 #SBATCH --partition=notchpeak-gpu-guest
-#SBATCH --qos=photoscan
 
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1

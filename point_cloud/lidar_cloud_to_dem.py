@@ -34,9 +34,9 @@ parser.add_argument(
 parser.add_argument(
     '--basin',
     type=str,
-    help='Basin boundaries',
-    required=True,
-    choices=BASINS_BOUNDARIES.keys()
+    choices=BASINS_BOUNDARIES.keys(),
+    help='String to indicate basin. Will select boundary info and EPSG codes',
+    required=True
 )
 
 if __name__ == '__main__':
