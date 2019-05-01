@@ -23,7 +23,7 @@ PROJECT_NAME='ERW_20180524'
 HOME_DIR="/uufs/chpc.utah.edu/common/home/u1135435/scratch/$PROJECT_NAME"
 
 # Speed up GDAL reading
-export GDAL_CACHEMAX=20%
+export GDAL_CACHEMAX=30%
 
 cd ${HOME}
 
