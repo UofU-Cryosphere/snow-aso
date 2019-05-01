@@ -24,6 +24,12 @@ Steps for local setup:
 ```bash
 conda create env -f envirnoment.yml
 ```
+* Install this repo to your conda environment:
+```bash
+conda activate snow_aso
+cd path/to/repository/snow-aso
+pip install -e .
+```
 * For Metashape development, [download their Python package](https://www.agisoft.com/downloads/installer/)
 and install into the conda environment. Replace `Metashape.whl` below with the actual downloaded file name 
 ```bash
