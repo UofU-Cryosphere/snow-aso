@@ -17,7 +17,7 @@
 #SBATCH -e slurm-%j.err-%N                      # stderr, using job and first node
 
 ml anaconda
-source activate ~/conda_envs/snow_aso
+source activate ~/conda_envs/raster_compare
 
 PROJECT_NAME='ERW_20180524'
 HOME_DIR="/uufs/chpc.utah.edu/common/home/u1135435/scratch/$PROJECT_NAME"
@@ -27,7 +27,7 @@ export GDAL_CACHEMAX=20%
 
 cd ${HOME}
 
-python ~/snow-aso/raster_compare/scripts/run_all.py \
+python ~/raster_compare/scripts/run_all.py \
   --base-path ${HOME} \
   --lidar-dem Lidar/${PROJECT_NAME}_merge_1m.tif \
   --sfm-dem Agisoft/${PROJECT_NAME}_Agisoft_aligned_masked_1m.tif \

@@ -17,7 +17,7 @@
 #SBATCH -e slurm-%j.err-%N                      # stderr, using job and first node
 
 ml anaconda
-source activate ~/conda_envs/snow_aso
+source activate ~/conda_envs/raster_compare
 
 SNOW_ON='ERW_20180524'
 SNOW_OFF='ERW_20180912'
@@ -29,7 +29,7 @@ export GDAL_CACHEMAX=30%
 
 cd ${HOME_DIR}
 
-python ~/snow-aso/raster_compare/scripts/run_all.py \
+python ~/raster_compare/scripts/run_all.py \
   --base-path ${HOME_DIR} \
   --lidar-dem snow_off/${SNOW_OFF}_merge_1m.tif \
   --sfm-dem snow_on/${SNOW_ON}_merge_1m.tif \
