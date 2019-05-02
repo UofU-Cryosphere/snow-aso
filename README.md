@@ -22,7 +22,7 @@ Steps for local setup:
 * Clone repository
 * Create conda environment using the supplied `environment.yml`:
 ```bash
-conda create env -f environment.yml
+conda env create -f environment.yml
 ```
 * Install this repo to your conda environment:
 ```bash
