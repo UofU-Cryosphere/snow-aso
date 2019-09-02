@@ -21,6 +21,7 @@
 
 #define SLASH "/"
 #define to_degrees(radians) (( radians * (180.0 / M_PI) ))
+#define OUTPUT_FILE "sbet.csv"
 
 typedef struct {
   double time;
@@ -42,59 +43,42 @@ typedef struct {
   double z_ang_rate;
 } record_type;
 
-int main(int argc, char **argv) {
-  FILE *infile, *outfile;
+void checkFileAccess(FILE *file, char *argv) {
+  if (! file) {
+    fprintf(stderr, "Can't open %s for reading\n", argv);
+    exit(1);
+  }
+}
+
+void checkPathArgument(char *argv, int number) {
+  if (! argv) {
+    if (number == 1) {
+      fprintf(stderr, "Missing input file path\n");
+    } else if (number == 2) {
+      fprintf(stderr, "Missing output file path\n");
+    }
+    exit(1);
+  }
+}
+
+// Ensure a trailing slash for the output path
+void ensureSlash(char *output_path, char *argv) {
+  char *last_from_path = &argv[strlen(argv) - 1];
+
+  if (strcmp(last_from_path, SLASH) != 0) {
+    strcat(output_path, SLASH);
+  }
+  strcat(output_path, OUTPUT_FILE);
+}
+
+void writeFile(FILE *infile, FILE *outfile) {
   record_type rec;
-
-  size_t sz;
+  size_t sz = sizeof(record_type);
   int num_items;
-  int outfile_path_length;
-  const char outfile_name[9] = "sbet.csv";
-
-  sz = sizeof(record_type);
-
-  // Check required inputs
-  infile = fopen(argv[1], "rb");
-  if (! infile) {
-    fprintf(stderr, "Can't open %s for reading\n", argv[1]);
-    exit(1);
-  }
-
-  if (! argv[2]) {
-    fprintf(stderr, "Missing output file path\n");
-    exit(1);
-  }
-
-  // Ensure a trailing slash for the output path
-  outfile_path_length = strlen(argv[2]) + 1 + strlen(outfile_name);
-  char outfile_path[outfile_path_length];
-  char *last_from_path = &argv[2][strlen(argv[2]) - 1];
-
-  strcpy(outfile_path, argv[2]);
-  if (strncmp(last_from_path, SLASH, 1) != 1) {
-    strcat(outfile_path, SLASH);
-  }
-  strcat(outfile_path, outfile_name);
-
-  // Open the output path for writing
-  outfile = fopen(outfile_path, "w");
-  if (! outfile) {
-    fprintf(stderr, "Can't open %s for reading\n", argv[2]);
-    exit(1);
-  }
-
-  fprintf(stderr, "Writing output file:\n  %s\n", outfile_path);
 
   fprintf(outfile, "GpsTime,X,Y,Z,Heading,Roll,Pitch\n");
 
-  // Write the converted SBET file
-  while (1) {
-    num_items = fread(&rec, sz, 1, infile);
-
-    if (num_items != 1) {
-      break;
-    }
-
+  while ((num_items = fread(&rec, sz, 1, infile))) {
     fprintf(outfile,
             "%lf,%lf,%lf,%lf,%lf,%lf,%lf\n",
             rec.time,
@@ -106,6 +90,29 @@ int main(int argc, char **argv) {
             to_degrees(rec.pitch)
     );
   }
+}
+
+int main(int argc, char **argv) {
+  FILE *infile, *outfile;
+
+  int outfile_path_length;
+
+  checkPathArgument(argv[1], 1);
+  infile = fopen(argv[1], "rb");
+  checkFileAccess(infile, argv[1]);
+
+  checkPathArgument(argv[2], 2);
+
+  outfile_path_length = strlen(argv[2]) + 1 + strlen(OUTPUT_FILE);
+  char outfile_path[outfile_path_length];
+  strcpy(outfile_path, argv[2]);
+  ensureSlash(outfile_path, argv[2]);
+
+  outfile = fopen(outfile_path, "w");
+  checkFileAccess(outfile, argv[2]);
+
+  printf("Writing output file:\n  %s\n", outfile_path);
+  writeFile(infile, outfile);
 
   fclose(infile);
   fclose(outfile);
