@@ -21,18 +21,18 @@ Python scripts that use PDAL to create GeoTiffs from point cloud files.
 Steps for local setup:
 * Clone repository
 * Create conda environment using the supplied `environment.yml`:
-```bash
+```shell
 conda env create -f environment.yml
 ```
 * Install this repo to your conda environment:
-```bash
+```shell
 conda activate snow_aso
 cd path/to/repository/snow-aso
 pip install -e .
 ```
 * For Metashape development, [download their Python package](https://www.agisoft.com/downloads/installer/)
 and install into the conda environment. Replace `Metashape.whl` below with the actual downloaded file name 
-```bash
+```shell
 conda activate snow_aso
 cd path/to/repository/snow-aso
 pip install -e Metashape.whl
