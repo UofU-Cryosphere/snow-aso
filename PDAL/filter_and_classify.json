@@ -1,0 +1,21 @@
+{
+  "pipeline": [
+    "/Path/To/Source.laz",
+    {
+        "type": "filters.returns",
+        "groups": "only"
+    },
+    {
+      "type": "filters.colorization",
+      "raster": "/Path/To/Classifier.tif",
+      "dimensions": "UserData"
+    },
+    {
+      "filename": "/Path/To/Output.laz",
+      "type": "writers.las",
+      "compression": "laszip",
+      "forward": "all",
+      "dataformat_id": 0
+    }
+  ]
+}
