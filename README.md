@@ -3,14 +3,21 @@
 Collection of scripts to process aerial imagery from the Airborne Snow 
 Observatory (ASO) using Agisoft Metashape on CHPC. 
 
+### Agisoft
+
+Script to run Agisoft's Metashape through their Python API.
+
 ### CHPC
 
-Folder contains multiple sample files for SLURM to do various tasks.
-Also has a script to run Agisoft's Metashape through their Python API.
+Folder contains sample files SLURM scripts.
 
 ### images_time_table
 
 Set of scripts to create a geo-location csv reference file for images. 
+
+### PDAL
+
+Collection of sample pipelines.
 
 ### point_cloud
 
