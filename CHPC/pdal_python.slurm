@@ -16,8 +16,11 @@
 #SBATCH -o slurm-%j.out-%N                      # stdout, using job ID (%j) and the first node (%N)
 #SBATCH -e slurm-%j.err-%N                      # stderr, using job and first node
 
-ml anaconda
-source activate ~/conda_envs/snow_aso
+set -e
+
+module use $HOME/modules
+module load miniconda3/latest
+conda activate snow_aso
 
 PROJECT_NAME='ERW_20180524'
 LIDAR_FILE="${PROJECT_NAME}_merge.laz"
