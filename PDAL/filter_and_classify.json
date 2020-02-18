@@ -14,8 +14,7 @@
       "filename": "/Path/To/Output.laz",
       "type": "writers.las",
       "compression": "laszip",
-      "forward": "all",
-      "dataformat_id": 0
+      "forward": "all"
     }
   ]
 }
