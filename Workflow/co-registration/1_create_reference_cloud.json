@@ -1,0 +1,24 @@
+{
+  "pipeline": [
+    "/Path/To/Source.laz",
+    {
+      "type": "filters.crop",
+      "bounds": "([322518.0, 336552.0], [4305588.0, 4322445.0])",
+      "a_srs": "EPSG:32613"
+    },
+    {
+      "type": "filters.colorization",
+      "raster": "/Path/To/Classifier.tif",
+      "dimensions": "UserData"
+    },
+    {
+      "type": "filters.range",
+      "limits": "UserData[1:1]"
+    },
+    {
+      "type": "filters.returns",
+      "groups": "only"
+    },
+    "/Path/To/Output.laz"
+  ]
+}
