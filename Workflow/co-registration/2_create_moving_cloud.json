@@ -1,0 +1,16 @@
+{
+  "pipeline": [
+    "/Path/To/Source.laz",
+    {
+      "type": "filters.crop",
+      "bounds": "([322518.0, 336555.0], [4305588.0, 4322442.0])",
+      "a_srs": "EPSG:32613"
+    },
+    {
+      "filename": "/Path/To/Output.laz",
+      "type": "writers.las",
+      "compression": "laszip",
+      "dataformat_id": 0
+    }
+  ]
+}

@@ -63,6 +63,9 @@ further modification with `raster_compare`.
 
 ### CASI mask
 The delivered CASI mask by ASO has the following mapping for band values:
-* 1: snow
-* 2: rock
-* 3: vegetation
+* 1: Snow
+* 2: Vegetation
+* 3: Rock
+* 4: Water
+
+Some times shaded areas tend to get mapped as water (4).

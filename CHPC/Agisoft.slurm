@@ -1,20 +1,20 @@
 #!/bin/bash
 
 #SBATCH --job-name=agisoft
-#SBATCH --account=owner-gpu-guest
-#SBATCH --partition=notchpeak-gpu-guest
+#SBATCH --account=notchpeak-gpu
+#SBATCH --partition=notchpeak-gpu
 #SBATCH --qos=photoscan
 
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
 #SBATCH --mem=0
-#SBATCH --constraint="titanv"
-#SBATCH --gres=gpu:titanv:4
+#SBATCH --constraint="v100"
+#SBATCH --gres=gpu:v100:3
 #SBATCH --exclusive
 
-#SBATCH --mail-type=FAIL,END
-#SBATCH --mail-user=u1135435@utah.edu
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=email@address.com
 
 #SBATCH -o slurm-%j.out-%N
 #SBATCH -e slurm-%j.err-%N
@@ -25,7 +25,7 @@ export OMP_NUM_THREADS=${SLURM_NTASKS}
 # Needed for PDF export in Agisoft using QT
 export QT_QPA_FONTDIR=/usr/share/fonts/open-sans
 
-PROJECT_NAME='TE_20180528'
+PROJECT_NAME='Project_XYZ'
 
 module load photoscan
 metashape.sh -platform offscreen \
