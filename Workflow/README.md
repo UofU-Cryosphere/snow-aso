@@ -58,6 +58,14 @@ step 1 and 2.
 #### 4
 Tool: _PDAL_
 
-Create 3m resolution GeoTiff from the aligned (4M) and initial reference (4R) cloud. 
+Create 1m resolution GeoTiff from the aligned (4M) and a 3m resolution file for
+the reference (4R) cloud. 
 The reference cloud will be filtered to points with single returns before
-export to a raster. 
+being exported to a raster.
+
+#### 5
+Tool: _GDAL_
+
+Interpolate the SfM output to 3m resolution for comparison with downloaded 
+snow depth map. This step also cuts the output raster to the final shape of the
+watershed.
