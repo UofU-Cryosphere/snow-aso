@@ -26,6 +26,14 @@ Python scripts that use PDAL to create GeoTiffs from point cloud files.
 Steps to align two point clouds, having the classification for the area in 
 a GeoTiff.
 
+## Third party tools
+
+The repository relies heavily on these tools:
+
+* [GDAL](https://gdal.org)
+* [PDAL](https://pdal.io)
+* [ASP](https://stereopipeline.readthedocs.io)
+
 ## Setup
 
 Steps for local setup:
