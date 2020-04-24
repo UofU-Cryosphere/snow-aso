@@ -61,7 +61,9 @@ Tool: _PDAL_
 Create 1m resolution GeoTiff from the aligned (4M) and a 3m resolution file for
 the reference (4R) cloud. 
 The reference cloud will be filtered to points with single returns before
-being exported to a raster.
+being exported to a raster. The output is used for elevation, slope, and aspect
+calculation in the analysis. The 3m resolution is necessary with the low point
+density per square meter of the reference cloud.
 
 #### 5
 Tool: _GDAL_
