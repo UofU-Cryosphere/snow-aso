@@ -1,0 +1,14 @@
+# Use with gdalwarp
+-co TILED=YES
+-co COMPRESS=LZW
+-co BIGTIFF=IF_SAFER
+-co NUM_THREADS=ALL_CPUS
+-co SPARSE_OK=TRUE
+
+-multi
+-te 322521 4305591 336549 4322442
+-cutline path/to/boundary.shp
+
+
+input_file.tif
+output_file_band_3.tif

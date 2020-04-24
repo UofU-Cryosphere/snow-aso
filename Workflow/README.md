@@ -71,3 +71,20 @@ Tool: _GDAL_
 Interpolate the SfM output to 3m resolution for comparison with downloaded 
 snow depth map. This step also cuts the output raster to the final shape of the
 watershed.
+
+### post-process
+
+Optional post processing steps for easier data handling and reduction of file 
+size.
+
+#### extract_elevation_band
+
+Tool: _GDAL_
+
+Cut any GeoTiff to boundaries of the watershed.
+
+#### extract_elevation_band
+
+Tool: _GDAL_
+
+Extract the elevation band from the output of step 5. 
