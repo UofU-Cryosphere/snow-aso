@@ -10,3 +10,4 @@ dependencies:
   - pandas
   - pdal=1.9
   - python-pdal
+  - shapely
