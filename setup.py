@@ -9,7 +9,7 @@ setup(
     url='https://github.com/UofU-Cryosphere/snow-aso',
     author='Joachim Meyer',
     author_email='j.meyer@utah.edu',
-    description='CHPC tools to process imagery and point clouds',
+    description='Helper tools for processing ASO imagery',
     install_requires=[
         'numpy', 'pandas', 'shapely'
     ],
