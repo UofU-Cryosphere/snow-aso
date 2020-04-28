@@ -314,17 +314,22 @@ def argument_parser():
 
 
 # Example command line execution:
-# Mac OS:
-# ./MetashapePro -r agisoft_workflow.py --base-path /path/to/root/project/directory --project-name test
 #
-# Windows:
-# .\Metashape.exe -r agisoft_workflow.py --base-path D:\path/to/root/project/direcotry --project-name test
+# * Mac OS
+# ./MetashapePro -r agisoft_workflow.py \
+#                --base-path /project/root/path \
+#                --project-name test
 #
-# Linux (headless):
-# metashape.sh -platform offscreen -r agisoft_workflow.py --base_path /path/to/root/project/directory --project-name test
-# Optional arguments are:
-# _image_folder_: Name and relative location where images are
-# _image_type_: TYpe of images (i.e. .jpg, .iiq)
+# * Windows
+# .\Metashape.exe -r agisoft_workflow.py \
+#                 --base-path C:\project\root\path \
+#                 --project-name test
+#
+# * Linux (headless)
+# metashape.sh -platform offscreen \
+#              -r agisoft_workflow.py \
+#              --base_path /project/root/path \
+#              --project-name test
 #
 if __name__ == '__main__':
     arguments = argument_parser().parse_args()
