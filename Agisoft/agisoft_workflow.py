@@ -30,30 +30,38 @@ class Agisoft:
     IMPORT_IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
     PROJECT_REPORT = '.pdf'
+    IMAGE_FOLDER = 'images'
     REFERENCE_FILE = 'images_metadata.csv'
 
     WGS_84 = Metashape.CoordinateSystem("EPSG::4326")
 
-    X_1M_IN_DEG = 1.13747e-05  # 1m in degree using EPSG:4326
-    Y_1M_IN_DEG = 9.0094e-06   #
-    X_5M_IN_DEG = 5.76345e-05  # 5m in degree using EPSG:4326
-    Y_5M_IN_DEG = 4.50396e-05  #
+    # Degree using EPSG:4326
+    X_1M_IN_DEG = 1.13747e-05
+    Y_1M_IN_DEG = 9.0094e-06
+
+    # Degree using EPSG:4326
+    X_5M_IN_DEG = 5.76345e-05
+    Y_5M_IN_DEG = 4.50396e-05
 
     CAMERA_LOCATION_ACCURACY = Metashape.Vector([1., 1., 1.])
     CAMERA_ROTATION_ACCURACY = Metashape.Vector([1., 1., 1.])
 
-    IMAGE_ACCURACY_MATCHING = Metashape.HighestAccuracy
+    # Source:
+    # https://www.agisoft.com/forum/index.php?topic=11697.msg52455#msg52455
+    class ImageMatching:
+        HIGH = 1
+        MEDIUM = 2
+
+    class DepthMapQuality:
+        ULTRA = 1
+        HIGH = 2
+        MEDIUM = 4
+
     KEYPOINT_LIMIT = 40000
     TIEPOINT_LIMIT = 4000
 
     REPROJECTION_ERROR_THRESHOLD = 0.3
     REPROJECTION_ACCURACY_THRESHOLD = 10
-
-    DENSE_POINT_QUALITY = dict(
-        high=Metashape.HighQuality,
-        medium=Metashape.MediumQuality,
-        low=Metashape.LowQuality,
-    )
 
     EXPORT_DEFAULTS = dict(
         image_format=Metashape.ImageFormat.ImageFormatTIFF,
@@ -185,17 +193,18 @@ class Agisoft:
         """
         reference_file = self.project_base_path + self.REFERENCE_FILE
         self.check_reference_file(reference_file)
-        self.chunk.loadReference(
+        self.chunk.importReference(
             path=reference_file,
             delimiter=',',
             format=Metashape.ReferenceFormatCSV,
+            create_markers=False,
         )
 
     def align_images(self):
         self.chunk.addPhotos(self.image_list())
         self.load_image_references()
         self.chunk.matchPhotos(
-            accuracy=self.IMAGE_ACCURACY_MATCHING,
+            downscale=self.ImageMatching.HIGH,
             generic_preselection=True,
             reference_preselection=True,
             keypoint_limit=self.KEYPOINT_LIMIT,
@@ -223,8 +232,8 @@ class Agisoft:
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
-            quality=self.DENSE_POINT_QUALITY.get(dense_cloud_quality),
-            filter=Metashape.AggressiveFiltering,
+            quality=dense_cloud_quality,
+            filter=Metashape.MildFiltering,
         )
         self.chunk.buildDenseCloud()
 
@@ -258,31 +267,51 @@ class Agisoft:
             self.export_results()
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--base-path', help='Root directory of the project.', required=True
-)
-parser.add_argument('--project-name', help='Name of project.', required=True)
-parser.add_argument(
-    '--image-folder',
-    help='Location of images relative to base-path.',
-    default='images'
-)
-parser.add_argument(
-    '--image-type',
-    help='Type of images - default to .tif',
-    default=Agisoft.IMPORT_IMAGE_TYPE,
-)
-parser.add_argument(
-    '--dense-cloud-quality',
-    type=str, required=False,
-    default=Metashape.HighQuality, choices=Agisoft.DENSE_POINT_QUALITY.keys(),
-    help='Overwrite default dense point cloud quality (High).'
-)
-parser.add_argument(
-    '--with-export', action='store_true',
-    help='Export DEM, Orthomosaic and PDF report after dense cloud'
-)
+def argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--base-path',
+        required=True,
+        help='Root directory of the project.',
+    )
+    parser.add_argument(
+        '--project-name',
+        required=True,
+        help='Name of project.',
+    )
+    parser.add_argument(
+        '--image-folder',
+        default=Agisoft.IMAGE_FOLDER,
+        help='Location of images relative to base-path.',
+    )
+    parser.add_argument(
+        '--image-type',
+        default=Agisoft.IMPORT_IMAGE_TYPE,
+        help='Type of images - default to .tif',
+    )
+    parser.add_argument(
+        '--dense-cloud-quality',
+        type=int,
+        required=False,
+        default=Agisoft.DepthMapQuality.HIGH,
+        choices=[
+            Agisoft.DepthMapQuality.ULTRA,
+            Agisoft.DepthMapQuality.HIGH,
+            Agisoft.DepthMapQuality.MEDIUM,
+        ],
+        help="Integer for dense point cloud quality (default: High).\n" +
+             f"Highest -> {Agisoft.DepthMapQuality.ULTRA},\n" +
+             f"High -> {Agisoft.DepthMapQuality.HIGH},\n" +
+             f"Medium -> {Agisoft.DepthMapQuality.MEDIUM}"
+    )
+    parser.add_argument(
+        '--with-export',
+        action='store_true',
+        help='Export DEM, Orthomosaic and PDF report after dense cloud'
+    )
+
+    return parser
+
 
 # Example command line execution:
 # Mac OS:
@@ -298,6 +327,6 @@ parser.add_argument(
 # _image_type_: TYpe of images (i.e. .jpg, .iiq)
 #
 if __name__ == '__main__':
-    arguments = parser.parse_args()
+    arguments = argument_parser().parse_args()
     project = Agisoft(arguments)
     project.process(arguments)
