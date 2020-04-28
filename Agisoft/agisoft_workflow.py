@@ -299,10 +299,10 @@ def argument_parser():
             Agisoft.DepthMapQuality.HIGH,
             Agisoft.DepthMapQuality.MEDIUM,
         ],
-        help="Integer for dense point cloud quality (default: High).\n" +
-             f"Highest -> {Agisoft.DepthMapQuality.ULTRA},\n" +
-             f"High -> {Agisoft.DepthMapQuality.HIGH},\n" +
-             f"Medium -> {Agisoft.DepthMapQuality.MEDIUM}"
+        help="Integer for dense point cloud quality (default: High).\n"
+             "Highest -> " + str(Agisoft.DepthMapQuality.ULTRA) + ",\n"
+             "High -> " + str(Agisoft.DepthMapQuality.HIGH) + ",\n"
+             "Medium -> " + str(Agisoft.DepthMapQuality.MEDIUM)
     )
     parser.add_argument(
         '--with-export',
