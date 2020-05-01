@@ -258,8 +258,9 @@ class Agisoft:
         self.build_dense_cloud(options.dense_cloud_quality)
         self.project.save()
 
-        self.chunk.buildDem()
-        self.project.save()
+        if options.build_dem:
+            self.chunk.buildDem()
+            self.project.save()
 
         self.chunk.buildOrthomosaic(
             fill_holes=False,
@@ -307,6 +308,12 @@ def argument_parser():
              "Highest -> " + str(Agisoft.DepthMapQuality.ULTRA) + ",\n"
              "High -> " + str(Agisoft.DepthMapQuality.HIGH) + ",\n"
              "Medium -> " + str(Agisoft.DepthMapQuality.MEDIUM)
+    )
+    parser.add_argument(
+        '--build-dem',
+        action='store_true',
+        default=False,
+        help='Create a DEM from dense cloud'
     )
     parser.add_argument(
         '--with-export',
