@@ -49,6 +49,12 @@ Create cloud that is used as moving source for co-registration.
 Filters applied:
 * Crop to target area with padding
 
+```shell script
+pdal pipeline 2_create_moving_cloud.json \
+    --readers.las.filename=/path/to/source.laz \
+    --writers.laz.filename=/path/to/moving.laz
+```
+
 #### 3.)
 Tool: _ASP_
 
@@ -64,6 +70,12 @@ The reference cloud will be filtered to points with single returns before
 being exported to a raster. The output is used for elevation, slope, and aspect
 calculation in the analysis. The 3m resolution is necessary with the low point
 density per square meter of the reference cloud.
+
+```shell script
+pdal pipeline 4M_create_geotiff.json.json \
+    --readers.las.filename=/path/to/aligned.laz \
+    --writers.gdal.filename=/path/to/aligned.tif
+```
 
 #### 5.)
 Tool: _GDAL_
