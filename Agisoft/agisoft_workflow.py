@@ -207,6 +207,7 @@ class Agisoft:
             downscale=self.ImageMatching.HIGH,
             generic_preselection=True,
             reference_preselection=True,
+            reference_preselection_mode=Metashape.ReferencePreselectionSource,
             keypoint_limit=self.KEYPOINT_LIMIT,
             tiepoint_limit=self.TIEPOINT_LIMIT,
         )
