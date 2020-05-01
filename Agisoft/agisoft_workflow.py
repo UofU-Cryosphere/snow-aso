@@ -232,8 +232,8 @@ class Agisoft:
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
-            quality=dense_cloud_quality,
-            filter=Metashape.MildFiltering,
+            downscale=dense_cloud_quality,
+            filter_mode=Metashape.MildFiltering,
         )
         self.chunk.buildDenseCloud()
 
