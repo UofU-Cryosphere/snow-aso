@@ -261,7 +261,10 @@ class Agisoft:
         self.chunk.buildDem()
         self.project.save()
 
-        self.chunk.buildOrthomosaic()
+        self.chunk.buildOrthomosaic(
+            fill_holes=False,
+            resolution=1,
+        )
         self.project.save()
 
         if options.with_export:
