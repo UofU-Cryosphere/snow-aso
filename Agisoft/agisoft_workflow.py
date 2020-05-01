@@ -195,6 +195,7 @@ class Agisoft:
         self.check_reference_file(reference_file)
         self.chunk.importReference(
             path=reference_file,
+            columns='nxyzabc',
             delimiter=',',
             format=Metashape.ReferenceFormatCSV,
             create_markers=False,
