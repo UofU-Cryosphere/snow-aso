@@ -123,8 +123,8 @@ class Agisoft:
         number_of_gpus = len(Metashape.app.enumGPUDevices())
         mask = int(str('1' * number_of_gpus).rjust(8, '0'), 2)
         app.gpu_mask = mask
-        # Allow usage of CPU and GPU
-        app.cpu_enable = True
+        # Disable CPU usage; recommended in manual
+        app.cpu_enable = False
 
         settings = Metashape.Application.Settings()
         # Logging - Disabled for now
