@@ -12,6 +12,12 @@ Filters applied:
 * Crop to target area with padding
 * Classification using GeoTiff
 
+```shell script
+pdal pipeline ${PROJECT_HOME}/classifier/1_classify_cloud.json \
+  --readers.las.filename=/path/to/source.laz \
+  --writers.las.filename=/path/to/classified.laz
+```
+
 #### 2.)
 Tool: _PDAL_
 
@@ -20,6 +26,12 @@ with a band for minimum and another for maximum number of returns.
 
 Filters applied:
 * Points classified as stable ground surfaces
+
+```shell script
+pdal pipeline ${PROJECT_HOME}/classifier/2_create_NoR_geotiff.json \                 
+  --readers.las.filename=/path/to/classified.laz \                                       
+  --writers.gdal.filename=/path/to/classified.tif
+```
 
 #### 3.)
 Tool: _PDAL_
@@ -34,7 +46,7 @@ Tool: _GDAL_
 
 Create updated classification GeoTiff, where pixels are:
 * Classified as stable
-* `NumberOfReturns` is 1
+* 'NumberOfReturns' is 1
 * Slope angle more than 5 and less than 50 degrees.
 * No snow depth value was measured in delivery product of ASO
 
@@ -49,6 +61,13 @@ Filters applied:
 * Crop to target area with padding
 * Points classified as stable ground surface
 * Keep points with 'NumberOfReturns' of 1
+
+```shell script
+pdal pipeline ${PROJECT_HOME}/steps/1L_prepare_fixed_cloud.json \
+  --readers.las.filename=/path/to/source.laz \
+  --filters.colorization.raster=/path/to/classifier.tif \
+  --writers.las.filename=/path/to/reference.laz
+```
 
 #### 2.)
 Tool: _PDAL_
@@ -69,6 +88,13 @@ Tool: _ASP_
 
 Run the co-registration using ASP `pc_align` tool using clouds produced in
 step 1 and 2.
+
+```shell script
+source ${PROJECT_HOME}/steps/3_pc_align.sh \
+  ${SCRATCH_HOME}/pc_align/run \
+  /path/to/reference.laz \                      
+  /path/to/moving.laz                       
+```
 
 #### 4.)
 Tool: _PDAL_
