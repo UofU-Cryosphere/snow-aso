@@ -1,0 +1,12 @@
+# Use with gdal_translate
+-co TILED=YES
+-co COMPRESS=LZW
+-co BIGTIFF=IF_SAFER
+-co NUM_THREADS=ALL_CPUS
+-co SPARSE_OK=TRUE
+
+-b 3
+-ot Float32
+
+input_file.tif
+output_file_band_3.tif
