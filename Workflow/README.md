@@ -15,18 +15,27 @@ Filters applied:
 #### 2.)
 Tool: _PDAL_
 
-Create GeoTiff of all points classified as stable with bands for minimum and
-maximum for number of returns.
+Create GeoTiff from all points that are classified as stable,
+with a band for minimum and another for maximum number of returns.
 
 Filters applied:
 * Points classified as stable ground surfaces
 
 #### 3.)
+Tool: _PDAL_
+
+Create GeoTiff with elevation value of all points classified as stable.
+
+Filters applied:
+* Points classified as stable ground surfaces
+
+#### 4.)
 Tool: _GDAL_
 
-Create update classification GeoTiff, where pixels are:
+Create updated classification GeoTiff, where pixels are:
 * Classified as stable
-* Attribute `NumberOfReturns` is 1
+* `NumberOfReturns` is 1
+* Slope angle more than 5 and less than 50 degrees.
 * No snow depth value was measured in delivery product of ASO
 
 ### Co-Registration
