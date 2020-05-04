@@ -7,44 +7,42 @@ import sys
 import Metashape
 
 
-# Class to automate Agisoft Metashape processing
-#
-# The following project structure is assumed:
-# _base_path_:
-#  Root location for the project.
-#
-# _base_path_/_image_folder_:
-#  Folder name with all the images. Name defaults to 'images' unless given
-#  with a different name relative to _base_path_ location.
-#
-#  A reference file with the name 'images_metadata.csv' is assumed
-#  under _base_path_ as well. The sequence for the fields has to be:
-#  image_file_name, lon, lat, elevation, yaw, pitch, roll
-#
-#  The Agisoft project file will be saved under _base_path_ along with the
-#  project report that can be optionally created at the end.
-#
-class Agisoft:
-    EXPORT_IMAGE_TYPE = '.tif'
+class ProcessImages:
+    """
+    Class to automate Agisoft Metashape processing
+
+    The following project structure is assumed:
+
+    ``base_path``:
+      Root location for the project.
+
+    ``base_path/image_folder``:
+      Folder name with all the images. Name defaults to 'images' unless given
+      with a different name relative to _base_path_ location.
+
+    A reference file with the name 'images_metadata.csv' is assumed
+    under *base_path* as well. The sequence for the fields has to be:
+    image_file_name, lon, lat, elevation, yaw, pitch, roll
+
+    The Agisoft project file will be saved under *base_path*
+    """
+
     # Default image type for input images
     IMPORT_IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
-    PROJECT_REPORT = '.pdf'
     IMAGE_FOLDER = 'images'
     REFERENCE_FILE = 'images_metadata.csv'
 
     WGS_84 = Metashape.CoordinateSystem("EPSG::4326")
 
-    # Degree using EPSG:4326
-    X_1M_IN_DEG = 1.13747e-05
-    Y_1M_IN_DEG = 9.0094e-06
-
-    # Degree using EPSG:4326
-    X_5M_IN_DEG = 5.76345e-05
-    Y_5M_IN_DEG = 4.50396e-05
-
     CAMERA_LOCATION_ACCURACY = Metashape.Vector([1., 1., 1.])
     CAMERA_ROTATION_ACCURACY = Metashape.Vector([1., 1., 1.])
+
+    KEYPOINT_LIMIT = 40000
+    TIEPOINT_LIMIT = 4000
+
+    REPROJECTION_ERROR_THRESHOLD = 0.3
+    REPROJECTION_ACCURACY_THRESHOLD = 10
 
     # Source:
     # https://www.agisoft.com/forum/index.php?topic=11697.msg52455#msg52455
@@ -56,19 +54,6 @@ class Agisoft:
         ULTRA = 1
         HIGH = 2
         MEDIUM = 4
-
-    KEYPOINT_LIMIT = 40000
-    TIEPOINT_LIMIT = 4000
-
-    REPROJECTION_ERROR_THRESHOLD = 0.3
-    REPROJECTION_ACCURACY_THRESHOLD = 10
-
-    EXPORT_DEFAULTS = dict(
-        image_format=Metashape.ImageFormat.ImageFormatTIFF,
-        projection=WGS_84,
-        dx=X_1M_IN_DEG,
-        dy=Y_1M_IN_DEG,
-    )
 
     def __init__(self, options):
         # Ensure trailing slash
@@ -127,9 +112,7 @@ class Agisoft:
         app.cpu_enable = False
 
         settings = Metashape.Application.Settings()
-        # Logging - Disabled for now
         settings.log_enable = False
-        # settings.log_path = self.project_file_name + '_agisoft.log'
         settings.save()
 
     def setup_camera(self):
@@ -213,6 +196,7 @@ class Agisoft:
             tiepoint_limit=self.TIEPOINT_LIMIT,
         )
         self.chunk.alignCameras()
+        self.project.save()
 
     def remove_by_criteria(self, criteria, threshold):
         point_cloud_filter = Metashape.PointCloud.Filter()
@@ -231,6 +215,7 @@ class Agisoft:
             Metashape.PointCloud.Filter.ProjectionAccuracy,
             self.REPROJECTION_ACCURACY_THRESHOLD,
         )
+        self.project.save()
 
     def build_dense_cloud(self, dense_cloud_quality):
         self.chunk.buildDepthMaps(
@@ -238,39 +223,14 @@ class Agisoft:
             filter_mode=Metashape.MildFiltering,
         )
         self.chunk.buildDenseCloud()
-
-    def export_results(self):
-        self.chunk.exportDem(
-            path=self.project_file_name + '_dem' + self.EXPORT_IMAGE_TYPE,
-            **self.EXPORT_DEFAULTS
-        )
-        self.chunk.exportOrthomosaic(
-            path=self.project_file_name + self.EXPORT_IMAGE_TYPE,
-            tiff_big=True,
-            **self.EXPORT_DEFAULTS
-        )
-        self.chunk.exportReport(self.project_file_name + self.PROJECT_REPORT)
+        self.project.save()
 
     def process(self, options):
         self.align_images()
         self.filter_sparse_cloud()
-        self.project.save()
-
         self.build_dense_cloud(options.dense_cloud_quality)
+
         self.project.save()
-
-        if options.build_dem:
-            self.chunk.buildDem()
-            self.project.save()
-
-        self.chunk.buildOrthomosaic(
-            fill_holes=False,
-            resolution=1,
-        )
-        self.project.save()
-
-        if options.with_export:
-            self.export_results()
 
 
 def argument_parser():
@@ -287,39 +247,28 @@ def argument_parser():
     )
     parser.add_argument(
         '--image-folder',
-        default=Agisoft.IMAGE_FOLDER,
+        default=ProcessImages.IMAGE_FOLDER,
         help='Location of images relative to base-path.',
     )
     parser.add_argument(
         '--image-type',
-        default=Agisoft.IMPORT_IMAGE_TYPE,
+        default=ProcessImages.IMPORT_IMAGE_TYPE,
         help='Type of images - default to .tif',
     )
     parser.add_argument(
         '--dense-cloud-quality',
         type=int,
         required=False,
-        default=Agisoft.DepthMapQuality.HIGH,
+        default=ProcessImages.DepthMapQuality.HIGH,
         choices=[
-            Agisoft.DepthMapQuality.ULTRA,
-            Agisoft.DepthMapQuality.HIGH,
-            Agisoft.DepthMapQuality.MEDIUM,
+            ProcessImages.DepthMapQuality.ULTRA,
+            ProcessImages.DepthMapQuality.HIGH,
+            ProcessImages.DepthMapQuality.MEDIUM,
         ],
         help="Integer for dense point cloud quality (default: High).\n"
-             "Highest -> " + str(Agisoft.DepthMapQuality.ULTRA) + ",\n"
-             "High -> " + str(Agisoft.DepthMapQuality.HIGH) + ",\n"
-             "Medium -> " + str(Agisoft.DepthMapQuality.MEDIUM)
-    )
-    parser.add_argument(
-        '--build-dem',
-        action='store_true',
-        default=False,
-        help='Create a DEM from dense cloud'
-    )
-    parser.add_argument(
-        '--with-export',
-        action='store_true',
-        help='Export DEM, Orthomosaic and PDF report after dense cloud'
+             "Highest -> " + str(ProcessImages.DepthMapQuality.ULTRA) + ",\n"
+             "High -> " + str(ProcessImages.DepthMapQuality.HIGH) + ",\n"
+             "Medium -> " + str(ProcessImages.DepthMapQuality.MEDIUM)
     )
 
     return parser
@@ -328,22 +277,22 @@ def argument_parser():
 # Example command line execution:
 #
 # * Mac OS
-# ./MetashapePro -r agisoft_workflow.py \
+# ./MetashapePro -r process_images.py \
 #                --base-path /project/root/path \
 #                --project-name test
 #
 # * Windows
-# .\Metashape.exe -r agisoft_workflow.py \
+# .\Metashape.exe -r process_images.py \
 #                 --base-path C:\project\root\path \
 #                 --project-name test
 #
 # * Linux (headless)
 # metashape.sh -platform offscreen \
-#              -r agisoft_workflow.py \
-#              --base_path /project/root/path \
+#              -r process_images.py \
+#              --base-path /project/root/path \
 #              --project-name test
 #
 if __name__ == '__main__':
     arguments = argument_parser().parse_args()
-    project = Agisoft(arguments)
+    project = ProcessImages(arguments)
     project.process(arguments)
