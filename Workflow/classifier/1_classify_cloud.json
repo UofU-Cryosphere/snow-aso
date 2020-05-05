@@ -1,6 +1,8 @@
 {
   "pipeline": [
-    "/Path/To/Source.laz",
+    {
+      "type": "readers.las"
+    },
     {
       "type": "filters.crop",
       "bounds": "([322518.0, 336552.0], [4305588.0, 4322445.0])",
@@ -8,9 +10,12 @@
     },
     {
       "type": "filters.colorization",
-      "raster": "/Path/To/Classifier.tif",
       "dimensions": "UserData"
     },
-    "/Path/To/Output.laz"
+    {
+      "type": "writers.las",
+      "compression": true,
+      "forward": "all"
+    }
   ]
 }
