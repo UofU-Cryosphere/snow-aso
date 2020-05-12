@@ -112,16 +112,11 @@ pdal pipeline 4M_create_geotiff.json.json \
     --writers.gdal.filename=/path/to/aligned.tif
 ```
 
-#### 5.)
-Tool: _GDAL_
-
-Interpolate the SfM output to 3m resolution for comparison with downloaded 
-snow depth map. This step also cuts the output raster to the final shape of the
-watershed.
-
 ### Process-helpers
 
-Collection of handy wrappers and data post-processing steps.
+Collection of handy wrappers and data post-processing steps. All files with
+`.gdal` are option files that can be passed to GDAL via the `--optfile` 
+parameter. 
 
 #### apply_transformation
 
@@ -147,3 +142,11 @@ Extract the elevation band from the output of step 5.
 Tool: _ASP_
 
 Wrapper for ASP geo_diff tool to ensure use of floats in output result.
+
+#### resample_3m_cut
+
+Tool: _GDAL_
+
+Interpolate the SfM output to 3m resolution for comparison with downloaded 
+snow depth map. This step also cuts the output raster to the final shape of the
+watershed.
