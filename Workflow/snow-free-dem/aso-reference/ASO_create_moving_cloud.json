@@ -1,0 +1,20 @@
+{
+  "pipeline": [
+    {
+      "type": "readers.las"
+    },
+    {
+      "type": "filters.crop",
+      "bounds": "([322518.0, 336552.0], [4305588.0, 4322445.0])",
+      "a_srs": "EPSG:32613"
+    },
+    {
+      "type": "filters.returns",
+      "groups": "only"
+    },
+    {
+      "type": "writers.las",
+      "compression": "laszip"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+    "pipeline": [
+        {
+            "type": "readers.las"
+        },
+        {
+            "type": "filters.range",
+            "limits": "Classification[2:2]"
+        },
+        {
+            "type": "filters.returns",
+            "groups": "only"
+        },
+        {
+            "type": "writers.las",
+            "compression": true,
+            "forward": "all"
+        }
+    ]
+}
