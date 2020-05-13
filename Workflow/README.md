@@ -100,17 +100,25 @@ source ${PROJECT_HOME}/steps/3_pc_align.sh \
 Tool: _PDAL_
 
 Create 1m resolution GeoTiff from the aligned (4M) and a 3m resolution file for
-the reference (4R) cloud. 
-The reference cloud will be filtered to points with single returns before
-being exported to a raster. The output is used for elevation, slope, and aspect
-calculation in the analysis. The 3m resolution is necessary with the low point
-density per square meter of the reference cloud.
+the reference (4R) cloud. Reference geotiff is used for error residual 
+determination for the snow free and snow on DSM products.
 
 ```shell script
 pdal pipeline 4M_create_geotiff.json.json \
     --readers.las.filename=/path/to/aligned.laz \
     --writers.gdal.filename=/path/to/aligned.tif
 ```
+
+### Snow-free-dem
+Reference DEMs are created for analysis of slope, aspect and elevation 
+dependency for difference in snow depths.
+
+Two available snow free flights were available:
+- ASO 
+- Quantum Spatial (QS)
+
+Both data sources have point clouds available and were co-registered to the
+same snow-on flights as the photogrammetric clouds.
 
 ### Process-helpers
 
