@@ -2,6 +2,6 @@
 # Convenience wrapper for ASP geodiff tool
 
 ${HOME}/asp/bin/geodiff \
-  --float --threads 16 \
+  --float --threads ${SLURM_NTASKS} \
   $1 \
   $2

@@ -5,7 +5,7 @@
 # 3: moving cloud
 
 ${HOME}/asp/bin/pc_align \
-  --threads 24 \
+  --threads ${SLURM_NTASKS} \
   --max-displacement 1 \
   --alignment-method point-to-point \
   --save-transformed-source-points \
