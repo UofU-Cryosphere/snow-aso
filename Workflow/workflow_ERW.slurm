@@ -51,7 +51,10 @@ LIDAR_CLASSIFIED=${ASO_SNOW_ON}/${SNOW_ON}_cropped_classified.laz
 #   --readers.las.filename=${LIDAR_CLASSIFIED} \
 #   --writers.gdal.filename=${ASO_SNOW_ON}/${SNOW_ON}_stable_dem_1m.tif
 
-##
+##------------------##
+# ASO Reference DEM  #
+##------------------##
+
 # pdal pipeline ${PROJECT_HOME}/co-registration/4R_create_geotiff.json \
 #   --readers.las.filename=${LIDAR_CLASSIFIED} \
 #   --writers.gdal.filename=${ASO_SNOW_ON}/${SNOW_ON}_dsm_3m.tif
@@ -143,9 +146,9 @@ SFM_SNOW_FREE=${SCRATCH_HOME}/${SNOW_FREE}/Agisoft
 
 # cd ${SCRATCH_HOME}
 
-##--------##
-# ASO DEM  #
-##--------##
+##------------------##
+# ASO Snow free DEM  #
+##------------------##
 ASO_SNOW_FREE=${SCRATCH_HOME}/${SNOW_FREE}/Lidar
 
 ##
