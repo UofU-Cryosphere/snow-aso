@@ -237,6 +237,6 @@ QS_tiles="${QS_SPATIAL_DIR}/tiles"
 #   ${QS_SPATIAL_DIR}/${QS_SPATIAL}_last_only.laz
 
 ##
-# pdal pipeline ${PROJECT_HOME}/qs-reference/QS_geotiff_aso.json \
+# pdal pipeline ${PROJECT_HOME}/qs-reference/QS_geotiff.json \
 #   --readers.las.filename=${QS_SPATIAL_DIR}/pc_align_transform/qs_snow_free-${PC_ALIGN_SUFFIX} \
 #   --writers.gdal.filename=${QS_SPATIAL_DIR}/${QS_SPATIAL}_1m_dsm.tif
