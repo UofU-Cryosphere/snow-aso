@@ -6,5 +6,5 @@
 -co SPARSE_OK=TRUE
 
 -multi
--tap
+-te 322521 4305591 336549 4322442
 -cutline path/to/boundary.geojson
