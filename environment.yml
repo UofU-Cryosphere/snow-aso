@@ -4,9 +4,9 @@ channels:
   - defaults
 dependencies:
   - cython
-  - gdal=2.4
+  - gdal
   - ipython
   - numpy
   - pandas
-  - pdal=1.9
-  - python-pdal
+  - pdal
+  - shapely

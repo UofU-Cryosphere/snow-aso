@@ -7,9 +7,4 @@
 
 -multi
 -te 322521 4305591 336549 4322442
--tr 3 3
--r bilinear
--cutline path/to/boundary.shp
-
-input_file.tif
-output_file_3m.tif
+-cutline path/to/boundary.geojson

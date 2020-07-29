@@ -17,10 +17,6 @@ directory.
 
 Set of scripts to create a geo-location csv reference file for images. 
 
-### point_cloud
-
-Python scripts that use PDAL to create GeoTiffs from point cloud files.
-
 ### Workflow
 
 Steps to align two point clouds, having the classification for the area in 

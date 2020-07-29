@@ -9,13 +9,9 @@
       "a_srs": "EPSG:32613"
     },
     {
-      "type": "filters.colorization",
-      "dimensions": "UserData"
-    },
-    {
       "type": "writers.las",
-      "compression": true,
-      "forward": "all"
+      "compression": "laszip",
+      "dataformat_id": 0
     }
   ]
 }

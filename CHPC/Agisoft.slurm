@@ -29,8 +29,7 @@ PROJECT_NAME='Project_XYZ'
 
 module load photoscan
 metashape.sh -platform offscreen \
-             -r ${HOME}/snow-aso/CHPC/Agisoft/agisoft_workflow.py \
+             -r ${HOME}/snow-aso/Agisoft/process_images.py \
              --base-path ${HOME}/scratch/${PROJECT_NAME} \
              --project-name ${PROJECT_NAME} \
-             --dense-cloud-quality medium \
              > ${HOME}/scratch/${PROJECT_NAME}.log

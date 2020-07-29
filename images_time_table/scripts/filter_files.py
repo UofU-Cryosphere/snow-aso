@@ -1,40 +1,89 @@
+#!/usr/bin/env python
+
 import argparse
-import csv
-import glob
+import json
 import os
 import shutil
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--image-path',
-    type=str,
-    help='Root directory of the basin',
-    required=True
-)
-parser.add_argument(
-    '--file-csv',
-    type=str,
-    help='Path to csv file containing images to keep',
-    default='tif',
-)
+from shapely.geometry import shape, Point
 
-if __name__ == '__main__':
-    arguments = parser.parse_args()
-    file_list = []
-
-    with open(arguments.file_csv, 'r', newline='') as csv_file:
-        files = csv.reader(csv_file)
-        [file_list.append(file[0]) for file in files]
-
-    images = glob.glob(os.path.join(arguments.image_path, '*.tif'))
-
-    keep_folder = os.path.join(arguments.image_path, 'keep', '')
-    if not os.path.exists(keep_folder):
-        os.mkdir(keep_folder)
+from images_time_table.base import ImagesMetaCsv
 
 
-    for image in images:
-        if os.path.basename(image) in file_list:
+def parser():
+    argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument(
+        '--images-path',
+        type=str,
+        help='Path containing images',
+        required=True
+    )
+    argument_parser.add_argument(
+        '--csv',
+        type=str,
+        help='Path to csv file containing images to keep.'
+             'Format should be as written by create_csv script',
+        required=True
+    )
+    argument_parser.add_argument(
+        '--boundary',
+        type=str,
+        help='Path to boundaries in GeoJSON format',
+    )
+    return argument_parser
+
+
+def load_boundaries(file):
+    with open(file, 'r') as boundary_file:
+        boundary = json.load(boundary_file)
+
+        boundary = shape(boundary['features'][0]['geometry'])
+
+    return boundary
+
+
+def inbounds(polygon, image_location):
+    return polygon.contains(
+        Point(
+            float(image_location['X']),
+            float(image_location['Y'])
+        )
+    )
+
+
+def ensure_destination_folder(base_dir):
+    folder = os.path.join(base_dir, 'keep', '')
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+
+    return folder
+
+
+def main():
+    arguments = parser().parse_args()
+
+    keep_folder = ensure_destination_folder(arguments.images_path)
+
+    if arguments.boundary:
+        bounds = load_boundaries(arguments.boundary)
+    else:
+        bounds = None
+
+    for image in ImagesMetaCsv.read_file(arguments.csv):
+        if bounds and not inbounds(bounds, image):
+            continue
+
+        image = os.path.join(
+            arguments.images_path, image[ImagesMetaCsv.FILE_COLUMN]
+        )
+
+        if os.path.exists(image):
             print('moving file: ' + str(image))
             print('  to: ' + keep_folder)
             shutil.move(image, keep_folder)
+        else:
+            print(f'Missing file {image} from csv')
+
+
+if __name__ == '__main__':
+    main()

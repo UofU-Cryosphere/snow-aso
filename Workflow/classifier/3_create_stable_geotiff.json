@@ -1,20 +1,20 @@
 {
   "pipeline": [
-        {
+    {
       "type": "readers.las"
     },
     {
-      "type": "filters.returns",
-      "groups": "last,only"
+      "type": "filters.range",
+      "limits": "UserData[3:3]"
     },
     {
       "type": "writers.gdal",
       "gdaldriver": "GTiff",
       "gdalopts": "TILED=YES,COMPRESS=LZW,BIGTIFF=IF_NEEDED,NUM_THREADS=ALL_CPUS,SPARSE_OK=TRUE",
       "data_type": "float32",
-      "output_type": "min,max,idw,count",
-      "bounds": "([322521.0, 336549.0], [4305591.0, 4322442.0])",
-      "resolution": 3.0
+      "output_type": "idw",
+      "bounds": "([322521.0, 336552.0], [4305591.0, 4322445.0])",
+      "resolution": 1.0
     }
   ]
 }

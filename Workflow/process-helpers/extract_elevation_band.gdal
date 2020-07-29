@@ -7,6 +7,3 @@
 
 -b 3
 -ot Float32
-
-input_file.tif
-output_file_band_3.tif
