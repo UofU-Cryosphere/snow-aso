@@ -63,7 +63,7 @@ Filters applied:
 * Keep points with 'NumberOfReturns' of 1
 
 ```shell script
-pdal pipeline ${PROJECT_HOME}/steps/1L_prepare_fixed_cloud.json \
+pdal pipeline ${PROJECT_HOME}/co-registration/1L_prepare_fixed_cloud.json \
   --readers.las.filename=/path/to/source.laz \
   --filters.colorization.raster=/path/to/classifier.tif \
   --writers.las.filename=/path/to/reference.laz
@@ -78,7 +78,7 @@ Filters applied:
 * Crop to target area with padding
 
 ```shell script
-pdal pipeline 2_create_moving_cloud.json \
+pdal pipeline ${PROJECT_HOME}/co-registration/2_create_moving_cloud.json \
     --readers.las.filename=/path/to/source.laz \
     --writers.laz.filename=/path/to/moving.laz
 ```
@@ -90,7 +90,7 @@ Run the co-registration using ASP `pc_align` tool using clouds produced in
 step 1 and 2.
 
 ```shell script
-source ${PROJECT_HOME}/steps/3_pc_align.sh \
+source ${PROJECT_HOME}/co-registration/3_pc_align.sh \
   ${SCRATCH_HOME}/pc_align/run \
   /path/to/reference.laz \                      
   /path/to/moving.laz                       
@@ -104,7 +104,7 @@ the reference (4R) cloud. Reference geotiff is used for error residual
 determination for the snow free and snow on DSM products.
 
 ```shell script
-pdal pipeline 4M_create_geotiff.json.json \
+pdal pipeline 4M_${PROJECT_HOME}/co-registration/create_geotiff.json.json \
     --readers.las.filename=/path/to/aligned.laz \
     --writers.gdal.filename=/path/to/aligned.tif
 ```
@@ -113,20 +113,13 @@ pdal pipeline 4M_create_geotiff.json.json \
 Reference DEMs are created for analysis of slope, aspect and elevation 
 dependency for difference in snow depths.
 
-Two available snow free flights were available:
-- ASO 
-- Quantum Spatial (QS)
-
-Both data sources have point clouds available and were co-registered to the
-same snow-on flights as the photogrammetric clouds.
-
 ### Process-helpers
 
 Collection of handy wrappers and data post-processing steps. All files with
 `.gdal` are option files that can be passed to GDAL via the `--optfile` 
 parameter. 
 
-#### apply_transformation
+#### aso-reference/apply_transform
 
 Tool: _ASP_
 
@@ -143,7 +136,7 @@ Cut any GeoTiff to boundaries of the watershed.
 
 Tool: _GDAL_
 
-Extract the elevation band from the output of step 5. 
+Extract the elevation band from the output of step 4. 
 
 #### geo_diff
 
