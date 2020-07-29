@@ -93,7 +93,7 @@ SFM_SNOW_ON=${SCRATCH_HOME}/${SNOW_ON}/Agisoft
 #   --writers.gdal.filename=${SFM_SNOW_ON}/${SNOW_ON}_dsm_1m.tif
 
 ##
-# gdalwarp --optfile ${PROJECT_HOME}/resample_3m_cut.gdal \
+# gdalwarp --optfile ${PROJECT_HOME}/process-helpers/resample_3m_cut.gdal \
 #   ${SFM_SNOW_ON}/${SNOW_ON}_dsm_1m.tif \
 #   ${SFM_SNOW_ON}/${SNOW_ON}_ERW_basin_dsm_3m.tif
 
@@ -120,7 +120,7 @@ SFM_SNOW_FREE=${SCRATCH_HOME}/${SNOW_FREE}/Agisoft
 #   --writers.gdal.filename=${SFM_SNOW_FREE}/${SNOW_FREE}_dsm_1m.tif
 
 ##
-# gdalwarp --optfile ${PROJECT_HOME}/resample_3m_cut.gdal \
+# gdalwarp --optfile ${PROJECT_HOME}/process-helpers/resample_3m_cut.gdal \
 #   ${SFM_SNOW_FREE}/${SNOW_FREE}_dsm_1m.tif \
 #   ${SFM_SNOW_FREE}/${SNOW_FREE}_ERW_basin_dsm_3m.tif
 
@@ -140,7 +140,7 @@ SFM_SNOW_FREE=${SCRATCH_HOME}/${SNOW_FREE}/Agisoft
 #   ${SNOW_FREE}_ERW_basin_dsm_3m_band3.vrt \
 #   ${SFM_SNOW_FREE}/${SNOW_FREE}_ERW_basin_dsm_3m.tif
 
-# ${PROJECT_HOME}/geo_diff.sh \
+# ${PROJECT_HOME}/process-helper/geo_diff.sh \
 #   ${SNOW_ON}_ERW_basin_dsm_3m_band3.vrt \
 #   ${SNOW_FREE}_ERW_basin_dsm_3m_band3.vrt
 
@@ -163,12 +163,12 @@ ASO_SNOW_FREE=${SCRATCH_HOME}/${SNOW_FREE}/Lidar
 #   ${ASO_SNOW_FREE}/${SNOW_FREE}_moving.laz
 
 ##
-# pdal pipeline ${PROJECT_HOME}/last_only_cloud.json \
+# pdal pipeline ${PROJECT_HOME}/aso-reference/last_only_cloud.json \
 #   --readers.las.filename=${ASO_SNOW_FREE}/${SNOW_FREE}_merge.laz \
 #   --writers.las.filename=${ASO_SNOW_FREE}/${SNOW_FREE}_last_only.laz
 
 ##
-# ${PROJECT_HOME}/apply_transform.sh \
+# ${PROJECT_HOME}/aso-reference/apply_transform.sh \
 #   ${ASO_SNOW_FREE}/pc_align/snow_free-transform.txt \
 #   ${ASO_SNOW_FREE}/pc_align_transform/snow_free \
 #   ${REFERENCE_CLOUD} \

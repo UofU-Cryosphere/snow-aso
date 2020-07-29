@@ -1,0 +1,22 @@
+{
+    "pipeline": [
+        {
+            "type": "readers.las"
+        },
+        {
+            "groups": "only",
+            "type": "filters.returns"
+        },
+        {
+            "dimensions": "UserData",
+            "type": "filters.colorization"
+        },
+        {
+            "limits": "UserData[1:1]",
+            "type": "filters.range"
+        },
+        {
+            "type": "writers.las"
+        }
+    ]
+}
