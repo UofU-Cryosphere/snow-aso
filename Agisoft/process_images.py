@@ -215,6 +215,7 @@ class ProcessImages:
             Metashape.PointCloud.Filter.ProjectionAccuracy,
             self.REPROJECTION_ACCURACY_THRESHOLD,
         )
+        self.chunk.optimizeCameras()
         self.project.save()
 
     def build_dense_cloud(self, dense_cloud_quality):
