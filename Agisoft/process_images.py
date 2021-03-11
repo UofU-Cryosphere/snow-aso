@@ -48,6 +48,7 @@ class ProcessImages:
     # Source:
     # https://www.agisoft.com/forum/index.php?topic=11697.msg52455#msg52455
     class ImageMatching:
+        HIGHEST = 0
         HIGH = 1
         MEDIUM = 2
 
