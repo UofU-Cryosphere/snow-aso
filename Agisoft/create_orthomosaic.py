@@ -34,7 +34,7 @@ class CreateOrthomosaic:
         self.setup_application()
 
         self.project = Metashape.app.document
-        self.project.open(self.project_file)
+        self.project.open(self.project_file.as_posix())
         self.chunk = self.project.chunk
 
     @property
