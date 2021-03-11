@@ -30,6 +30,7 @@ class ProcessImages:
     # Default image type for input images
     IMPORT_IMAGE_TYPE = '.tif'
     PROJECT_TYPE = '.psx'
+    PROJECT_REPORT = '.pdf'
     IMAGE_FOLDER = 'images'
     REFERENCE_FILE = 'images_metadata.csv'
 
@@ -230,6 +231,9 @@ class ProcessImages:
         self.align_images()
         self.filter_sparse_cloud()
         self.build_dense_cloud(options.dense_cloud_quality)
+        self.chunk.exportReport(
+            self.project_file_name + self.PROJECT_REPORT
+        )
 
         self.project.save()
 
