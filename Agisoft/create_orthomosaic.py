@@ -57,6 +57,7 @@ class CreateOrthomosaic:
         self.chunk.buildDem()
         self.project.save()
 
+        self.chunk.buildModel()
         self.chunk.buildOrthomosaic(
             fill_holes=False,
         )
