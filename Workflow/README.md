@@ -15,17 +15,18 @@ Filters applied:
 ```shell script
 pdal pipeline ${PROJECT_HOME}/classifier/1_classify_cloud.json \
   --readers.las.filename=/path/to/source.laz \
+  --filters.colorization.raster=/path/to/geo_tiff.tif \
   --writers.las.filename=/path/to/classified.laz
 ```
 
 #### 2.)
 Tool: _PDAL_
 
-Create GeoTiff from all points that are classified as stable,
-with a band for minimum and another for maximum number of returns.
+Create GeoTiff from all points that are classified as control surfaces,
+with separate bands for minimum and maximum number of returns.
 
 Filters applied:
-* Points classified as stable ground surfaces
+* Points classified as control surfaces
 
 ```shell script
 pdal pipeline ${PROJECT_HOME}/classifier/2_create_NoR_geotiff.json \                 
@@ -36,16 +37,23 @@ pdal pipeline ${PROJECT_HOME}/classifier/2_create_NoR_geotiff.json \
 #### 3.)
 Tool: _PDAL_
 
-Create GeoTiff with elevation value of all points classified as stable.
+Create GeoTiff with elevation value of all points classified as
+control surfaces.
 
 Filters applied:
-* Points classified as stable ground surfaces
+* Points classified as control surfaces
+
+```shell script
+pdal pipeline ${PROJECT_HOME}/classifier/3_create_stable_geotiff.json \
+  --readers.las.filename=/path/to/classified.laz \
+  --writers.gdal.filename=/path/to/control_surfaces.tif
+```
 
 #### 4.)
 Tool: _GDAL_
 
 Create updated classification GeoTiff, where pixels are:
-* Classified as stable
+* Classified as control surface
 * 'NumberOfReturns' is 1
 * Slope angle more than 5 and less than 50 degrees.
 * No snow depth value was measured in delivery product of ASO
@@ -55,11 +63,11 @@ Create updated classification GeoTiff, where pixels are:
 Tool: _PDAL_
 
 Crop reference cloud to target area with padding, retain points with single 
-return pulse and classified as stable.
+return pulse and classified as control surface.
 
 Filters applied:
 * Crop to target area with padding
-* Points classified as stable ground surface
+* Points classified as control surface
 * Keep points with 'NumberOfReturns' of 1
 
 ```shell script
